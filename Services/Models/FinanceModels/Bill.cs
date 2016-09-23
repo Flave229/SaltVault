@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Services.Models.GlobalModels;
 
 namespace Services.Models.FinanceModels
 {

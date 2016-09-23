@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Services.FileIO;
 using Services.Models.FinanceModels;
-using Services.Models.GlobalModels;
 
 namespace Services.FormHelpers
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Services.Models.GlobalModels;
 
 namespace Services.Models.FinanceModels
 {
