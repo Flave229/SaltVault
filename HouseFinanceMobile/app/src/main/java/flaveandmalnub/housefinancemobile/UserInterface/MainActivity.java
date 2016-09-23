@@ -1,7 +1,9 @@
-package flaveandmalnub.housefinancemobile;
+package flaveandmalnub.housefinancemobile.UserInterface;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import flaveandmalnub.housefinancemobile.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_material_light">#42a5f5</color>
+    <color name="appColourStatusBar">#2d6fa5</color>
+    <color name="app_text_secondary_colour_def">#dc000000</color>
+    <color name="appAccentColour">#42a5f5</color>
+</resources>

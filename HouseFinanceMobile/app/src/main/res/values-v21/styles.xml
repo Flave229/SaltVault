@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowActionBar">false</item>
+        <item name="android:statusBarColor">@color/appColourStatusBar</item>
         <item name="colorAccent">@color/appAccentColour</item>
+        <item name="android:windowActionBar">false</item>
     </style>
-
 </resources>
