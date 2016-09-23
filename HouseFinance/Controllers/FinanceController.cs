@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Services.FileIO;
 using Services.FormHelpers;
 using Services.Models.Helpers;
+using Newtonsoft.Json;
 
 namespace HouseFinance.Controllers
 {
@@ -18,6 +19,15 @@ namespace HouseFinance.Controllers
             }
 
             return View(new BillFormModel());
+        }
+
+        [HttpGet]
+        public string GetBillData()
+        {
+            var bills = BillFileHelper.GetBills();
+            var jsonResponse = JsonConvert.SerializeObject(bills);
+
+            return jsonResponse;
         }
 
         // POST: Finance/AddBill

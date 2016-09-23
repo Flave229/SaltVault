@@ -19,3 +19,24 @@ E:\Users\Flave\Personal Documents\My Web Sites\HouseFinance\HouseFinance\Service
 E:\Users\Flave\Personal Documents\My Web Sites\HouseFinance\HouseFinance\Services\bin\Release\System.Web.WebPages.xml
 E:\Users\Flave\Personal Documents\My Web Sites\HouseFinance\HouseFinance\Services\bin\Release\System.Web.WebPages.Deployment.xml
 E:\Users\Flave\Personal Documents\My Web Sites\HouseFinance\HouseFinance\Services\bin\Release\System.Web.WebPages.Razor.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Services.dll.config
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Services.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Services.pdb
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Microsoft.Web.Infrastructure.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Newtonsoft.Json.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Helpers.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Mvc.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Razor.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.Deployment.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.Razor.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\Newtonsoft.Json.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Helpers.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Mvc.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.Razor.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.Deployment.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\bin\Release\System.Web.WebPages.Razor.xml
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\obj\Release\Services.csprojResolveAssemblyReference.cache
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\obj\Release\Services.dll
+E:\Users\Flave\Personal Docs\Projects\HouseFinance\Services\obj\Release\Services.pdb
