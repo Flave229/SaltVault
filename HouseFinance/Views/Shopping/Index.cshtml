@@ -1,0 +1,87 @@
+﻿@using Services.FileIO
+@model List<Services.Models.ShoppingModels.ShoppingItem>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>Shopping List</h1>
+    <p class="lead">Enter items that need purchasing here.</p>
+</div>
+
+<div class="row">
+    <div id="fh5co-portfolio">
+        <p>@ViewBag.ExceptionMessage</p>
+        <h1 id="fh5co-header">List of Shopping Items</h1>
+        <a href="@Url.Action("AddItem", "Shopping")" class="btn btn-primary" style="float: right">Add New Shopping Item</a>
+
+        @try
+        {
+            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 5px">Item</th>
+                        <th style="padding-left: 5px">Added On</th>
+                        <th style="padding-left: 5px; width: 150px">Added By</th>
+                        <th style="padding-left: 5px; width: 150px">For</th>
+                        <th style="padding-left: 5px; width: 80px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @foreach (var item in Model)
+                {
+                    var classStyle = "incomplete";
+
+                    if (item.Purchased)
+                    {
+                        classStyle = "completed";
+                    }
+
+                    <tr >
+                        <th class=@(classStyle)>
+                            <span>@item.Name</span>
+                        </th>
+                        <th class=@(classStyle)>
+                            <span>@item.Added.ToString("dd/MM/yyyy")</span>
+                        </th>
+                        <th class=@(classStyle)>
+                            <img src="@(PersonFileHelper.GetPerson(item.AddedBy).Image)" width="20" />
+                        </th>
+                        <th class=@(classStyle)>
+                            @foreach (var personId in item.ItemFor)
+                            {
+                                <img src="@(PersonFileHelper.GetPerson(personId).Image)" width="20" />
+                            }
+                        </th>
+                        <th class=@(classStyle) style="text-align: right">
+                            @if (!item.Purchased)
+                            {
+                                <a href="@Url.Action("CompleteItem", "Shopping", new {itemId = item.Id})">
+                                    <img src="http://i.imgur.com/7ruF8yE.png" alt="Complete" height="20" width="20"/>
+                                </a>
+                            }
+                            <a href="@Url.Action("DeleteItem", "Shopping", new {itemId = item.Id})" onclick="confirmSubmission('Are you sure you wish to delete this payment?')">
+                                <img src="http://i.imgur.com/ltfOB60.png" alt="Delete" height="20" width="20"/>
+                            </a>
+                        </th>
+                    </tr>
+                }
+
+                </tbody>
+            </table>
+        }
+        catch (Exception exception)
+        {
+            ViewBag.ExceptionMessage = "An Error occured while rendering the Shopping list.";
+
+            <div class="fh5co-portfolio-item">
+                <div class="fh5co-portfolio-description">
+                    <p>@ViewBag.ExceptionMessage @exception.Message</p>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

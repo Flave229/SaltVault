@@ -1,0 +1,29 @@
+{
+  "siteName": {
+    "value": "HouseFinance"
+  },
+  "hostingPlanName": {
+    "value": "HouseFinancePlan"
+  },
+  "siteLocation": {
+    "value": "West Europe"
+  },
+  "sku": {
+    "value": "Free"
+  },
+  "workerSize": {
+    "value": "0"
+  },
+  "siteMode": {
+    "value": "Limited"
+  },
+  "computeMode": {
+    "value": "0"
+  },
+  "subscriptionId": {
+    "value": "5e97a7de-97da-4284-9672-2b54f4b433a1"
+  },
+  "resourceGroup": {
+    "value": "HouseFinanceResources"
+  }
+}

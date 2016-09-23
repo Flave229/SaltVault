@@ -1,0 +1,54 @@
+﻿@using Services.FileIO
+@model Services.Models.Helpers.PaymentFormHelper
+@{
+    ViewBag.Title = "Edit Payment";
+}
+
+<div class="jumbotron">
+    <h1>@ViewBag.Title</h1>
+</div>
+
+<div class="row">
+    <div id="fh5co-portfolio">
+        @using (Html.BeginForm("EditPayment", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            var bill = BillFileHelper.GetBill(Model.BillId);
+            var people = PersonFileHelper.GetPeople();
+
+            @Html.HiddenFor(m => m.BillId, Model.BillId)
+            @Html.HiddenFor(m => m.Payment.Id, Model.Payment.Id)
+
+            <h4>Add a payment here to add it to @bill.Name : @bill.Due.ToString("MMMM yyyy")</h4>
+            <hr />
+            <div class="form-group">
+                @Html.Label("Amount:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Payment.Amount, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Paid On", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Payment.Created, Model.Payment.Created.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Person:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @for (var i = 0; i < people.Count; i++)
+                    {
+                        @Html.RadioButtonFor(m => m.Payment.PersonId, people[i].Id)
+                        @Html.Label(people[i].FirstName + " " + people[i].LastName, new { @style = "padding-left: 1em" })
+                        <br />
+                    }
+                </div>
+            </div>
+            <p style="color:red">@ViewBag.ExceptionMessage</p>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Edit Payment" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

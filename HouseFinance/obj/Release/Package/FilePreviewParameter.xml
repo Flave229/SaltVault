@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="HouseFinance20160824062903" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^E:\\Users\\Flave\\Personal\ Documents\\My\ Web\ Sites\\HouseFinance\\HouseFinance\\HouseFinance\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^E:\\Users\\Flave\\Personal\ Documents\\My\ Web\ Sites\\HouseFinance\\HouseFinance\\HouseFinance\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="DefaultConnection-Web.config Connection String" description="" value="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-HouseFinance-20160710042708.mdf;Initial Catalog=aspnet-HouseFinance-20160710042708;Integrated Security=True" tags="">
+    <parameterEntry kind="XmlFile" scope="E:\\Users\\Flave\\Personal\ Documents\\My\ Web\ Sites\\HouseFinance\\HouseFinance\\HouseFinance\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+</parameters>
