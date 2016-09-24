@@ -7,4 +7,8 @@
         <item name="colorAccent">@color/appAccentColour</item>
     </style>
 
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/appColourStatusBar</item>
+    </style>
+
 </resources>
