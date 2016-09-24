@@ -15,11 +15,11 @@ namespace Services.FileIO
             _filePath = FilePathToString.ToString(filePath);
         }
 
-        public List<IPersistedData> Open()
+        public List<T> Open<T>()
         {
             try
             {
-                if (!System.IO.File.Exists(_filePath)) return new List<IPersistedData>();
+                if (!System.IO.File.Exists(_filePath)) return new List<T>();
 
                 var existingFileAsJson = System.IO.File.ReadAllLines(_filePath);
                 var existingFileAsString = "";
@@ -29,7 +29,12 @@ namespace Services.FileIO
                     existingFileAsString = existingFileAsString + existingFileAsJson.ElementAt(i);
                 }
 
-                return existingFileAsString.Equals("") ? new List<IPersistedData>() : JsonConvert.DeserializeObject<dynamic>(existingFileAsString).Cast<IPersistedData>().ToList();
+                if (existingFileAsString.Equals(""))
+                {
+                    return new List<T>();
+                }
+
+                return JsonConvert.DeserializeObject<List<T>>(existingFileAsString) as List<T>;
             }
             catch (Exception exception)
             {
@@ -38,7 +43,7 @@ namespace Services.FileIO
             }
         }
 
-        public void Save(List<IPersistedData> obj)
+        public void Save<T>(List<IPersistedData> obj)
         {
             try
             {
@@ -56,14 +61,14 @@ namespace Services.FileIO
             }
         }
 
-        public List<IPersistedData> Add(List<IPersistedData> obj, IPersistedData objToAdd)
+        public List<IPersistedData> Add<T>(List<IPersistedData> obj, IPersistedData objToAdd)
         {
             obj.Add(objToAdd);
 
             return obj;
         }
 
-        public List<IPersistedData> Update(List<IPersistedData> objs, IPersistedData updatedObj)
+        public List<IPersistedData> Update<T>(List<IPersistedData> objs, IPersistedData updatedObj)
         {
             var index = objs.FindIndex(obj => obj.Id.Equals(updatedObj.Id));
             objs[index] = updatedObj;
@@ -71,21 +76,21 @@ namespace Services.FileIO
             return objs;
         }
 
-        public void Delete(Guid Id)
+        public void Delete<T>(Guid Id)
         {
             try
             {
-                var objList = GetAll();
+                var objList = GetAll<T>().Cast<IPersistedData>().ToList();
 
                 for (var i = 0; i < objList.Count; i++)
                 {
-                    if (objList[i].Id != Id) continue;
+                    if ((objList[i] as IPersistedData).Id != Id) continue;
 
                     objList.RemoveAt(i);
                     break;
                 }
 
-                Save(objList);
+                Save<T>(objList);
             }
             catch (Exception exception)
             {
@@ -93,33 +98,33 @@ namespace Services.FileIO
             }
         }
 
-        public void AddOrUpdate(IPersistedData obj)
+        public void AddOrUpdate<T>(IPersistedData obj)
         {
-            var objs = Open();
+            var objs = Open<T>().Cast<IPersistedData>().ToList();
 
-            objs = objs.Any(existingObj => existingObj.Id.Equals(obj.Id)) ? Update(objs, obj) : Add(objs, obj);
+            objs = objs.Any(existingObj => (existingObj as IPersistedData).Id.Equals(obj.Id)) ? Update<T>(objs as List<IPersistedData>, obj) : Add<T>(objs as List<IPersistedData>, obj);
 
-            Save(objs);
+            Save<T>(objs);
         }
 
-        public void AddOrUpdate(List<IPersistedData> obj)
+        public void AddOrUpdate<T>(List<IPersistedData> obj)
         {
             for (var i = 0; i < obj.Count; i++)
             {
-                AddOrUpdate(obj.ElementAt(i));
+                AddOrUpdate<T>(obj.ElementAt(i));
             }
         }
 
-        public IPersistedData Get(Guid id)
+        public IPersistedData Get<T>(Guid id)
         {
-            var objs = Open();
+            var objs = Open<T>().Cast<IPersistedData>().ToList();
 
             return objs.FirstOrDefault(obj => obj.Id.Equals(id));
         }
 
-        public List<IPersistedData> GetAll()
+        public List<T> GetAll<T>()
         {
-            return Open();
+            return Open<T>().ToList();
         }
     }
 }

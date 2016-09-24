@@ -7,7 +7,7 @@ using Services.Models;
 
 namespace Services.FileIO
 {
-    public class BillFileHelper : IFileHelper
+    public class BillFileHelper
     {
         private static readonly string FilePath = AppDomain.CurrentDomain.BaseDirectory + @"Data\Bills\bills.txt";
 
