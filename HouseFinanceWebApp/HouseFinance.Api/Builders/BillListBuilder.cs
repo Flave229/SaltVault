@@ -4,6 +4,7 @@ using Services.FileIO;
 using Services.FormHelpers;
 using Services.Models.FinanceModels;
 using Services.Models.GlobalModels;
+using System.Collections.Generic;
 
 namespace HouseFinance.Api.Builders
 {
@@ -17,7 +18,7 @@ namespace HouseFinance.Api.Builders
 
             foreach(var bill in bills)
             {
-                var billDetails = new BillDetails();
+                var images = new List<Images>();
 
                 foreach (var person in bill.People)
                 {
@@ -26,14 +27,15 @@ namespace HouseFinance.Api.Builders
                         Link = personFileHelper.Get<Person>(person).Image
                     };
 
-                    billDetails.PeopleImages.Add(imageLink);
+                    images.Add(imageLink);
                 }
 
                 response.BillList.Add(new BillDetails
                 {
                     Name = bill.Name,
                     AmountDue = BillHelper.GetHowMuchToPay(bill),
-                    DateDue = bill.Due
+                    DateDue = bill.Due,
+                    PeopleImages = images
                 });
             }
 
