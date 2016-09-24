@@ -112,10 +112,10 @@ namespace Services.FormHelpers
                 RecurringType = RecurringType.Monthly
             };
 
-            var billFileHelper = new BillFileHelper();
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
 
-            billFileHelper.AddOrUpdate(nextMonthBill);
-            billFileHelper.AddOrUpdate(bill);
+            fileHelper.AddOrUpdate<Bill>(nextMonthBill);
+            fileHelper.AddOrUpdate<Bill>(bill);
         }
     }
 }

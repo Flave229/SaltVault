@@ -45,10 +45,10 @@ namespace HouseFinance.Models
         {
             try
             {
-                var billFileHelper = new BillFileHelper();
-                var allBills = billFileHelper.GetAll();
+                var billFileHelper = new GenericFileHelper(FilePath.Bills);
+                var allBills = billFileHelper.GetAll<Bill>();
 
-                BillsForPerson = allBills.Cast<Bill>().Where(x => x.People.Contains(Person.Id)).ToList();
+                BillsForPerson = allBills.Where(x => x.People.Contains(Person.Id)).ToList();
             }
             catch (Exception exception)
             {
