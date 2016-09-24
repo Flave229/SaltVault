@@ -22,8 +22,6 @@ namespace Services.FileIO
 
         IFinanceModel Get(Guid id);
 
-        IFinanceModel Get(string name);
-
         List<IFinanceModel> GetAll();
     }
 }
