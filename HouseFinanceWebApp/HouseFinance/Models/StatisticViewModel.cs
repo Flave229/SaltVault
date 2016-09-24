@@ -45,10 +45,10 @@ namespace HouseFinance.Models
         {
             try
             {
-                var billFileHelper = new BillFileHelper();
-                var allBills = billFileHelper.GetAll();
+                var billFileHelper = new GenericFileHelper(FilePath.Bills);
+                var allBills = billFileHelper.GetAll<Bill>();
 
-                BillsForPerson = allBills.Cast<Bill>().Where(x => x.People.Contains(Person.Id)).ToList();
+                BillsForPerson = allBills.Where(x => x.People.Contains(Person.Id)).ToList();
             }
             catch (Exception exception)
             {
@@ -61,7 +61,8 @@ namespace HouseFinance.Models
         {
             try
             {
-                var allShoppingItems = ShoppingFileHelper.GetShoppingItems();
+                var fileHelper = new GenericFileHelper(FilePath.Shopping);
+                var allShoppingItems = fileHelper.GetAll<ShoppingItem>().ToList();
                 ShoppingItemsForPerson = allShoppingItems.Where(x => x.ItemFor.Contains(Person.Id)).ToList();
 
                 ShoppingItemsByPerson = allShoppingItems.Where(x => x.AddedBy.Equals(Person.Id)).ToList();
@@ -78,7 +79,7 @@ namespace HouseFinance.Models
             var sumOfDaysToPayBill = 0;
             var sumOfPercentageShare = 0.0;
             var billsPaidFor = 0;
-            var allPayments = PaymentFileHelper.GetPayments();
+            var allPayments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
 
             foreach (var bill in BillsForPerson)
             {

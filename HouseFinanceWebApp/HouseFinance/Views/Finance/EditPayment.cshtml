@@ -1,4 +1,5 @@
 ﻿@using Services.FileIO
+@using Services.Models.FinanceModels
 @model Services.Models.Helpers.PaymentFormHelper
 @{
     ViewBag.Title = "Edit Payment";
@@ -12,7 +13,7 @@
     <div id="fh5co-portfolio">
         @using (Html.BeginForm("EditPayment", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
-            var bill = BillFileHelper.GetBill(Model.BillId);
+            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(Model.BillId);
             var people = PersonFileHelper.GetPeople();
 
             @Html.HiddenFor(m => m.BillId, Model.BillId)

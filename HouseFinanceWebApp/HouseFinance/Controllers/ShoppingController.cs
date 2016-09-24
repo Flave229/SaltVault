@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Services.FileIO;
 using Services.Models.Helpers;
+using Services.Models.ShoppingModels;
 
 namespace HouseFinance.Controllers
 {
@@ -11,7 +12,7 @@ namespace HouseFinance.Controllers
         // GET: Shopping
         public ActionResult Index()
         {
-            var shoppingList = ShoppingFileHelper.GetShoppingItems();
+            var shoppingList = new GenericFileHelper(FilePath.Shopping).GetAll<ShoppingItem>();
 
             var orderedItems = shoppingList.OrderBy(x => x.Purchased).ThenByDescending(x => x.Added).ToList();
 
@@ -49,10 +50,8 @@ namespace HouseFinance.Controllers
                         itemForm.Item.ItemFor.Add(person.Person.Id);
                     }
                 }
-
-                //BillValidator.CheckIfValidBill(billForm.Bill);
-
-                ShoppingFileHelper.AddOrUpdate(itemForm.Item);
+                
+                new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(itemForm.Item);
             }
             catch (Exception exception)
             {
@@ -68,11 +67,12 @@ namespace HouseFinance.Controllers
         {
             try
             {
-                var shoppingItem = ShoppingFileHelper.GetShoppingItem(itemId);
+                var fileHelper = new GenericFileHelper(FilePath.Shopping);
+                var shoppingItem = fileHelper.Get<ShoppingItem>(itemId);
 
                 shoppingItem.Purchased = true;
 
-                ShoppingFileHelper.AddOrUpdate(shoppingItem);
+                fileHelper.AddOrUpdate<ShoppingItem>(shoppingItem);
             }
             catch (Exception exception)
             {
@@ -88,7 +88,8 @@ namespace HouseFinance.Controllers
         {
             try
             {
-                ShoppingFileHelper.Delete(itemId);
+                var fileHelper = new GenericFileHelper(FilePath.Shopping);
+                fileHelper.Delete<ShoppingItem>(itemId);
             }
             catch (Exception exception)
             {

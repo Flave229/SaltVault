@@ -25,8 +25,8 @@ namespace HouseFinance.Controllers
         [HttpGet]
         public string GetBillData()
         {
-            var billFileHelper = new BillFileHelper();
-            var bills = billFileHelper.GetAll();
+            var bills = new GenericFileHelper(FilePath.Bills).GetAll<Bill>();
+
             var jsonResponse = JsonConvert.SerializeObject(bills);
 
             return jsonResponse;
@@ -54,9 +54,8 @@ namespace HouseFinance.Controllers
                 }
 
                 BillValidator.CheckIfValidBill(billForm.Bill);
-
-                var billFileHelper = new BillFileHelper();
-                billFileHelper.AddOrUpdate(billForm.Bill);
+                
+                new GenericFileHelper(FilePath.Bills).AddOrUpdate<Bill>(billForm.Bill);
             }
             catch (Exception exception)
             {
@@ -92,7 +91,7 @@ namespace HouseFinance.Controllers
         [HttpPost]
         public ActionResult AddPayment(PaymentFormHelper formPayment)
         {
-            var billFileHelper = new BillFileHelper();
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
 
             if (!ModelState.IsValid)
             {
@@ -101,11 +100,11 @@ namespace HouseFinance.Controllers
 
             try
             {
-                var realBill = (Bill)billFileHelper.Get(formPayment.BillId);
+                var realBill = fileHelper.Get<Bill>(formPayment.BillId);
 
                 BillHelper.AddOrUpdatePayment(ref realBill, formPayment.Payment);
 
-                billFileHelper.AddOrUpdate(realBill);
+                fileHelper.AddOrUpdate<Bill>(realBill);
             }
             catch (Exception ex)
             {
@@ -114,7 +113,7 @@ namespace HouseFinance.Controllers
                 return RedirectToActionPermanent("AddPayment", new { billId = formPayment.BillId });
             }
 
-            return RedirectToActionPermanent("BillDetails", new {billId = formPayment.BillId, name = (billFileHelper.Get(formPayment.BillId) as Bill).Name});
+            return RedirectToActionPermanent("BillDetails", new {billId = formPayment.BillId, name = fileHelper.Get<Bill>(formPayment.BillId).Name});
         }
 
         // GET: Finance/EditPayment
@@ -139,7 +138,7 @@ namespace HouseFinance.Controllers
             var payment = new PaymentFormHelper()
             {
                 BillId = (Guid)billId,
-                Payment = PaymentFileHelper.GetPayment((Guid)paymentId)
+                Payment = new GenericFileHelper(FilePath.Payments).Get<Payment>((Guid)paymentId)
             };
 
             return View("EditPayment", payment);
@@ -148,7 +147,7 @@ namespace HouseFinance.Controllers
         [HttpPost]
         public ActionResult EditPayment(PaymentFormHelper formPayment)
         {
-            var billFileHelper = new BillFileHelper();
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
 
             if (!ModelState.IsValid)
             {
@@ -157,11 +156,11 @@ namespace HouseFinance.Controllers
 
             try
             {
-                var realBill = (Bill)billFileHelper.Get(formPayment.BillId);
+                var realBill = fileHelper.Get<Bill>(formPayment.BillId);
 
                 BillHelper.AddOrUpdatePayment(ref realBill, formPayment.Payment);
 
-                billFileHelper.AddOrUpdate(realBill);
+                fileHelper.AddOrUpdate<Bill>(realBill);
             }
             catch (Exception ex)
             {
@@ -170,7 +169,7 @@ namespace HouseFinance.Controllers
                 return RedirectToActionPermanent("EditPayment", new { billId = formPayment.BillId });
             }
 
-            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.BillId, name = (billFileHelper.Get(formPayment.BillId) as Bill).Name });
+            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.BillId, name = fileHelper.Get<Bill>(formPayment.BillId).Name });
         }
 
         // GET: Finance/DeletePayment
@@ -179,9 +178,7 @@ namespace HouseFinance.Controllers
         {
             try
             {
-                var billFileHelper = new BillFileHelper();
-
-                billFileHelper.Delete(billId);
+                new GenericFileHelper(FilePath.Bills).Delete<Bill>(billId);
             }
             catch (Exception ex)
             {
@@ -195,34 +192,33 @@ namespace HouseFinance.Controllers
         [Route("Finance/DeletePayment/{billId}/{paymentId}")]
         public ActionResult DeletePayment(Guid billId, Guid paymentId)
         {
-            var billFileHelper = new BillFileHelper();
+            var billFileHelper = new GenericFileHelper(FilePath.Bills);
+            var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
 
-            var bill = (Bill)billFileHelper.Get(billId);
-            var payment = PaymentFileHelper.GetPayment(paymentId);
+            var bill = billFileHelper.Get<Bill>(billId);
+            var payment = paymentFileHelper.Get<Payment>(paymentId);
 
             for (var i = 0; i < bill.AmountPaid.Count; i++)
             {
                 if (paymentId == bill.AmountPaid.ElementAt(i))
                 {
                     bill.AmountPaid.RemoveAt(i);
-                    PaymentFileHelper.Delete(paymentId);
+                    paymentFileHelper.Delete<Payment>(paymentId);
                     break;
                 }
             }
 
-            billFileHelper.AddOrUpdate(bill);
+            billFileHelper.AddOrUpdate<Bill>(bill);
 
             return RedirectToActionPermanent("BillDetails", new { billId = bill.Id, name = bill.Name });
         }
 
         [Route("Finance/BillDetails/{name}/{billId?}")]
-        public ActionResult BillDetails(Guid? billId, string name)
+        public ActionResult BillDetails(Guid? billId)
         {
-            var billFileHelper = new BillFileHelper();
-            if (billId != new Guid() && billId != null)
-                return View(billFileHelper.Get(billId ?? new Guid()));
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
 
-            return View(billFileHelper.Get(name));
+            return View(fileHelper.Get<Bill>(billId ?? new Guid()));
         }
     }
 }

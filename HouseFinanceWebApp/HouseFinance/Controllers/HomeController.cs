@@ -12,8 +12,8 @@ namespace HouseFinance.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var billFileHelper = new BillFileHelper();
-            var bills = billFileHelper.GetAll().Cast<Bill>().ToList();
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
+            var bills = fileHelper.GetAll<Bill>().ToList();
 
             for (var i = 0; i < bills.Count; i++)
             {

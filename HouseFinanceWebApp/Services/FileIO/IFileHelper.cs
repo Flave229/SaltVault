@@ -6,22 +6,22 @@ namespace Services.FileIO
 {
     public interface IFileHelper
     {
-        List<IPersistedData> Open();
+        List<T> Open<T>();
 
-        void Save(List<IPersistedData> bills);
+        void Save<T>(List<IPersistedData> bills);
 
-        List<IPersistedData> Add(List<IPersistedData> bills, IPersistedData billToAdd);
+        List<IPersistedData> Add<T>(List<IPersistedData> bills, IPersistedData billToAdd);
 
-        List<IPersistedData> Update(List<IPersistedData> bills, IPersistedData updatedBill);
+        List<IPersistedData> Update<T>(List<IPersistedData> bills, IPersistedData updatedBill);
 
-        void Delete(Guid billId);
+        void Delete<T>(Guid billId);
 
-        void AddOrUpdate(IPersistedData bill);
+        void AddOrUpdate<T>(IPersistedData bill);
 
-        void AddOrUpdate(List<IPersistedData> bill);
+        void AddOrUpdate<T>(List<IPersistedData> bill);
 
-        IPersistedData Get(Guid id);
+        T Get<T>(Guid id);
 
-        List<IPersistedData> GetAll();
+        List<T> GetAll<T>();
     }
 }
