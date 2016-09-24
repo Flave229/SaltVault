@@ -11,7 +11,7 @@ namespace Services.Models.FinanceModels
         Quarterly
     }
 
-    public class Bill : IFinanceModel
+    public class Bill : IPersistedData
     {
         public Guid Id                      { get; set; }
         public string Name                  { get; set; }

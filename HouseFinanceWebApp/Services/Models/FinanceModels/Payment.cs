@@ -2,7 +2,7 @@
 
 namespace Services.Models.FinanceModels
 {
-    public class Payment : IFinanceModel
+    public class Payment : IPersistedData
     {
         public Guid Id          { get; set; }
         public decimal Amount   { get; set; }

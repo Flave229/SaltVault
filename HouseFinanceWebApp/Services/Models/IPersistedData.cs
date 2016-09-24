@@ -2,7 +2,7 @@
 
 namespace Services.Models.FinanceModels
 {
-    public interface IFinanceModel
+    public interface IPersistedData
     {
         Guid Id { get; set; }
     }

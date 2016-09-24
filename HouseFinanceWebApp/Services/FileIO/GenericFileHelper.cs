@@ -15,11 +15,11 @@ namespace Services.FileIO
             _filePath = FilePathToString.ToString(filePath);
         }
 
-        public List<IFinanceModel> Open()
+        public List<IPersistedData> Open()
         {
             try
             {
-                if (!System.IO.File.Exists(_filePath)) return new List<IFinanceModel>();
+                if (!System.IO.File.Exists(_filePath)) return new List<IPersistedData>();
 
                 var existingFileAsJson = System.IO.File.ReadAllLines(_filePath);
                 var existingFileAsString = "";
@@ -29,7 +29,7 @@ namespace Services.FileIO
                     existingFileAsString = existingFileAsString + existingFileAsJson.ElementAt(i);
                 }
 
-                return existingFileAsString.Equals("") ? new List<IFinanceModel>() : JsonConvert.DeserializeObject<dynamic>(existingFileAsString).Cast<IFinanceModel>().ToList();
+                return existingFileAsString.Equals("") ? new List<IPersistedData>() : JsonConvert.DeserializeObject<dynamic>(existingFileAsString).Cast<IPersistedData>().ToList();
             }
             catch (Exception exception)
             {
@@ -38,7 +38,7 @@ namespace Services.FileIO
             }
         }
 
-        public void Save(List<IFinanceModel> obj)
+        public void Save(List<IPersistedData> obj)
         {
             try
             {
@@ -56,14 +56,14 @@ namespace Services.FileIO
             }
         }
 
-        public List<IFinanceModel> Add(List<IFinanceModel> obj, IFinanceModel objToAdd)
+        public List<IPersistedData> Add(List<IPersistedData> obj, IPersistedData objToAdd)
         {
             obj.Add(objToAdd);
 
             return obj;
         }
 
-        public List<IFinanceModel> Update(List<IFinanceModel> objs, IFinanceModel updatedObj)
+        public List<IPersistedData> Update(List<IPersistedData> objs, IPersistedData updatedObj)
         {
             var index = objs.FindIndex(obj => obj.Id.Equals(updatedObj.Id));
             objs[index] = updatedObj;
@@ -93,7 +93,7 @@ namespace Services.FileIO
             }
         }
 
-        public void AddOrUpdate(IFinanceModel obj)
+        public void AddOrUpdate(IPersistedData obj)
         {
             var objs = Open();
 
@@ -102,7 +102,7 @@ namespace Services.FileIO
             Save(objs);
         }
 
-        public void AddOrUpdate(List<IFinanceModel> obj)
+        public void AddOrUpdate(List<IPersistedData> obj)
         {
             for (var i = 0; i < obj.Count; i++)
             {
@@ -110,14 +110,14 @@ namespace Services.FileIO
             }
         }
 
-        public IFinanceModel Get(Guid id)
+        public IPersistedData Get(Guid id)
         {
             var objs = Open();
 
             return objs.FirstOrDefault(obj => obj.Id.Equals(id));
         }
 
-        public List<IFinanceModel> GetAll()
+        public List<IPersistedData> GetAll()
         {
             return Open();
         }
