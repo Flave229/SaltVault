@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
 @using Services.FileIO
-@model Services.Models.FinanceModels.Bill
+@using Services.Models.FinanceModels
+@model Bill
 @{
     var people = PersonFileHelper.GetPeople();
-    var payments = PaymentFileHelper.GetPayments();
+    var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
     ViewBag.Title = "Details for " + Model.Name + " Bill";
 }
 

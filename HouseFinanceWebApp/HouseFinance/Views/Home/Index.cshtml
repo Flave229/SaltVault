@@ -3,7 +3,7 @@
 @using Services.Models.FinanceModels
 @model List<Services.Models.FinanceModels.Bill>
 @{
-    var payments = PaymentFileHelper.GetPayments();
+    var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
     ViewBag.Title = "Home Page";
 }
 

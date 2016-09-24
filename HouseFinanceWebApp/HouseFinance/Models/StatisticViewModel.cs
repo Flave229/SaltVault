@@ -79,7 +79,7 @@ namespace HouseFinance.Models
             var sumOfDaysToPayBill = 0;
             var sumOfPercentageShare = 0.0;
             var billsPaidFor = 0;
-            var allPayments = PaymentFileHelper.GetPayments();
+            var allPayments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
 
             foreach (var bill in BillsForPerson)
             {

@@ -138,7 +138,7 @@ namespace HouseFinance.Controllers
             var payment = new PaymentFormHelper()
             {
                 BillId = (Guid)billId,
-                Payment = PaymentFileHelper.GetPayment((Guid)paymentId)
+                Payment = new GenericFileHelper(FilePath.Payments).Get<Payment>((Guid)paymentId)
             };
 
             return View("EditPayment", payment);
@@ -192,22 +192,23 @@ namespace HouseFinance.Controllers
         [Route("Finance/DeletePayment/{billId}/{paymentId}")]
         public ActionResult DeletePayment(Guid billId, Guid paymentId)
         {
-            var fileHelper = new GenericFileHelper(FilePath.Bills);
+            var billFileHelper = new GenericFileHelper(FilePath.Bills);
+            var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
 
-            var bill = fileHelper.Get<Bill>(billId);
-            var payment = PaymentFileHelper.GetPayment(paymentId);
+            var bill = billFileHelper.Get<Bill>(billId);
+            var payment = paymentFileHelper.Get<Payment>(paymentId);
 
             for (var i = 0; i < bill.AmountPaid.Count; i++)
             {
                 if (paymentId == bill.AmountPaid.ElementAt(i))
                 {
                     bill.AmountPaid.RemoveAt(i);
-                    PaymentFileHelper.Delete(paymentId);
+                    paymentFileHelper.Delete<Payment>(paymentId);
                     break;
                 }
             }
 
-            fileHelper.AddOrUpdate<Bill>(bill);
+            billFileHelper.AddOrUpdate<Bill>(bill);
 
             return RedirectToActionPermanent("BillDetails", new { billId = bill.Id, name = bill.Name });
         }

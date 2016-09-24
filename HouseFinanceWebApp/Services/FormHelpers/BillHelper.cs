@@ -32,7 +32,7 @@ namespace Services.FormHelpers
 
         public static decimal GetTotalAmountPaid(Bill bill)
         {
-            var payments = PaymentFileHelper.GetPayments();
+            var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
             var paymentsForBill = bill.AmountPaid.Select(paymentId => payments.FirstOrDefault(payment => payment.Id.Equals(paymentId))).ToList();
             return paymentsForBill.Sum(payment => payment.Amount);
         }
@@ -66,7 +66,7 @@ namespace Services.FormHelpers
             if (CheckIfBillPaid(bill, payment.Amount))
                 payment.Amount = GetHowMuchToPay(bill);
 
-            PaymentFileHelper.AddOrUpdate(payment);
+            new GenericFileHelper(FilePath.Payments).AddOrUpdate<Payment>(payment);
             bill.AmountPaid.Add(payment.Id);
         }
 
@@ -76,7 +76,8 @@ namespace Services.FormHelpers
             {
                 if (bill.AmountPaid.ElementAt(i) != payment.Id) continue;
 
-                var updatedPayment = PaymentFileHelper.GetPayment(payment.Id);
+                var fileHelper = new GenericFileHelper(FilePath.Payments);
+                var updatedPayment = fileHelper.Get<Payment>(payment.Id);
                 
                 bill.AmountPaid[i] = payment.Id;
 
@@ -85,7 +86,7 @@ namespace Services.FormHelpers
                     updatedPayment.Amount += GetHowMuchToPay(bill);
                 }
 
-                PaymentFileHelper.AddOrUpdate(payment);
+                fileHelper.AddOrUpdate<Payment>(payment);
 
                 break;
             }
