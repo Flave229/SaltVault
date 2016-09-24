@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Services.Models.FinanceModels
+namespace Services.Models
 {
     public interface IPersistedData
     {
