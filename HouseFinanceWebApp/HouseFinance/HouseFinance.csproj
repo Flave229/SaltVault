@@ -195,6 +195,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\APIController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ShoppingController.cs" />
@@ -261,13 +262,19 @@
     <Content Include="Views\Shopping\AddItem.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\API\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HouseFinance.Api\HouseFinance.Api.csproj">
+      <Project>{6e920e52-8f8a-419d-9d87-6920db0c1c46}</Project>
+      <Name>HouseFinance.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{08b26825-f6fd-428c-a731-d1325875e759}</Project>
       <Name>Services</Name>

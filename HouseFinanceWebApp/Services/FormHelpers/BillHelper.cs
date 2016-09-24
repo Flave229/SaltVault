@@ -42,6 +42,11 @@ namespace Services.FormHelpers
             return bill.AmountOwed - GetTotalAmountPaid(bill);
         }
 
+        public static bool CheckIfBillOverdue(Bill bill)
+        {
+            return bill.Due < DateTime.Now && !CheckIfBillPaid(bill);
+        }
+
         public static bool CheckIfBillPaid(Bill bill)
         {
             return GetTotalAmountPaid(bill) >= bill.AmountOwed;
