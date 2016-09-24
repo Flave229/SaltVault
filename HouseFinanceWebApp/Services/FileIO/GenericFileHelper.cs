@@ -9,12 +9,10 @@ namespace Services.FileIO
     public class GenericFileHelper : IFileHelper
     {
         private string _filePath;
-        private Type _fileType;
 
-        public GenericFileHelper(Type objType, FilePath filePath)
+        public GenericFileHelper(FilePath filePath)
         {
             _filePath = FilePathToString.ToString(filePath);
-            _fileType = objType;
         }
 
         public List<IFinanceModel> Open()
