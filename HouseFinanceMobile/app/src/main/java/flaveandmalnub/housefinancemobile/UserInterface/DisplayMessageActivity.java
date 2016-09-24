@@ -36,7 +36,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.additemmenu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 }

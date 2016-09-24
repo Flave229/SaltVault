@@ -10,4 +10,9 @@
         android:title="About"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_add"
+        android:title=""
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_add"/>
+
 </menu>

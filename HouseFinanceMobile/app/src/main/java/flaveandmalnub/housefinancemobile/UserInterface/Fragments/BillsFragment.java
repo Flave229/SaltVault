@@ -42,7 +42,7 @@ public class BillsFragment extends Fragment {
 
         for(int i = 0; i < 100; i++)
         {
-            cards.add(new BillListObject("Card " + i, "This is card " + i, android.R.drawable.ic_menu_camera));
+            cards.add(new BillListObject("Card " + i, "This is card " + i, "£0.00", android.R.drawable.ic_menu_camera));
         }
 
         if(rv != null) {
