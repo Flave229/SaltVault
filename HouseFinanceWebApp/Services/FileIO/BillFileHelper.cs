@@ -6,15 +6,15 @@ using Services.Models.FinanceModels;
 
 namespace Services.FileIO
 {
-    public static class BillFileHelper
+    public class BillFileHelper : IFileHelper
     {
         private static readonly string FilePath = AppDomain.CurrentDomain.BaseDirectory + @"Data\Bills\bills.txt";
 
-        private static List<Bill> Open()
+        public List<IFinanceModel> Open()
         {
             try
             {
-                if (!System.IO.File.Exists(FilePath)) return new List<Bill>();
+                if (!System.IO.File.Exists(FilePath)) return new List<IFinanceModel>();
 
                 var existingBillsAsJson = System.IO.File.ReadAllLines(FilePath);
                 var existingBillAsString = "";
@@ -24,7 +24,7 @@ namespace Services.FileIO
                     existingBillAsString = existingBillAsString + existingBillsAsJson.ElementAt(i);
                 }
 
-                return existingBillAsString.Equals("") ? new List<Bill>() : JsonConvert.DeserializeObject<List<Bill>>(existingBillAsString);
+                return existingBillAsString.Equals("") ? new List<IFinanceModel>() : JsonConvert.DeserializeObject<List<Bill>>(existingBillAsString).Cast<IFinanceModel>().ToList();
             }
             catch (Exception exception)
             {
@@ -33,7 +33,7 @@ namespace Services.FileIO
             }
         }
 
-        private static void Save(List<Bill> bills)
+        public void Save(List<IFinanceModel> bills)
         {
             try
             {
@@ -51,14 +51,14 @@ namespace Services.FileIO
             }
         }
 
-        public static List<Bill> Add(List<Bill> bills, Bill billToAdd)
+        public List<IFinanceModel> Add(List<IFinanceModel> bills, IFinanceModel billToAdd)
         {
             bills.Add(billToAdd);
 
             return bills;
         }
 
-        public static List<Bill> Update(List<Bill> bills, Bill updatedBill)
+        public List<IFinanceModel> Update(List<IFinanceModel> bills, IFinanceModel updatedBill)
         {
             var index = bills.FindIndex(bill => bill.Id.Equals(updatedBill.Id));
             bills[index] = updatedBill;
@@ -66,16 +66,16 @@ namespace Services.FileIO
             return bills;
         }
 
-        public static void Delete(Guid billId)
+        public void Delete(Guid billId)
         {
             try
             {
-                var billList = GetBills();
+                var billList = GetAll();
 
                 for (var i = 0; i < billList.Count; i++)
                 {
                     if (billList[i].Id != billId) continue;
-                    
+
                     billList.RemoveAt(i);
                     break;
                 }
@@ -88,7 +88,7 @@ namespace Services.FileIO
             }
         }
 
-        public static void AddOrUpdate(Bill bill)
+        public void AddOrUpdate(IFinanceModel bill)
         {
             var bills = Open();
 
@@ -97,7 +97,7 @@ namespace Services.FileIO
             Save(bills);
         }
 
-        public static void AddOrUpdate(List<Bill> bill)
+        public void AddOrUpdate(List<IFinanceModel> bill)
         {
             for (var i = 0; i < bill.Count; i++)
             {
@@ -105,21 +105,21 @@ namespace Services.FileIO
             }
         }
 
-        public static Bill GetBill(Guid billId)
+        public IFinanceModel Get(Guid id)
         {
             var bills = Open();
 
-            return bills.FirstOrDefault(bill => bill.Id.Equals(billId));
+            return bills.FirstOrDefault(bill => bill.Id.Equals(id));
         }
 
-        public static Bill GetBill(string name)
+        public IFinanceModel Get(string name)
         {
             var bills = Open();
 
-            return bills.FirstOrDefault(bill => bill.Name.Equals(name));
+            return bills.Cast<Bill>().FirstOrDefault(bill => bill.Name.Equals(name));
         }
 
-        public static List<Bill> GetBills()
+        public List<IFinanceModel> GetAll()
         {
             return Open();
         }

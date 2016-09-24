@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using HouseFinance.Models;
 using Services.FileIO;
 using Services.FormHelpers;
+using Services.Models.FinanceModels;
 
 namespace HouseFinance.Controllers
 {
@@ -12,9 +12,8 @@ namespace HouseFinance.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var test = new StatisticViewModel(PersonFileHelper.GetPerson("David").Id);
-
-            var bills = BillFileHelper.GetBills();
+            var billFileHelper = new BillFileHelper();
+            var bills = billFileHelper.GetAll().Cast<Bill>().ToList();
 
             for (var i = 0; i < bills.Count; i++)
             {

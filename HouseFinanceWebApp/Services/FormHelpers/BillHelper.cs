@@ -112,8 +112,10 @@ namespace Services.FormHelpers
                 RecurringType = RecurringType.Monthly
             };
 
-            BillFileHelper.AddOrUpdate(nextMonthBill);
-            BillFileHelper.AddOrUpdate(bill);
+            var billFileHelper = new BillFileHelper();
+
+            billFileHelper.AddOrUpdate(nextMonthBill);
+            billFileHelper.AddOrUpdate(bill);
         }
     }
 }

@@ -45,9 +45,10 @@ namespace HouseFinance.Models
         {
             try
             {
-                var allBills = BillFileHelper.GetBills();
+                var billFileHelper = new BillFileHelper();
+                var allBills = billFileHelper.GetAll();
 
-                BillsForPerson = allBills.Where(x => x.People.Contains(Person.Id)).ToList();
+                BillsForPerson = allBills.Cast<Bill>().Where(x => x.People.Contains(Person.Id)).ToList();
             }
             catch (Exception exception)
             {
