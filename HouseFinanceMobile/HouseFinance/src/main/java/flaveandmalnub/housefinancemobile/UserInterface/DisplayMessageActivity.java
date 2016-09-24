@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import flaveandmalnub.housefinancemobile.R;
 
@@ -31,7 +30,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
         ViewGroup layout = (ViewGroup) findViewById(R.id.activity_display_message);
         layout.addView(tv);
 
-        Toast.makeText(getBaseContext(), "Nothing to see here!", Toast.LENGTH_LONG).show();
+
     }
 
     @Override

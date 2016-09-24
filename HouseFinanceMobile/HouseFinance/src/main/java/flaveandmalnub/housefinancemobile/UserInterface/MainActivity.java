@@ -1,10 +1,12 @@
 package flaveandmalnub.housefinancemobile.UserInterface;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -21,6 +23,22 @@ public class MainActivity extends AppCompatActivity {
     boolean _bound = false;
     SimpleFragmentPagerAdapter adapter;
     TabLayout tabLayout;
+    private Handler _handler;
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if(_service != null)
+            {
+                _service.contactWebsite();
+            }
+
+            // Pings the website every 15 seconds. Will change to 15 mins, or maybe have it user configurable
+            if(_handler != null) {
+                _handler.postDelayed(runnable, 15000);
+            }
+        }
+    };
 
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     @Override
@@ -28,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent serviceIntent = new Intent(this, BackgroundService.class);
-        startService(serviceIntent);
+        Intent intent = new Intent(this, BackgroundService.class);
+        bindService(intent, _connection, Context.BIND_AUTO_CREATE);
 
         Toolbar appToolbar = (Toolbar) findViewById(R.id.appToolbar);
         setSupportActionBar(appToolbar);
@@ -41,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        _handler = new Handler();
+        _handler.postDelayed(runnable, 15000);
+
         for(int i = 0; i < tabLayout.getTabCount(); i++)
         {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
@@ -50,22 +71,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart()
+    public void onDestroy()
     {
-        super.onStart();
-        Intent intent = new Intent(this, BackgroundService.class);
-        bindService(intent, _connection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
+        super.onDestroy();
         if(_bound)
         {
             unbindService(_connection);
             _bound = false;
         }
+        _handler.removeCallbacksAndMessages(runnable);
+        _handler = null;
     }
 
     private ServiceConnection _connection = new ServiceConnection() {
@@ -74,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             BackgroundService.LocalBinder binder = (BackgroundService.LocalBinder) service;
             _service = binder.getService();
             _bound = true;
+            //Toast.makeText(getBaseContext(), "Service Connected", Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -86,6 +102,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.additemmenu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass)
+    {
+        ActivityManager mngr = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service : mngr.getRunningServices(Integer.MAX_VALUE))
+        {
+            if(serviceClass.getName().equals(service.service.getClassName()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
