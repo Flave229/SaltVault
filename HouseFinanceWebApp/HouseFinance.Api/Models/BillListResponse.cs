@@ -17,6 +17,8 @@ namespace HouseFinance.Api.Models
     {
         public string Name { get; set; }
         public DateTime DateDue { get; set; }
+        public bool Overdue { get; set; }
+        public bool Paid { get; set; }
         public decimal AmountDue { get; set; }
         public List<Images> PeopleImages { get; set; }
 

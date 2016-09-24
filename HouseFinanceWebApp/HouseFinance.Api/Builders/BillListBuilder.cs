@@ -34,6 +34,8 @@ namespace HouseFinance.Api.Builders
                 {
                     Name = bill.Name,
                     AmountDue = BillHelper.GetHowMuchToPay(bill),
+                    Overdue = BillHelper.CheckIfBillOverdue(bill),
+                    Paid = BillHelper.CheckIfBillPaid(bill),
                     DateDue = bill.Due,
                     PeopleImages = images
                 });
