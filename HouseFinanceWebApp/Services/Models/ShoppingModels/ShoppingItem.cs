@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Services.Models.ShoppingModels
 {
-    public class ShoppingItem
+    public class ShoppingItem : IPersistedData
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

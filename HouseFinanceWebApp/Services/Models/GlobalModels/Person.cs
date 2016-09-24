@@ -2,7 +2,7 @@
 
 namespace Services.Models.GlobalModels
 {
-    public class Person
+    public class Person : IPersistedData
     {
         public Guid Id          { get; set; }
         public string FirstName { get; set; }

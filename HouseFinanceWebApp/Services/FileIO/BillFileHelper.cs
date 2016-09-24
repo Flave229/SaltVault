@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Services.Models.FinanceModels;
+using Services.Models;
 
 namespace Services.FileIO
 {
@@ -10,11 +11,11 @@ namespace Services.FileIO
     {
         private static readonly string FilePath = AppDomain.CurrentDomain.BaseDirectory + @"Data\Bills\bills.txt";
 
-        public List<IFinanceModel> Open()
+        public List<IPersistedData> Open()
         {
             try
             {
-                if (!System.IO.File.Exists(FilePath)) return new List<IFinanceModel>();
+                if (!System.IO.File.Exists(FilePath)) return new List<IPersistedData>();
 
                 var existingBillsAsJson = System.IO.File.ReadAllLines(FilePath);
                 var existingBillAsString = "";
@@ -24,7 +25,7 @@ namespace Services.FileIO
                     existingBillAsString = existingBillAsString + existingBillsAsJson.ElementAt(i);
                 }
 
-                return existingBillAsString.Equals("") ? new List<IFinanceModel>() : JsonConvert.DeserializeObject<List<Bill>>(existingBillAsString).Cast<IFinanceModel>().ToList();
+                return existingBillAsString.Equals("") ? new List<IPersistedData>() : JsonConvert.DeserializeObject<List<Bill>>(existingBillAsString).Cast<IPersistedData>().ToList();
             }
             catch (Exception exception)
             {
@@ -33,7 +34,7 @@ namespace Services.FileIO
             }
         }
 
-        public void Save(List<IFinanceModel> bills)
+        public void Save(List<IPersistedData> bills)
         {
             try
             {
@@ -51,14 +52,14 @@ namespace Services.FileIO
             }
         }
 
-        public List<IFinanceModel> Add(List<IFinanceModel> bills, IFinanceModel billToAdd)
+        public List<IPersistedData> Add(List<IPersistedData> bills, IPersistedData billToAdd)
         {
             bills.Add(billToAdd);
 
             return bills;
         }
 
-        public List<IFinanceModel> Update(List<IFinanceModel> bills, IFinanceModel updatedBill)
+        public List<IPersistedData> Update(List<IPersistedData> bills, IPersistedData updatedBill)
         {
             var index = bills.FindIndex(bill => bill.Id.Equals(updatedBill.Id));
             bills[index] = updatedBill;
@@ -88,7 +89,7 @@ namespace Services.FileIO
             }
         }
 
-        public void AddOrUpdate(IFinanceModel bill)
+        public void AddOrUpdate(IPersistedData bill)
         {
             var bills = Open();
 
@@ -97,7 +98,7 @@ namespace Services.FileIO
             Save(bills);
         }
 
-        public void AddOrUpdate(List<IFinanceModel> bill)
+        public void AddOrUpdate(List<IPersistedData> bill)
         {
             for (var i = 0; i < bill.Count; i++)
             {
@@ -105,21 +106,21 @@ namespace Services.FileIO
             }
         }
 
-        public IFinanceModel Get(Guid id)
+        public IPersistedData Get(Guid id)
         {
             var bills = Open();
 
             return bills.FirstOrDefault(bill => bill.Id.Equals(id));
         }
 
-        public IFinanceModel Get(string name)
+        public IPersistedData Get(string name)
         {
             var bills = Open();
 
             return bills.Cast<Bill>().FirstOrDefault(bill => bill.Name.Equals(name));
         }
 
-        public List<IFinanceModel> GetAll()
+        public List<IPersistedData> GetAll()
         {
             return Open();
         }
