@@ -1,4 +1,4 @@
-﻿using Services.Models.FinanceModels;
+﻿using Services.Models;
 using System;
 using System.Collections.Generic;
 

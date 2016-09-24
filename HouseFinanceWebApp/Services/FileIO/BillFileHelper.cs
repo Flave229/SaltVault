@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Services.Models.FinanceModels;
+using Services.Models;
 
 namespace Services.FileIO
 {
