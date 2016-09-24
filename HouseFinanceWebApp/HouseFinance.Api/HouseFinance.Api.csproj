@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\BillListBuilder.cs" />
+    <Compile Include="Communication\AuthenticatedUsers.cs" />
     <Compile Include="Models\BillListResponse.cs" />
     <Compile Include="Models\BillListRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
