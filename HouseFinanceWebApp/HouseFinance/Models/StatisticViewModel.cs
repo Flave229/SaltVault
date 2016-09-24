@@ -61,7 +61,8 @@ namespace HouseFinance.Models
         {
             try
             {
-                var allShoppingItems = ShoppingFileHelper.GetShoppingItems();
+                var fileHelper = new GenericFileHelper(FilePath.Shopping);
+                var allShoppingItems = fileHelper.GetAll<ShoppingItem>().Cast<ShoppingItem>().ToList();
                 ShoppingItemsForPerson = allShoppingItems.Where(x => x.ItemFor.Contains(Person.Id)).ToList();
 
                 ShoppingItemsByPerson = allShoppingItems.Where(x => x.AddedBy.Equals(Person.Id)).ToList();

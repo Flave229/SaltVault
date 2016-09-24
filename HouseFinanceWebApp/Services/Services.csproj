@@ -80,11 +80,10 @@
     <Compile Include="FileIO\PaymentFileHelper.cs" />
     <Compile Include="FileIO\BillFileHelper.cs" />
     <Compile Include="FileIO\PersonFileHelper.cs" />
-    <Compile Include="FileIO\ShoppingFileHelper.cs" />
     <Compile Include="FormHelpers\BillHelper.cs" />
     <Compile Include="FormHelpers\BillValidator .cs" />
     <Compile Include="FormHelpers\PaymentValidator.cs" />
-    <Compile Include="Models\FinanceModels\IFinanceModel.cs" />
+    <Compile Include="Models\IPersistedData.cs" />
     <Compile Include="Models\Helpers\BillFormModel.cs" />
     <Compile Include="Models\FinanceModels\Bill.cs" />
     <Compile Include="Models\FinanceModels\Payment.cs" />
