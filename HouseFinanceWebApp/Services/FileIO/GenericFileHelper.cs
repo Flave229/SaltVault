@@ -115,11 +115,11 @@ namespace Services.FileIO
             }
         }
 
-        public IPersistedData Get<T>(Guid id)
+        public T Get<T>(Guid id)
         {
             var objs = Open<T>().Cast<IPersistedData>().ToList();
 
-            return objs.FirstOrDefault(obj => obj.Id.Equals(id));
+            return (T)objs.FirstOrDefault(obj => obj.Id.Equals(id));
         }
 
         public List<T> GetAll<T>()

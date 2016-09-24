@@ -12,10 +12,9 @@ namespace HouseFinance.Controllers
         // GET: Shopping
         public ActionResult Index()
         {
-            var fileHelper = new GenericFileHelper(FilePath.Shopping);
-            var shoppingList = fileHelper.GetAll<ShoppingItem>();
+            var shoppingList = new GenericFileHelper(FilePath.Shopping).GetAll<ShoppingItem>();
 
-            var orderedItems = shoppingList.Cast<ShoppingItem>().OrderBy(x => x.Purchased).ThenByDescending(x => x.Added).ToList();
+            var orderedItems = shoppingList.OrderBy(x => x.Purchased).ThenByDescending(x => x.Added).ToList();
 
             return View(orderedItems);
         }
@@ -51,9 +50,8 @@ namespace HouseFinance.Controllers
                         itemForm.Item.ItemFor.Add(person.Person.Id);
                     }
                 }
-
-                var fileHelper = new GenericFileHelper(FilePath.Shopping);
-                fileHelper.AddOrUpdate<ShoppingItem>(itemForm.Item);
+                
+                new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(itemForm.Item);
             }
             catch (Exception exception)
             {
@@ -70,7 +68,7 @@ namespace HouseFinance.Controllers
             try
             {
                 var fileHelper = new GenericFileHelper(FilePath.Shopping);
-                var shoppingItem = fileHelper.Get<ShoppingItem>(itemId) as ShoppingItem;
+                var shoppingItem = fileHelper.Get<ShoppingItem>(itemId);
 
                 shoppingItem.Purchased = true;
 

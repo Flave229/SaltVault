@@ -20,7 +20,7 @@ namespace Services.FileIO
 
         void AddOrUpdate<T>(List<IPersistedData> bill);
 
-        IPersistedData Get<T>(Guid id);
+        T Get<T>(Guid id);
 
         List<T> GetAll<T>();
     }
