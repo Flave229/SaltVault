@@ -15,7 +15,7 @@ namespace Services.Models.Helpers
             Bill = new Bill();
             SelectedPeople = new List<PersonForBill>();
 
-            var people = PersonFileHelper.GetPeople();
+            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
             foreach (var person in people)
             {

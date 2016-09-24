@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using HouseFinance.Models;
 using Services.FileIO;
+using Services.Models.GlobalModels;
 
 namespace HouseFinance.Controllers
 {
@@ -12,7 +13,7 @@ namespace HouseFinance.Controllers
         {
             var statisticsList = new List<StatisticViewModel>();
 
-            var people = PersonFileHelper.GetPeople();
+            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
             foreach (var person in people)
             {

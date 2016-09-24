@@ -1,7 +1,8 @@
 ﻿@using Services.FileIO
 @using Services.FormHelpers
+@using Services.Models.GlobalModels
 @using Services.Models.FinanceModels
-@model List<Services.Models.FinanceModels.Bill>
+@model List<Bill>
 @{
     var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
     ViewBag.Title = "Home Page";
@@ -55,7 +56,7 @@
                                                     opacity = "opacity(100%)";
                                                 }
 
-                                                var person = PersonFileHelper.GetPerson(personId);
+                                                var person = new GenericFileHelper(FilePath.People).Get<Person>(personId);
 
                                                 <img src="@person.Image" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity"/>
                                             }

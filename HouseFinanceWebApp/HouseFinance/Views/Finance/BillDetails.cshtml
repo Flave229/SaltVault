@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
 @using Services.FileIO
 @using Services.Models.FinanceModels
+@using Services.Models.GlobalModels
 @model Bill
 @{
-    var people = PersonFileHelper.GetPeople();
+    var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
     var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
     ViewBag.Title = "Details for " + Model.Name + " Bill";
 }
@@ -76,7 +77,7 @@
                 @foreach (var paymentId in Model.AmountPaid)
                 {
                     var realPayment = payments.FirstOrDefault(payment => payment.Id.Equals(paymentId));
-                    var person = PersonFileHelper.GetPerson(realPayment.PersonId);
+                    var person = new GenericFileHelper(FilePath.People).Get<Person>(realPayment.PersonId);
 
                     <tr>
                         <th>@person.FirstName @person.LastName</th>
