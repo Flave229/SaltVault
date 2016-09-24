@@ -1,6 +1,8 @@
 ﻿@using Services.FileIO
+@using Services.Models.GlobalModels
 @model List<Services.Models.ShoppingModels.ShoppingItem>
 @{
+    var personFileHelper = new GenericFileHelper(FilePath.People);
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -47,12 +49,12 @@
                             <span>@item.Added.ToString("dd/MM/yyyy")</span>
                         </th>
                         <th class=@(classStyle)>
-                            <img src="@(PersonFileHelper.GetPerson(item.AddedBy).Image)" width="20" />
+                            <img src="@(personFileHelper.Get<Person>(item.AddedBy).Image)" width="20" />
                         </th>
                         <th class=@(classStyle)>
                             @foreach (var personId in item.ItemFor)
                             {
-                                <img src="@(PersonFileHelper.GetPerson(personId).Image)" width="20" />
+                                <img src="@(personFileHelper.Get<Person>(personId).Image)" width="20" />
                             }
                         </th>
                         <th class=@(classStyle) style="text-align: right">

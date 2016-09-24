@@ -32,7 +32,7 @@ namespace HouseFinance.Models
         {
             try
             {
-                Person = PersonFileHelper.GetPerson(personId);
+                Person = new GenericFileHelper(FilePath.People).Get<Person>(personId);
             }
             catch (Exception exception)
             {

@@ -15,7 +15,7 @@ namespace Services.Models.Helpers
             Item = new ShoppingItem();
             SelectedPeople = new List<PersonForItem>();
 
-            var people = PersonFileHelper.GetPeople();
+            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
             foreach (var person in people)
             {

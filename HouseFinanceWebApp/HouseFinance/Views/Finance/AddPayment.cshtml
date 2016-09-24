@@ -1,5 +1,6 @@
 ﻿@using Services.FileIO
 @using Services.Models.FinanceModels
+@using Services.Models.GlobalModels
 @model Services.Models.Helpers.PaymentFormHelper
 @{
     ViewBag.Title = "Add Payment";
@@ -14,7 +15,7 @@
         @using (Html.BeginForm("AddPayment", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(Model.BillId);
-            var people = PersonFileHelper.GetPeople();
+            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
             @Html.HiddenFor(m => m.BillId, Model.BillId)
             
