@@ -24,17 +24,23 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
         View view;
         CardView cardObject;
         TextView cardName;
-        TextView cardDesc;
+        TextView cardDate;
+        TextView cardAmount;
         ImageView cardImage;
+        ImageView cardImage2;
+        ImageView cardImage3;
 
         public CardViewHolder(View v)
         {
             super(v);
             view = v;
             cardObject = (CardView) v.findViewById(R.id.general_card);
-            cardName = (TextView)v.findViewById(R.id.card_name);
-            cardDesc = (TextView)v.findViewById(R.id.card_desc);
+            cardName = (TextView)v.findViewById(R.id.item_name);
+            cardDate = (TextView)v.findViewById(R.id.item_date);
+            cardAmount = (TextView)v.findViewById(R.id.item_amount);
             cardImage = (ImageView)v.findViewById(R.id.card_image);
+            cardImage2 = (ImageView)v.findViewById(R.id.card_image_2);
+            cardImage3 = (ImageView)v.findViewById(R.id.card_image_3);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -68,8 +74,11 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     public void onBindViewHolder(CardViewHolder cvh, int i)
     {
         cvh.cardName.setText(_cards.get(i).cardName);
-        cvh.cardDesc.setText(_cards.get(i).cardDesc);
+        cvh.cardDate.setText(_cards.get(i).cardDesc);
         cvh.cardImage.setImageResource(_cards.get(i).cardImage);
+        cvh.cardImage2.setImageResource(_cards.get(i).cardImage);
+        cvh.cardImage3.setImageResource(_cards.get(i).cardImage);
+        cvh.cardAmount.setText(_cards.get(i).cardAmount);
     }
 
     @Override
