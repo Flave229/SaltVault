@@ -6,6 +6,7 @@ using Services.FormHelpers;
 using Services.Models.Helpers;
 using Newtonsoft.Json;
 using Services.Models.FinanceModels;
+using HouseFinance.Api.Builders;
 
 namespace HouseFinance.Controllers
 {
@@ -206,9 +207,9 @@ namespace HouseFinance.Controllers
         [Route("Finance/BillDetails/{billId?}")]
         public ActionResult BillDetails(Guid? billId)
         {
-            var fileHelper = new GenericFileHelper(FilePath.Bills);
+            var billModel = BillDetailsBuilder.BuildBillDetails((Guid)billId);
 
-            return View(fileHelper.Get<Bill>(billId ?? new Guid()));
+            return View(billModel);
         }
     }
 }

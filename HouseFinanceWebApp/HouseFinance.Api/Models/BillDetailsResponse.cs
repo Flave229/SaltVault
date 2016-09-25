@@ -26,6 +26,7 @@ namespace HouseFinance.Api.Models
 
     public class BillPayments
     {
+        public Guid Id { get; set; }
         public string PersonName { get; set; }
         public string DatePaid { get; set; }
         public decimal AmountPaid { get; set; }

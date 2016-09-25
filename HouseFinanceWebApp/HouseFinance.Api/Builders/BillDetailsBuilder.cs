@@ -26,6 +26,7 @@ namespace HouseFinance.Api.Builders
 
                 payments.Add(new BillPayments
                 {
+                    Id = paymentFromFile.Id,
                     PersonName = person.FirstName + " " + person.LastName,
                     DatePaid = paymentFromFile.Created.ToString("dd/MM/yyyy"),
                     AmountPaid = paymentFromFile.Amount
