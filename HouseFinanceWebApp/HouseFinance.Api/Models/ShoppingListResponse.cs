@@ -15,6 +15,7 @@ namespace HouseFinance.Api.Models
 
     public class Item
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime FullAddedOn { get; set; }
         public string AddedOn { get; set; }

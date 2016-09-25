@@ -22,16 +22,6 @@ namespace HouseFinance.Controllers
             return View(new BillFormModel());
         }
 
-        [HttpGet]
-        public string GetBillData()
-        {
-            var bills = new GenericFileHelper(FilePath.Bills).GetAll<Bill>();
-
-            var jsonResponse = JsonConvert.SerializeObject(bills);
-
-            return jsonResponse;
-        }
-
         // POST: Finance/AddBill
         [HttpPost]
         public ActionResult AddBill(BillFormModel billForm)

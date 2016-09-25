@@ -17,19 +17,5 @@ namespace HouseFinance.Controllers
 
             return View(billModel);
         }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return RedirectToActionPermanent("Index", "Home");
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return RedirectToActionPermanent("Index", "Home");
-        }
     }
 }

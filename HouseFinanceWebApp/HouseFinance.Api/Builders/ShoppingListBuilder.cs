@@ -26,9 +26,11 @@ namespace HouseFinance.Api.Builders
 
                 response.ShoppingList.Add(new Item
                 {
+                    Id = item.Id,
                     Name = item.Name,
                     AddedByImage = personFileHelper.Get<Person>(item.AddedBy).Image,
                     AddedForImages = images,
+                    FullAddedOn = item.Added,
                     AddedOn = item.Added.ToString("yyyy-MM-dd"),
                     Purchased = item.Purchased
                 });

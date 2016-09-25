@@ -1,6 +1,7 @@
 ﻿@using Services.FileIO
 @using Services.Models.GlobalModels
-@model List<Services.Models.ShoppingModels.ShoppingItem>
+@using HouseFinance.Api.Models
+@model ShoppingListResponse
 @{
     var personFileHelper = new GenericFileHelper(FilePath.People);
     ViewBag.Title = "Index";
@@ -32,7 +33,7 @@
                 </thead>
                 <tbody>
 
-                @foreach (var item in Model)
+                @foreach (var item in Model.ShoppingList)
                 {
                     var classStyle = "incomplete";
 
@@ -46,15 +47,15 @@
                             <span>@item.Name</span>
                         </th>
                         <th class=@(classStyle)>
-                            <span>@item.Added.ToString("dd/MM/yyyy")</span>
+                            <span>@item.FullAddedOn.ToString("dd/MM/yyyy")</span>
                         </th>
                         <th class=@(classStyle)>
-                            <img src="@(personFileHelper.Get<Person>(item.AddedBy).Image)" width="20" />
+                            <img src="@item.AddedByImage" width="20" />
                         </th>
                         <th class=@(classStyle)>
-                            @foreach (var personId in item.ItemFor)
+                            @foreach (var image in item.AddedForImages)
                             {
-                                <img src="@(personFileHelper.Get<Person>(personId).Image)" width="20" />
+                                <img src="@image" width="20" />
                             }
                         </th>
                         <th class=@(classStyle) style="text-align: right">

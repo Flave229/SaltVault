@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Services.FileIO;
 using Services.Models.Helpers;
 using Services.Models.ShoppingModels;
+using HouseFinance.Api.Builders;
 
 namespace HouseFinance.Controllers
 {
@@ -12,11 +13,9 @@ namespace HouseFinance.Controllers
         // GET: Shopping
         public ActionResult Index()
         {
-            var shoppingList = new GenericFileHelper(FilePath.Shopping).GetAll<ShoppingItem>();
+            var shoppingList = ShoppingListBuilder.BuildShoppingList();
 
-            var orderedItems = shoppingList.OrderBy(x => x.Purchased).ThenByDescending(x => x.Added).ToList();
-
-            return View(orderedItems);
+            return View(shoppingList);
         }
         
         // GET: Finance/AddItem
