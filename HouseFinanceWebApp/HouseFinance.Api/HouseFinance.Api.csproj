@@ -43,10 +43,9 @@
     <Compile Include="Builders\ShoppingListBuilder.cs" />
     <Compile Include="Builders\BillListBuilder.cs" />
     <Compile Include="Communication\AuthenticatedUsers.cs" />
-    <Compile Include="Models\ShoppingListRequest.cs" />
+    <Compile Include="Communication\CommunicationRequest.cs" />
     <Compile Include="Models\ShoppingListResponse.cs" />
     <Compile Include="Models\BillListResponse.cs" />
-    <Compile Include="Models\BillListRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
