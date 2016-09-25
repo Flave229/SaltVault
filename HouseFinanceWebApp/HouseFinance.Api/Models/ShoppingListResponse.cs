@@ -16,6 +16,7 @@ namespace HouseFinance.Api.Models
     public class Item
     {
         public string Name { get; set; }
+        public DateTime FullAddedOn { get; set; }
         public string AddedOn { get; set; }
         public string AddedByImage { get; set; }
         public List<string> AddedForImages { get; set; }
@@ -24,6 +25,7 @@ namespace HouseFinance.Api.Models
         public Item()
         {
             Name = "";
+            FullAddedOn = new DateTime();
             AddedOn = new DateTime().ToString("yyyy-MM-dd");
             AddedByImage = "";
             AddedForImages = new List<string>();

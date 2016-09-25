@@ -16,6 +16,7 @@ namespace HouseFinance.Api.Models
     public class BillDetails
     {
         public string Name { get; set; }
+        public DateTime FullDateDue { get; set; }
         public string DateDue { get; set; }
         public bool Overdue { get; set; }
         public bool Paid { get; set; }
@@ -25,6 +26,7 @@ namespace HouseFinance.Api.Models
         public BillDetails()
         {
             Name = "";
+            FullDateDue = new DateTime();
             DateDue = new DateTime().ToString("yyyy-MM-dd");
             AmountDue = 0;
             PeopleImages = new List<string>();
