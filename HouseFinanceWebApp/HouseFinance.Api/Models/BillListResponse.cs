@@ -21,7 +21,7 @@ namespace HouseFinance.Api.Models
         public bool Overdue { get; set; }
         public bool Paid { get; set; }
         public decimal AmountDue { get; set; }
-        public List<string> PeopleImages { get; set; }
+        public List<BillPeopleDetails> People { get; set; }
 
         public BillDetails()
         {
@@ -29,7 +29,13 @@ namespace HouseFinance.Api.Models
             FullDateDue = new DateTime();
             DateDue = new DateTime().ToString("yyyy-MM-dd");
             AmountDue = 0;
-            PeopleImages = new List<string>();
+            People = new List<BillPeopleDetails>();
         }
+    }
+
+    public class BillPeopleDetails
+    {
+        public string ImageLink { get; set; }
+        public bool Paid { get; set; }
     }
 }

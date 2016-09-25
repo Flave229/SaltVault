@@ -18,11 +18,16 @@ namespace HouseFinance.Api.Builders
 
             foreach(var bill in bills)
             {
-                var images = new List<string>();
+                var people = new List<BillPeopleDetails>();
 
                 foreach (var person in bill.People)
                 {
-                    images.Add(personFileHelper.Get<Person>(person).Image);
+                    var personDetails = new BillPeopleDetails
+                    {
+                        ImageLink = personFileHelper.Get<Person>(person).Image
+                    };
+
+                    personDetails.Paid = bill.AmountPaid.Any(payment => new GenericFileHelper(FilePath.People).Get<Payment>(payment).PersonId.Equals(person));
                 }
 
                 response.BillList.Add(new BillDetails
@@ -32,7 +37,8 @@ namespace HouseFinance.Api.Builders
                     Overdue = BillHelper.CheckIfBillOverdue(bill),
                     Paid = BillHelper.CheckIfBillPaid(bill),
                     DateDue = bill.Due.ToString("yyyy-MM-dd"),
-                    PeopleImages = images
+                    FullDateDue = bill.Due,
+                    People = people
                 });
             }
 
