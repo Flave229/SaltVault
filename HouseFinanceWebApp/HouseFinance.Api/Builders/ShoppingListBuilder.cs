@@ -29,7 +29,7 @@ namespace HouseFinance.Api.Builders
                     Name = item.Name,
                     AddedByImage = personFileHelper.Get<Person>(item.AddedBy).Image,
                     AddedForImages = images,
-                    AddedOn = item.Added,
+                    AddedOn = item.Added.ToString("yyyy-MM-dd"),
                     Purchased = item.Purchased
                 });
             }
