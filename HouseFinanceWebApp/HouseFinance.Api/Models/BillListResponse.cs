@@ -15,6 +15,7 @@ namespace HouseFinance.Api.Models
 
     public class BillDetails
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime FullDateDue { get; set; }
         public string DateDue { get; set; }

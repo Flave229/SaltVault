@@ -34,6 +34,7 @@ namespace HouseFinance.Api.Builders
 
                 response.BillList.Add(new BillDetails
                 {
+                    Id = bill.Id,
                     Name = bill.Name,
                     AmountDue = BillHelper.GetHowMuchToPay(bill),
                     Overdue = BillHelper.CheckIfBillOverdue(bill),
