@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="flaveandmalnub.housefinancemobile"
-    android:versionCode="1"
-    android:versionName="00.00.01">
+    android:versionCode="2"
+    android:versionName="00.01.01">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

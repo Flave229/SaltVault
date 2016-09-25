@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(_handler != null) {
                     _handler.post(runnable);
+                    return;
                 }
             }
 
