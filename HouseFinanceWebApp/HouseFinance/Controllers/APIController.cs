@@ -44,7 +44,7 @@ namespace HouseFinance.Controllers
                 return jsonResponse;
             }
 
-            return "An Error occured while requesting bill details!";
+            return "An Error occured while requesting shopping list details!";
         }
     }
 }
