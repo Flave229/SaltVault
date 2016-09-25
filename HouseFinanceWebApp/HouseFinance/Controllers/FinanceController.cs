@@ -213,7 +213,7 @@ namespace HouseFinance.Controllers
             return RedirectToActionPermanent("BillDetails", new { billId = bill.Id, name = bill.Name });
         }
 
-        [Route("Finance/BillDetails/{name}/{billId?}")]
+        [Route("Finance/BillDetails/{billId?}")]
         public ActionResult BillDetails(Guid? billId)
         {
             var fileHelper = new GenericFileHelper(FilePath.Bills);

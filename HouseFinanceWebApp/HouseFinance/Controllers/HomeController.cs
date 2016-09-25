@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using Services.FileIO;
-using Services.FormHelpers;
-using Services.Models.FinanceModels;
+﻿using System.Web.Mvc;
+using HouseFinance.Api.Builders;
 
 namespace HouseFinance.Controllers
 {
@@ -12,28 +8,14 @@ namespace HouseFinance.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var fileHelper = new GenericFileHelper(FilePath.Bills);
-            var bills = fileHelper.GetAll<Bill>().ToList();
-
-            for (var i = 0; i < bills.Count; i++)
-            {
-                BillHelper.CheckRecurring(bills[i]);
-
-                if (BillHelper.CheckIfBillPaid(bills[i]) && (bills[i].Due < DateTime.Now.AddMonths(-6)))
-                {
-                    bills.Remove(bills[i]);
-                    i--;
-                }
-            }
-
-            var orderedbills = bills.OrderByDescending(x => x.Due).ToList();
+            var billModel = BillListBuilder.BuildBillList();
 
             if (TempData.ContainsKey("Exception"))
             {
                 ViewBag.ExceptionMessage = TempData["Exception"];
             }
 
-            return View(orderedbills);
+            return View(billModel);
         }
 
         public ActionResult About()

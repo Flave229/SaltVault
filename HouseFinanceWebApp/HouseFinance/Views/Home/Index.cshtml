@@ -2,7 +2,8 @@
 @using Services.FormHelpers
 @using Services.Models.GlobalModels
 @using Services.Models.FinanceModels
-@model List<Bill>
+@using HouseFinance.Api.Models
+@model BillListResponse
 @{
     var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
     ViewBag.Title = "Home Page";
@@ -22,15 +23,15 @@
         {
             try
             {
-                foreach (var bill in Model)
+                foreach (var bill in Model.BillList)
                 {
                     var divClass = "fh5co-portfolio-description";
 
-                    if (bill.AmountOwed > BillHelper.GetTotalAmountPaid(bill) && bill.Due.CompareTo(DateTime.Now) <= 0)
+                    if (bill.Overdue)
                     {
                         divClass = "fh5co-portfolio-alert";
                     }
-                    else if (bill.AmountOwed <= BillHelper.GetTotalAmountPaid(bill))
+                    else if (bill.Paid)
                     {
                         divClass = "fh5co-portfolio-completed";
                     }
@@ -40,40 +41,36 @@
                             <table class="table">
                                 <tr>
                                     <td style="width: 75%; border: none">
-                                        <h2>@bill.Name : @bill.Due.ToString("MMMM yyyy")</h2>
-                                        <p>@bill.Due.ToString("dd/MM/yyyy")</p>
+                                        <h2>@bill.Name : @bill.FullDateDue.ToString("MMMM yyyy")</h2>
+                                        <p>@bill.FullDateDue.ToString("dd/MM/yyyy")</p>
                                         <p>
-                                            @{ var paymentsForBill = bill.AmountPaid.Select(paymentId => payments.FirstOrDefault(payment => payment.Id.Equals(paymentId))).ToList(); }
-
-                                            @foreach (var personId in bill.People)
+                                            @foreach (var person in bill.People)
                                             {
                                                 var grayscale = "grayscale(100%)";
                                                 var opacity = "opacity(50%)";
 
-                                                if (paymentsForBill.Any(payment => payment.PersonId.Equals(personId)))
+                                                if (person.Paid)
                                                 {
                                                     grayscale = "grayscale(0%)";
                                                     opacity = "opacity(100%)";
                                                 }
 
-                                                var person = new GenericFileHelper(FilePath.People).Get<Person>(personId);
-
-                                                <img src="@person.Image" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity"/>
+                                                <img src="@person.ImageLink" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity"/>
                                             }
                                         </p>
                                         <p>
-                                            <a href="@Url.Action("BillDetails", "Finance", new {billId = @bill.Id, name = @bill.Name})" class="btn btn-primary">See Bill Details</a>
+                                            <a href="@Url.Action("BillDetails", "Finance", new {billId = @bill.Id })" class="btn btn-primary">See Bill Details</a>
                                         </p>
                                     </td>
                                     <td style="width: 60%; border: none">
-                                        @if (BillHelper.GetHowMuchToPay(bill) > 0)
+                                        @if (bill.Paid)
                                         {
-                                            <span style="font-size: 40px">£@BillHelper.GetHowMuchToPay(bill).ToString("####.##")</span>
-                                            <span> due</span>
+                                            <span style="font-size: 40px; color: rgb(80, 80, 80)">PAID</span>
                                         }
                                         else
                                         {
-                                            <span style="font-size: 40px; color: rgb(80, 80, 80)">PAID</span>
+                                            <span style="font-size: 40px">£@bill.AmountDue.ToString("####.00")</span>
+                                            <span> due</span>
                                         }
                                     </td>
                                 </tr>
