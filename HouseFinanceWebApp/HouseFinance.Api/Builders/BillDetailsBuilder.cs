@@ -36,7 +36,7 @@ namespace HouseFinance.Api.Builders
             return new BillDetailsResponse
             {
                 Id = bill.Id,
-                Name = bill.Name,
+                Name = bill.Name + " : " + bill.Due.ToString("MMMM yyyy"),
                 AmountDue = bill.AmountOwed,
                 AmountPaid = BillHelper.GetTotalAmountPaid(bill),
                 FullDateDue = bill.Due,
