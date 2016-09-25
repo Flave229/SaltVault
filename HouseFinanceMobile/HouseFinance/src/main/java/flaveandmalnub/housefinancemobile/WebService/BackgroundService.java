@@ -121,39 +121,50 @@ public class BackgroundService extends Service {
         {
             InputStream is = null;
             // Changed to 1MB buffer length. Previous was way too small
-            int len = (1024 * 1024);
+            byte[] len = new byte[9216];
+            boolean failed = true;
+            JSONObject jsonObject;
+            URL url = new URL(weburl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // Might need this at some point
+            while(failed) {
+                try {
+                    url = new URL(weburl);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(15000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
 
-            try{
-                URL url = new URL(weburl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
+                    conn.connect();
+                    int response = conn.getResponseCode();
+                    //Toast.makeText(getBaseContext(), "The response is: " + String.valueOf(response), Toast.LENGTH_LONG).show();
+                    is = conn.getInputStream();
 
-                conn.connect();
-                int response = conn.getResponseCode();
-                //Toast.makeText(getBaseContext(), "The response is: " + String.valueOf(response), Toast.LENGTH_LONG).show();
-                is = conn.getInputStream();
+                    jsonObject = new JSONObject(readIt(is, len));
 
-                JSONObject contentAsString = new JSONObject(readIt(is, len));
-                return contentAsString;
+                    failed = false;
+                    return jsonObject;
+                } catch (JSONException e) {
 
-            } catch (JSONException e) {
-                return null;
-            } finally {
-                if(is != null)
+                    conn.disconnect();
                     is.close();
+                    failed = true;
+
+                } finally {
+                    if (is != null)
+                        is.close();
+                }
             }
+            return null;
         }
 
-        public String readIt(InputStream input, int len) throws IOException, UnsupportedEncodingException
+        public String readIt(InputStream input, byte[] len) throws IOException, UnsupportedEncodingException
         {
             Reader reader = null;
             reader = new InputStreamReader(input, "UTF-8");
-            char[] buffer = new char[len];
+            char[] buffer = new char[len.length];
             reader.read(buffer);
             return new String(buffer);
         }
