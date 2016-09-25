@@ -20,19 +20,14 @@ namespace HouseFinance.Api.Models
         public bool Overdue { get; set; }
         public bool Paid { get; set; }
         public decimal AmountDue { get; set; }
-        public List<Images> PeopleImages { get; set; }
+        public List<string> PeopleImages { get; set; }
 
         public BillDetails()
         {
             Name = "";
             DateDue = new DateTime();
             AmountDue = 0;
-            PeopleImages = new List<Images>();
+            PeopleImages = new List<string>();
         }
-    }
-
-    public class Images
-    {
-        public string Link { get; set; }
     }
 }

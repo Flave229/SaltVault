@@ -18,16 +18,11 @@ namespace HouseFinance.Api.Builders
 
             foreach(var bill in bills)
             {
-                var images = new List<Images>();
+                var images = new List<string>();
 
                 foreach (var person in bill.People)
                 {
-                    var imageLink = new Images
-                    {
-                        Link = personFileHelper.Get<Person>(person).Image
-                    };
-
-                    images.Add(imageLink);
+                    images.Add(personFileHelper.Get<Person>(person).Image);
                 }
 
                 response.BillList.Add(new BillDetails
