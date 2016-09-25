@@ -1,6 +1,7 @@
 package flaveandmalnub.housefinancemobile.UserInterface.Fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import flaveandmalnub.housefinancemobile.GlobalObjects;
 import flaveandmalnub.housefinancemobile.R;
 import flaveandmalnub.housefinancemobile.UserInterface.List.BillListAdapter;
 import flaveandmalnub.housefinancemobile.UserInterface.List.BillListObject;
@@ -19,6 +21,28 @@ import flaveandmalnub.housefinancemobile.UserInterface.List.BillListObject;
  */
 
 public class BillsFragment extends Fragment {
+
+    Handler _handler;
+    RecyclerView rv;
+    BillListAdapter adapter;
+    ArrayList<BillListObject> cards;
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            cards = GlobalObjects.GetBills();
+
+            if(GlobalObjects.GetBills() != null) {
+                if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
+                    adapter = new BillListAdapter(cards);
+                    rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+                }
+            }
+
+            _handler.postDelayed(runnable, 10000);
+        }
+    };
 
     public BillsFragment()
     {
@@ -36,22 +60,17 @@ public class BillsFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.fragment_blank, container, false);
 
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycler_view);
+        _handler = new Handler();
+        rv = (RecyclerView) view.findViewById(R.id.recycler_view);
         rv.setHasFixedSize(true);
-        ArrayList<BillListObject> cards = new ArrayList<>();
-
-        for(int i = 0; i < 100; i++)
-        {
-            cards.add(new BillListObject("Card " + i, "This is card " + i, "£0.00", android.R.drawable.ic_menu_camera));
-        }
+        cards = GlobalObjects.GetBills();
 
         if(rv != null) {
-            BillListAdapter adapter = new BillListAdapter(cards);
+            adapter = new BillListAdapter(cards);
             rv.setAdapter(adapter);
-
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-            rv.setLayoutManager(llm);
+            rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
+        _handler.postDelayed(runnable, 10000);
         return view;
     }
 }

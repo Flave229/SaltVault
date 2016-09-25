@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/item_name"
                 android:layout_alignParentTop="true"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textColor="#000"/>
 
             <TextView

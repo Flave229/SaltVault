@@ -32,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
             {
                 _service.contactWebsite();
             }
+            else
+            {
+                if(_handler != null) {
+                    _handler.post(runnable);
+                }
+            }
 
             // Pings the website every 15 seconds. Will change to 15 mins, or maybe have it user configurable
             if(_handler != null) {
@@ -49,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, BackgroundService.class);
         bindService(intent, _connection, Context.BIND_AUTO_CREATE);
 
+        _handler = new Handler();
+        _handler.post(runnable);
+
         Toolbar appToolbar = (Toolbar) findViewById(R.id.appToolbar);
         setSupportActionBar(appToolbar);
 
@@ -59,15 +68,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        _handler = new Handler();
-        _handler.postDelayed(runnable, 15000);
-
         for(int i = 0; i < tabLayout.getTabCount(); i++)
         {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(adapter.getTabView(i));
         }
-
     }
 
     @Override

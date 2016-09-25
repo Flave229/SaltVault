@@ -10,6 +10,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +21,10 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+
+import flaveandmalnub.housefinancemobile.GlobalObjects;
+import flaveandmalnub.housefinancemobile.UserInterface.List.BillListObject;
 
 /**
  * Created by Josh on 24/09/2016.
@@ -57,32 +65,63 @@ public class BackgroundService extends Service {
         }
     }
 
-    public void websiteResult(String result)
+    public void websiteResult(JSONObject result)
     {
-        Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
+        ArrayList<BillListObject> _bills = new ArrayList<>();
+        BillListObject bill;
+        if(result != null)
+        {
+            try {
+                JSONArray array = result.getJSONArray("BillList");
+                ArrayList<JSONObject> allObjects = new ArrayList<>();
+
+                for(int i = 0; i < array.length(); i++)
+                {
+                    allObjects.add(array.getJSONObject(i));
+                }
+
+                for(int k = 0; k < allObjects.size(); k++)
+                {
+                    bill = new BillListObject(allObjects.get(k).getString("Name"),
+                            allObjects.get(k).getString("DateDue"),
+                            "£" + allObjects.get(k).getString("AmountDue"),
+                            android.R.drawable.ic_menu_camera);
+                    _bills.add(bill);
+                }
+                GlobalObjects.SetBills(_bills);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(), "Could not obtain JSONs", Toast.LENGTH_SHORT).show();
+        }
+        //Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
     }
 
-    private class DownloadJsonString extends AsyncTask<String, Void, String>
+    private class DownloadJsonString extends AsyncTask<String, Void, JSONObject>
     {
         @Override
-        protected String doInBackground(String... urls)
+        protected JSONObject doInBackground(String... urls)
         {
             try
             {
                 return downloadUrl(urls[0]);
             } catch(IOException e)
             {
-                return "unable to contact url";
+                return null;
             }
         }
 
         @Override
-        protected void onPostExecute(String result)
+        protected void onPostExecute(JSONObject result)
         {
             websiteResult(result);
         }
 
-        private String downloadUrl(String weburl) throws IOException
+        private JSONObject downloadUrl(String weburl) throws IOException
         {
             InputStream is = null;
             int len = 10000;
@@ -103,9 +142,11 @@ public class BackgroundService extends Service {
                 //Toast.makeText(getBaseContext(), "The response is: " + String.valueOf(response), Toast.LENGTH_LONG).show();
                 is = conn.getInputStream();
 
-                String contentAsString = readIt(is, len);
+                JSONObject contentAsString = new JSONObject(readIt(is, len));
                 return contentAsString;
 
+            } catch (JSONException e) {
+                return null;
             } finally {
                 if(is != null)
                     is.close();

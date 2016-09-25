@@ -1,6 +1,7 @@
 package flaveandmalnub.housefinancemobile.UserInterface.List;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import flaveandmalnub.housefinancemobile.R;
 import flaveandmalnub.housefinancemobile.UserInterface.DisplayMessageActivity;
@@ -59,7 +63,10 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     @Override
     public int getItemCount()
     {
-        return _cards.size();
+        if(_cards != null)
+            return _cards.size();
+        else
+            return 0;
     }
 
     @Override
@@ -73,12 +80,40 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     @Override
     public void onBindViewHolder(CardViewHolder cvh, int i)
     {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         cvh.cardName.setText(_cards.get(i).cardName);
-        cvh.cardDate.setText(_cards.get(i).cardDesc);
+        try {
+            if(dateFormat.parse(_cards.get(i).cardDesc).before(date)
+                    && !_cards.get(i).cardAmount.equals("£0.0"))
+            {
+                cvh.cardDate.setText(_cards.get(i).cardDesc + " OVERDUE");
+                cvh.cardObject.setCardBackgroundColor(Color.RED);
+            }
+            else
+            {
+                cvh.cardDate.setText(_cards.get(i).cardDesc);
+                cvh.cardObject.setCardBackgroundColor(Color.WHITE);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         cvh.cardImage.setImageResource(_cards.get(i).cardImage);
         cvh.cardImage2.setImageResource(_cards.get(i).cardImage);
         cvh.cardImage3.setImageResource(_cards.get(i).cardImage);
-        cvh.cardAmount.setText(_cards.get(i).cardAmount);
+
+        if(_cards.get(i).cardAmount.equals("£0.0"))
+        {
+            cvh.cardAmount.setText("PAID");
+            cvh.cardObject.setCardBackgroundColor(Color.GREEN);
+        }
+        else {
+            cvh.cardAmount.setText(_cards.get(i).cardAmount);
+            cvh.cardObject.setCardBackgroundColor(Color.WHITE);
+        }
     }
 
     @Override
