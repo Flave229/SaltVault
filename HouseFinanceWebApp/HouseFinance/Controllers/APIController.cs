@@ -7,35 +7,41 @@ namespace HouseFinance.Controllers
 {
     public class APIController : Controller
     {
-        public string RequestBillList()
+        [Route("Api/{authToken}/{requestType}/{id?}")]
+        public string ApiRequest(string authToken, string requestType, string id = "")
         {
-            return RequestBillList("");
-        }
+            if (!AuthenticatedUsers.CheckAuthentication(authToken))
+                return "The authentication key provided is invalid.";
 
-        public string RequestShoppingList()
-        {
-            return RequestShoppingList("");
+            switch (requestType)
+            {
+                case "RequestBillList":
+                    return RequestBillList();
+                case "RequestBillDetails":
+                    return RequestBillDetails(id);
+                case "RequestShoppingList":
+                    return RequestShoppingList();
+                default:
+                    return "Request type was invalid.";
+            }
         }
         
-        [Route("Api/{authToken}/RequestBillList")]
-        public string RequestBillList(string authToken)
+        public string RequestBillList()
         {
-            if (AuthenticatedUsers.CheckAuthentication(authToken))
+            try
             {
                 var response = Api.Builders.BillListBuilder.BuildBillList();
-
-                var jsonResponse = JsonConvert.SerializeObject(response);
-
-                return jsonResponse;
+                return JsonConvert.SerializeObject(response);
             }
-
-            return "An Error occured while requesting bill details!";
+            catch
+            {
+                return "An Error occured while requesting bill details!";
+            }
         }
-
-        [Route("Api/{authToken}/RequestBillDetails/{billId}")]
-        public string RequestBillDetails(string authToken, string billId)
+        
+        public string RequestBillDetails(string billId)
         {
-            if (AuthenticatedUsers.CheckAuthentication(authToken))
+            try
             {
                 var id = new Guid();
 
@@ -43,28 +49,25 @@ namespace HouseFinance.Controllers
                     return "Bill Id was not valid, bill details could not be built!";
 
                 var response = Api.Builders.BillDetailsBuilder.BuildBillDetails(id);
-
-                var jsonResponse = JsonConvert.SerializeObject(response);
-
-                return jsonResponse;
+                return JsonConvert.SerializeObject(response);
             }
-
-            return "An Error occured while requesting bill details!";
+            catch
+            {
+                return "An Error occured while requesting bill details!";
+            }
         }
-
-        [Route("Api/RequestShoppingList/{authToken}")]
-        public string RequestShoppingList(string authToken)
+        
+        public string RequestShoppingList()
         {
-            if (AuthenticatedUsers.CheckAuthentication(authToken))
+            try
             {
                 var response = Api.Builders.ShoppingListBuilder.BuildShoppingList();
-
-                var jsonResponse = JsonConvert.SerializeObject(response);
-
-                return jsonResponse;
+                return JsonConvert.SerializeObject(response);
             }
-
-            return "An Error occured while requesting shopping list details!";
+            catch
+            {
+                return "An Error occured while requesting shopping list details!";
+            }
         }
     }
 }
