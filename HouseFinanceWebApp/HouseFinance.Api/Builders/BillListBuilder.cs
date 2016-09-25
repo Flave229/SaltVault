@@ -27,7 +27,9 @@ namespace HouseFinance.Api.Builders
                         ImageLink = personFileHelper.Get<Person>(person).Image
                     };
 
-                    personDetails.Paid = bill.AmountPaid.Any(payment => new GenericFileHelper(FilePath.People).Get<Payment>(payment).PersonId.Equals(person));
+                    personDetails.Paid = bill.AmountPaid.Any(payment => new GenericFileHelper(FilePath.Payments).Get<Payment>(payment).PersonId.Equals(person));
+
+                    people.Add(personDetails);
                 }
 
                 response.BillList.Add(new BillDetails
