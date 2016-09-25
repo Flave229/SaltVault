@@ -16,13 +16,33 @@ namespace HouseFinance.Controllers
         {
             return RequestShoppingList("");
         }
-
-        [Route("Api/RequestBillList/{authToken}")]
+        
+        [Route("Api/{authToken}/RequestBillList")]
         public string RequestBillList(string authToken)
         {
             if (AuthenticatedUsers.CheckAuthentication(authToken))
             {
                 var response = Api.Builders.BillListBuilder.BuildBillList();
+
+                var jsonResponse = JsonConvert.SerializeObject(response);
+
+                return jsonResponse;
+            }
+
+            return "An Error occured while requesting bill details!";
+        }
+
+        [Route("Api/{authToken}/RequestBillDetails/{billId}")]
+        public string RequestBillDetails(string authToken, string billId)
+        {
+            if (AuthenticatedUsers.CheckAuthentication(authToken))
+            {
+                var id = new Guid();
+
+                if (!Guid.TryParse(billId, out id))
+                    return "Bill Id was not valid, bill details could not be built!";
+
+                var response = Api.Builders.BillDetailsBuilder.BuildBillDetails(id);
 
                 var jsonResponse = JsonConvert.SerializeObject(response);
 
