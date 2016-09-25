@@ -3,6 +3,7 @@ package flaveandmalnub.housefinancemobile.UserInterface.Fragments;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class BillsFragment extends Fragment {
     RecyclerView rv;
     BillListAdapter adapter;
     ArrayList<BillListObject> cards;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private Runnable runnable = new Runnable() {
         @Override
@@ -40,7 +42,7 @@ public class BillsFragment extends Fragment {
                 }
             }
 
-            _handler.postDelayed(runnable, 10000);
+            //_handler.postDelayed(runnable, 1000);
         }
     };
 
@@ -60,6 +62,8 @@ public class BillsFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.fragment_blank, container, false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
+
         _handler = new Handler();
         rv = (RecyclerView) view.findViewById(R.id.recycler_view);
         rv.setHasFixedSize(true);
@@ -70,7 +74,21 @@ public class BillsFragment extends Fragment {
             rv.setAdapter(adapter);
             rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
-        _handler.postDelayed(runnable, 10000);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                _handler.post(runnable);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        //_handler.postDelayed(runnable, 1000);
         return view;
     }
 }

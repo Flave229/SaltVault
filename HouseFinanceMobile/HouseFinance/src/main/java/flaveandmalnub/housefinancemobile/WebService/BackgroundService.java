@@ -53,11 +53,12 @@ public class BackgroundService extends Service {
     {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        String authToken = "D2DB7539-634F-47C4-818D-59AD03C592E3";
 
         if(networkInfo != null && networkInfo.isConnected())
         {
             //Toast.makeText(getBaseContext(), "Obtaining list of bills", Toast.LENGTH_LONG).show();
-            new DownloadJsonString().execute("http://saltavenue.azurewebsites.net/Api/RequestBillList");
+            new DownloadJsonString().execute("http://saltavenue.azurewebsites.net/api/"+ authToken + "/RequestBillList");
         }
         else
         {
@@ -69,8 +70,6 @@ public class BackgroundService extends Service {
     {
         ArrayList<BillListObject> _bills = new ArrayList<>();
         BillListObject bill;
-        if(result != null)
-        {
             try {
                 JSONArray array = result.getJSONArray("BillList");
                 ArrayList<JSONObject> allObjects = new ArrayList<>();
@@ -90,14 +89,11 @@ public class BackgroundService extends Service {
                 }
                 GlobalObjects.SetBills(_bills);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (JSONException je) {
+                je.printStackTrace();
+            } catch(Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        }
-        else
-        {
-            Toast.makeText(getBaseContext(), "Could not obtain JSONs", Toast.LENGTH_SHORT).show();
-        }
         //Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
     }
 
@@ -124,13 +120,13 @@ public class BackgroundService extends Service {
         private JSONObject downloadUrl(String weburl) throws IOException
         {
             InputStream is = null;
-            int len = 10000;
+            // Changed to 1MB buffer length. Previous was way too small
+            int len = (1024 * 1024);
 
             // Might need this at some point
-            String authToken = "D2DB7539-634F-47C4-818D-59AD03C592E3";
 
             try{
-                URL url = new URL(weburl + "/" + authToken);
+                URL url = new URL(weburl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(10000);
                 conn.setConnectTimeout(15000);

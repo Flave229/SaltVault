@@ -54,7 +54,7 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
         }
     }
 
-    ArrayList<BillListObject> _cards;
+    ArrayList<BillListObject> _cards = new ArrayList<>();
 
     public BillListAdapter(ArrayList<BillListObject> cards){
         _cards = cards;
@@ -120,5 +120,21 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     public void onAttachedToRecyclerView(RecyclerView rv)
     {
         super.onAttachedToRecyclerView(rv);
+    }
+
+    public void clear()
+    {
+        if(_cards != null) {
+            _cards.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addAll(ArrayList<BillListObject> bills)
+    {
+        if(_cards != null) {
+            _cards.addAll(bills);
+            notifyDataSetChanged();
+        }
     }
 }
