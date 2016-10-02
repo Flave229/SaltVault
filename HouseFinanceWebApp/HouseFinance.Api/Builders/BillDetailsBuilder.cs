@@ -26,6 +26,7 @@ namespace HouseFinance.Api.Builders
 
                 payments.Add(new BillPayments
                 {
+                    Id = paymentFromFile.Id,
                     PersonName = person.FirstName + " " + person.LastName,
                     DatePaid = paymentFromFile.Created.ToString("dd/MM/yyyy"),
                     AmountPaid = paymentFromFile.Amount
@@ -35,7 +36,7 @@ namespace HouseFinance.Api.Builders
             return new BillDetailsResponse
             {
                 Id = bill.Id,
-                Name = bill.Name,
+                Name = bill.Name + " : " + bill.Due.ToString("MMMM yyyy"),
                 AmountDue = bill.AmountOwed,
                 AmountPaid = BillHelper.GetTotalAmountPaid(bill),
                 FullDateDue = bill.Due,
