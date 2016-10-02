@@ -37,7 +37,7 @@ public class BillsFragment extends Fragment {
 
             cards = GlobalObjects.GetBills();
 
-            if(GlobalObjects.GetBills() != null) {
+            if (GlobalObjects.GetBills() != null) {
                 if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
                     adapter = new BillListAdapter(cards);
                     rv.setAdapter(adapter);
@@ -45,9 +45,33 @@ public class BillsFragment extends Fragment {
                 }
             }
 
-            swipeRefreshLayout.setRefreshing(false);
 
-            //_handler.postDelayed(runnable, 1000);
+            _handler.post(updateList);
+        }
+    };
+
+    private Runnable updateList = new Runnable() {
+        @Override
+        public void run() {
+
+            if (GlobalObjects.GetBills() != null) {
+                
+                cards = GlobalObjects.GetBills();
+                if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
+                    if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
+                        adapter = new BillListAdapter(cards);
+                        rv.setAdapter(adapter);
+                        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+                    _handler.postDelayed(updateList, 100);
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+            else
+            {
+                _handler.postDelayed(updateList, 100);
+            }
         }
     };
 

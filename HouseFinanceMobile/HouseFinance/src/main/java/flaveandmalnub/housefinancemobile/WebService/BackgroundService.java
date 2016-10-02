@@ -52,6 +52,7 @@ public class BackgroundService extends Service {
 
     public void contactWebsite()
     {
+        GlobalObjects.downloading = true;
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         String authToken = "D2DB7539-634F-47C4-818D-59AD03C592E3";
@@ -60,10 +61,12 @@ public class BackgroundService extends Service {
         {
             //Toast.makeText(getBaseContext(), "Obtaining list of bills", Toast.LENGTH_LONG).show();
             new DownloadJsonString().execute("http://saltavenue.azurewebsites.net/api/"+ authToken + "/RequestBillList");
+            GlobalObjects.downloading = false;
         }
         else
         {
             Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+            GlobalObjects.downloading = false;
         }
     }
 
@@ -102,10 +105,14 @@ public class BackgroundService extends Service {
                 GlobalObjects.SetBills(_bills);
                 GlobalObjects.SetBillPeopleList(_people);
 
+                GlobalObjects.downloading = false;
+
             } catch (JSONException je) {
                 je.printStackTrace();
+                GlobalObjects.downloading = false;
             } catch(Exception e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                GlobalObjects.downloading = false;
             }
         //Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
     }

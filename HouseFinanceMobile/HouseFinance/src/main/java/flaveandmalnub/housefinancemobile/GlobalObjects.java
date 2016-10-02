@@ -18,6 +18,8 @@ public class GlobalObjects{
     public static BackgroundService _service;
     public static boolean _bound = false;
 
+    public static boolean downloading = false;
+
     public static void SetBills(ArrayList<BillListObject> bills)
     {
         _bills = bills;
