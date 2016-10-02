@@ -32,6 +32,9 @@ public class BillsFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
+
+            GlobalObjects._service.contactWebsite();
+
             cards = GlobalObjects.GetBills();
 
             if(GlobalObjects.GetBills() != null) {
@@ -41,6 +44,8 @@ public class BillsFragment extends Fragment {
                     rv.setLayoutManager(new LinearLayoutManager(getActivity()));
                 }
             }
+
+            swipeRefreshLayout.setRefreshing(false);
 
             //_handler.postDelayed(runnable, 1000);
         }
@@ -79,7 +84,6 @@ public class BillsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 _handler.post(runnable);
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
