@@ -126,7 +126,6 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     {
         if(_cards != null) {
             _cards.addAll(bills);
-            notifyDataSetChanged();
         }
     }
 }

@@ -39,13 +39,10 @@ public class BillsFragment extends Fragment {
 
             if (GlobalObjects.GetBills() != null) {
                 if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
-                    adapter = new BillListAdapter(cards);
-                    rv.setAdapter(adapter);
-                    rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    adapter.addAll(GlobalObjects.GetBills());
+                    adapter.notifyItemRangeInserted(0, GlobalObjects.GetBills().size());
                 }
             }
-
-
             _handler.post(updateList);
         }
     };
@@ -55,13 +52,12 @@ public class BillsFragment extends Fragment {
         public void run() {
 
             if (GlobalObjects.GetBills() != null) {
-                
+
                 cards = GlobalObjects.GetBills();
                 if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
                     if (adapter.getItemCount() != GlobalObjects.GetBills().size()) {
-                        adapter = new BillListAdapter(cards);
-                        rv.setAdapter(adapter);
-                        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        adapter.addAll(cards);
+                        adapter.notifyItemRangeInserted(0, GlobalObjects.GetBills().size());
                     }
                     _handler.postDelayed(updateList, 100);
                 } else {
@@ -96,7 +92,7 @@ public class BillsFragment extends Fragment {
         _handler = new Handler();
         rv = (RecyclerView) view.findViewById(R.id.recycler_view);
         rv.setHasFixedSize(true);
-        cards = GlobalObjects.GetBills();
+        cards = new ArrayList<>();
 
         if(rv != null) {
             adapter = new BillListAdapter(cards);
