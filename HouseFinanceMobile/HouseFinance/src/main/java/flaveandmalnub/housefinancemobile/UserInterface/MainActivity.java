@@ -14,13 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import flaveandmalnub.housefinancemobile.GlobalObjects;
 import flaveandmalnub.housefinancemobile.R;
 import flaveandmalnub.housefinancemobile.WebService.BackgroundService;
 
 public class MainActivity extends AppCompatActivity {
 
-    BackgroundService _service;
-    boolean _bound = false;
     SimpleFragmentPagerAdapter adapter;
     TabLayout tabLayout;
     private Handler _handler;
@@ -28,21 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if(_service != null)
+            if(GlobalObjects._service != null)
             {
-                _service.contactWebsite();
+                //GlobalObjects._service.contactWebsite();
             }
             else
             {
                 if(_handler != null) {
-                    _handler.post(runnable);
-                    return;
+                    //_handler.post(runnable);
                 }
-            }
-
-            // Pings the website every 15 seconds. Will change to 15 mins, or maybe have it user configurable
-            if(_handler != null) {
-                _handler.postDelayed(runnable, 15000);
             }
         }
     };
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent, _connection, Context.BIND_AUTO_CREATE);
 
         _handler = new Handler();
-        _handler.post(runnable);
+        //_handler.post(runnable);
 
         Toolbar appToolbar = (Toolbar) findViewById(R.id.appToolbar);
         setSupportActionBar(appToolbar);
@@ -80,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy()
     {
         super.onDestroy();
-        if(_bound)
+        if(GlobalObjects._bound)
         {
             unbindService(_connection);
-            _bound = false;
+            GlobalObjects._bound = false;
         }
         _handler.removeCallbacksAndMessages(runnable);
         _handler = null;
@@ -93,14 +86,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             BackgroundService.LocalBinder binder = (BackgroundService.LocalBinder) service;
-            _service = binder.getService();
-            _bound = true;
+            GlobalObjects._service = binder.getService();
+            GlobalObjects._bound = true;
             //Toast.makeText(getBaseContext(), "Service Connected", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            _bound = false;
+            GlobalObjects._bound = false;
         }
     };
 

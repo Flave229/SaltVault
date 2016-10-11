@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,36 +83,29 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         cvh.cardName.setText(_cards.get(i).cardName);
-        try {
-            if(dateFormat.parse(_cards.get(i).cardDesc).before(date)
-                    && !_cards.get(i).cardAmount.equals("£0.0"))
-            {
-                cvh.cardDate.setText(_cards.get(i).cardDesc + " OVERDUE");
-                cvh.cardObject.setCardBackgroundColor(Color.RED);
-            }
-            else
-            {
-                cvh.cardDate.setText(_cards.get(i).cardDesc);
-                cvh.cardObject.setCardBackgroundColor(Color.WHITE);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
+        if(_cards.get(i).paid)
+        {
+            cvh.cardObject.setCardBackgroundColor(Color.GREEN);
+            cvh.cardAmount.setText("PAID");
+            cvh.cardDate.setText(_cards.get(i).cardDesc);
+        }
+        else if(_cards.get(i).overdue)
+        {
+            cvh.cardObject.setCardBackgroundColor(Color.parseColor("#E77471"));
+            cvh.cardDate.setText(_cards.get(i).cardDesc + " OVERDUE");
+            cvh.cardAmount.setText("£" + _cards.get(i).cardAmount);
+        }
+        else
+        {
+            cvh.cardDate.setText(_cards.get(i).cardDesc);
+            cvh.cardAmount.setText("£" + _cards.get(i).cardAmount);
+            cvh.cardObject.setCardBackgroundColor(Color.WHITE);
+        }
 
         cvh.cardImage.setImageResource(_cards.get(i).cardImage);
         cvh.cardImage2.setImageResource(_cards.get(i).cardImage);
         cvh.cardImage3.setImageResource(_cards.get(i).cardImage);
-
-        if(_cards.get(i).cardAmount.equals("£0.0"))
-        {
-            cvh.cardAmount.setText("PAID");
-            cvh.cardObject.setCardBackgroundColor(Color.GREEN);
-        }
-        else {
-            cvh.cardAmount.setText(_cards.get(i).cardAmount);
-            cvh.cardObject.setCardBackgroundColor(Color.WHITE);
-        }
     }
 
     @Override
@@ -134,7 +126,6 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.CardVi
     {
         if(_cards != null) {
             _cards.addAll(bills);
-            notifyDataSetChanged();
         }
     }
 }

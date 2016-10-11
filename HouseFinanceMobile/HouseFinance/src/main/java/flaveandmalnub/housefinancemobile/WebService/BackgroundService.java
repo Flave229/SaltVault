@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import flaveandmalnub.housefinancemobile.GlobalObjects;
 import flaveandmalnub.housefinancemobile.UserInterface.List.BillListObject;
+import flaveandmalnub.housefinancemobile.UserInterface.List.BillListObjectPeople;
 
 /**
  * Created by Josh on 24/09/2016.
@@ -51,6 +52,7 @@ public class BackgroundService extends Service {
 
     public void contactWebsite()
     {
+        GlobalObjects.downloading = true;
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         String authToken = "D2DB7539-634F-47C4-818D-59AD03C592E3";
@@ -59,20 +61,26 @@ public class BackgroundService extends Service {
         {
             //Toast.makeText(getBaseContext(), "Obtaining list of bills", Toast.LENGTH_LONG).show();
             new DownloadJsonString().execute("http://saltavenue.azurewebsites.net/api/"+ authToken + "/RequestBillList");
+            GlobalObjects.downloading = false;
         }
         else
         {
             Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+            GlobalObjects.downloading = false;
         }
     }
 
     public void websiteResult(JSONObject result)
     {
         ArrayList<BillListObject> _bills = new ArrayList<>();
+        ArrayList<BillListObjectPeople> _people = new ArrayList<>();
         BillListObject bill;
+        BillListObjectPeople person;
             try {
                 JSONArray array = result.getJSONArray("BillList");
+
                 ArrayList<JSONObject> allObjects = new ArrayList<>();
+                ArrayList<JSONObject> allPeopleObjects = new ArrayList<>();
 
                 for(int i = 0; i < array.length(); i++)
                 {
@@ -81,18 +89,30 @@ public class BackgroundService extends Service {
 
                 for(int k = 0; k < allObjects.size(); k++)
                 {
-                    bill = new BillListObject(allObjects.get(k).getString("Name"),
-                            allObjects.get(k).getString("DateDue"),
-                            "£" + allObjects.get(k).getString("AmountDue"),
-                            android.R.drawable.ic_menu_camera);
+                    JSONArray peopleArray = allObjects.get(k).getJSONArray("People");
+                    for(int j = 0; j < peopleArray.length(); j++)
+                    {
+                        allPeopleObjects.add(peopleArray.getJSONObject(j));
+                    }
+
+                    bill = new BillListObject(allObjects.get(k), allPeopleObjects.get(k));
                     _bills.add(bill);
+
+                    person = bill.people;
+                    _people.add(person);
+
                 }
                 GlobalObjects.SetBills(_bills);
+                GlobalObjects.SetBillPeopleList(_people);
+
+                GlobalObjects.downloading = false;
 
             } catch (JSONException je) {
                 je.printStackTrace();
+                GlobalObjects.downloading = false;
             } catch(Exception e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                GlobalObjects.downloading = false;
             }
         //Toast.makeText(getBaseContext(), result, Toast.LENGTH_SHORT).show();
     }

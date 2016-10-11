@@ -42,7 +42,7 @@ public class StatisticsFragment extends Fragment {
 
         for(int i = 1; i < 100; i++)
         {
-            cards.add(new BillListObject("Card " + i, "This is card " + i, "£0.00", android.R.drawable.ic_menu_camera));
+           // cards.add(new BillListObject("Card " + i, "This is card " + i, "£0.00", android.R.drawable.ic_menu_camera));
         }
 
         if(rv != null) {
