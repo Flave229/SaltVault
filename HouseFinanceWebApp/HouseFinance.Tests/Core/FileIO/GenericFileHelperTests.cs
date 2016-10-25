@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Services.FileIO;
@@ -13,6 +14,7 @@ namespace HouseFinance.Tests.Core.FileIO
     {
         private string _filePath;
         private List<Bill> _subject;
+        private List<Bill> _originalBillList;
 
         [SetUp]
         public void WhenWhenOpeningTheBillList()
@@ -20,7 +22,7 @@ namespace HouseFinance.Tests.Core.FileIO
             _filePath = AppDomain.CurrentDomain.BaseDirectory + @"\TestDirectory\billtest.txt";
             var fileHelper = new GenericFileHelper(_filePath);
 
-            var billList = JsonConvert.SerializeObject(new List<Bill>
+            _originalBillList = new List<Bill>
             {
                 new Bill
                 {
@@ -40,10 +42,12 @@ namespace HouseFinance.Tests.Core.FileIO
                     },
                     Due = new DateTime(2016, 10, 25),
                     Name = "Test2",
-                    RecurringType = RecurringType.None,
+                    RecurringType = RecurringType.Monthly,
                     People = new List<Guid>()
                 }
-            });
+            };
+
+            var billList = JsonConvert.SerializeObject(_originalBillList);
 
             var directoryInfo = new FileInfo(_filePath);
             directoryInfo.Directory?.Create();
@@ -56,6 +60,17 @@ namespace HouseFinance.Tests.Core.FileIO
         public void ThenTheCorrectAmountOfBillsAreReturned()
         {
             Assert.That(_subject.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ThenTheDataForBillsAreMappedCorrectly()
+        {
+            Assert.That(_subject[0].Due, Is.EqualTo(_originalBillList[0].Due));
+            Assert.That(_subject[0].AmountOwed, Is.EqualTo(_originalBillList[0].AmountOwed));
+            Assert.That(_subject[0].AmountPaid, Is.EqualTo(_originalBillList[0].AmountPaid));
+            Assert.That(_subject[0].Name, Is.EqualTo(_originalBillList[0].Name));
+            Assert.That(_subject[0].People, Is.EqualTo(_originalBillList[0].People));
+            Assert.That(_subject[0].RecurringType, Is.EqualTo(_originalBillList[0].RecurringType));
         }
 
         [TearDown]
