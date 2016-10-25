@@ -31,6 +31,8 @@ namespace HouseFinance.Api.Builders
 
                     people.Add(personDetails);
                 }
+                
+                BillHelper.CheckRecurring(bill);
 
                 response.BillList.Add(new BillDetails
                 {
