@@ -1,5 +1,4 @@
 ﻿using HouseFinance.Api.Communication;
-using Newtonsoft.Json;
 using System;
 using System.Web.Mvc;
 

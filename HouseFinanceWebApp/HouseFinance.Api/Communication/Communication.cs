@@ -1,5 +1,4 @@
-﻿using HouseFinance.Api.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 
 namespace HouseFinance.Api.Communication
