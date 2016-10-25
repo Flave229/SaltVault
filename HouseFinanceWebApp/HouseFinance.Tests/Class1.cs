@@ -6,7 +6,4 @@ using System.Threading.Tasks;
 
 namespace HouseFinance.Tests
 {
-    public class Class1
-    {
-    }
 }

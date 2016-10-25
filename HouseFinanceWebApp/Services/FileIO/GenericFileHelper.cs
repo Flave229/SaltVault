@@ -8,11 +8,11 @@ namespace Services.FileIO
 {
     public class GenericFileHelper : IFileHelper
     {
-        private string _filePath;
+        private readonly string _filePath;
 
-        public GenericFileHelper(FilePath filePath)
+        public GenericFileHelper(string filePath)
         {
-            _filePath = FilePathToString.ToString(filePath);
+            _filePath = filePath;
         }
 
         public List<T> Open<T>()
