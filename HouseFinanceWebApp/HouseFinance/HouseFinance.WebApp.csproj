@@ -275,9 +275,9 @@
       <Project>{6e920e52-8f8a-419d-9d87-6920db0c1c46}</Project>
       <Name>HouseFinance.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Services\Services.csproj">
+    <ProjectReference Include="..\Services\HouseFinance.Core.csproj">
       <Project>{08b26825-f6fd-428c-a731-d1325875e759}</Project>
-      <Name>Services</Name>
+      <Name>HouseFinance.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

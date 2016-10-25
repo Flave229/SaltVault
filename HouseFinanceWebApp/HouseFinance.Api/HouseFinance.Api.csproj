@@ -56,9 +56,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Services\Services.csproj">
+    <ProjectReference Include="..\Services\HouseFinance.Core.csproj">
       <Project>{08b26825-f6fd-428c-a731-d1325875e759}</Project>
-      <Name>Services</Name>
+      <Name>HouseFinance.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
