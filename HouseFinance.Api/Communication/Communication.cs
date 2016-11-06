@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
+using Services.FileIO;
+using Services.Models.ShoppingModels;
 
 namespace HouseFinance.Api.Communication
 {
@@ -18,6 +20,8 @@ namespace HouseFinance.Api.Communication
                     return RequestBillDetails(request.Id);
                 case "RequestShoppingList":
                     return RequestShoppingList();
+                case "AddShoppingItem":
+                    return AddShoppingItem(request.PostBody);
                 default:
                     return "Request type was invalid.";
             }
@@ -43,7 +47,7 @@ namespace HouseFinance.Api.Communication
                 var id = new Guid();
 
                 if (!Guid.TryParse(billId, out id))
-                    return "Bill Id was not valid, bill details could not be built!";
+                    return "Bill PostBody was not valid, bill details could not be built!";
 
                 var response = Builders.BillDetailsBuilder.BuildBillDetails(id);
                 return JsonConvert.SerializeObject(response);
@@ -64,6 +68,21 @@ namespace HouseFinance.Api.Communication
             catch
             {
                 return "An Error occured while requesting shopping list details!";
+            }
+        }
+
+        public static string AddShoppingItem(string postBody)
+        {
+            try
+            {
+                var item = JsonConvert.DeserializeObject<ShoppingItem>(postBody);
+                new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(item);
+
+                return "Item Added";
+            }
+            catch
+            {
+                return "An Error occured while adding the shopping item!";
             }
         }
     }
