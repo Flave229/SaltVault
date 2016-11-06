@@ -1,6 +1,5 @@
 ﻿using HouseFinance.Api.Communication;
 using System;
-using System.IO;
 using System.Web.Mvc;
 
 namespace HouseFinance.Controllers
@@ -14,8 +13,7 @@ namespace HouseFinance.Controllers
             {
                 AuthToken = new Guid(authToken),
                 RequestType = requestType,
-                Id = id,
-                PostBody = new StreamReader(Request.InputStream).ReadToEnd()
+                Id = id
             });
         }
     }
