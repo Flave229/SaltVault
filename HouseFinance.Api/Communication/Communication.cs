@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using Services.FileIO;
+using Services.Models.FinanceModels;
 using Services.Models.ShoppingModels;
 
 namespace HouseFinance.Api.Communication
@@ -29,9 +30,21 @@ namespace HouseFinance.Api.Communication
             }
         }
 
-        private static string AddBill(string requestPostBody)
+        public static string AddBill(string requestPostBody)
         {
-            return "ping";
+            try
+            {
+                var item = JsonConvert.DeserializeObject<Bill>(requestPostBody);
+
+                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
+                genericFileHelper.AddOrUpdate<Bill>(item);
+
+                return $"The bill '{item.Name}' has been added";
+            }
+            catch (Exception)
+            {
+                return "An Error occured while adding the bill!";
+            }
         }
 
         public static string RequestBillList()
