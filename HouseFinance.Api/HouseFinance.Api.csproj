@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -50,6 +51,8 @@
     <Compile Include="Communication\AuthenticatedUsers.cs" />
     <Compile Include="Communication\Communication.cs" />
     <Compile Include="Communication\CommunicationRequest.cs" />
+    <Compile Include="Communication\Models\CommunicationResponse.cs" />
+    <Compile Include="Communication\Models\Error.cs" />
     <Compile Include="Models\BillDetailsResponse.cs" />
     <Compile Include="Models\ShoppingListResponse.cs" />
     <Compile Include="Models\BillListResponse.cs" />

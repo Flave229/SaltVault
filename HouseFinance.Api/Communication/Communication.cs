@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using HouseFinance.Api.Communication.Models;
 using Services.FileIO;
 using Services.Models.FinanceModels;
 using Services.Models.ShoppingModels;
@@ -20,7 +22,10 @@ namespace HouseFinance.Api.Communication
                 case "RequestBillDetails":
                     return RequestBillDetails(request.Id);
                 case "AddBillItem":
-                    return AddBill(request.PostBody);
+                {
+                    var billResponse = AddBill(request.PostBody);
+                    return JsonConvert.SerializeObject(billResponse);
+                }
                 case "RequestShoppingList":
                     return RequestShoppingList();
                 case "AddShoppingItem":
@@ -30,7 +35,7 @@ namespace HouseFinance.Api.Communication
             }
         }
 
-        public static string AddBill(string requestPostBody)
+        public static CommunicationResponse AddBill(string requestPostBody)
         {
             try
             {
@@ -39,11 +44,24 @@ namespace HouseFinance.Api.Communication
                 var genericFileHelper = new GenericFileHelper(FilePath.Bills);
                 genericFileHelper.AddOrUpdate<Bill>(item);
 
-                return $"The bill '{item.Name}' has been added";
+                return new CommunicationResponse
+                {
+                    Notifications = new List<string>
+                    {
+                        $"The bill '{item.Name}' has been added"
+                    }
+                };
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return "An Error occured while adding the bill!";
+                return new CommunicationResponse
+                {
+                    Error = new Error
+                    {
+                        TechnicalMessage = exception.Message,
+                        UserMessage = $"Failed to add the bill"
+                    }
+                };
             }
         }
 
