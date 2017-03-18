@@ -18,6 +18,8 @@ namespace HouseFinance.Api.Communication
                     return RequestBillList();
                 case "RequestBillDetails":
                     return RequestBillDetails(request.Id);
+                case "AddBillItem":
+                    return AddBill(request.PostBody);
                 case "RequestShoppingList":
                     return RequestShoppingList();
                 case "AddShoppingItem":
@@ -25,6 +27,11 @@ namespace HouseFinance.Api.Communication
                 default:
                     return "Request type was invalid.";
             }
+        }
+
+        private static string AddBill(string requestPostBody)
+        {
+            return "ping";
         }
 
         public static string RequestBillList()
