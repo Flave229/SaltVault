@@ -102,7 +102,15 @@ namespace Services.FileIO
         {
             var objs = Open<T>().Cast<IPersistedData>().ToList();
 
-            objs = objs.Any(existingObj => (existingObj as IPersistedData).Id.Equals(obj.Id)) ? Update<T>(objs as List<IPersistedData>, obj) : Add<T>(objs as List<IPersistedData>, obj);
+            if (obj.Id == Guid.Empty)
+            {
+                obj.Id = Guid.NewGuid();
+                objs = Add<T>(objs, obj);
+            }
+            else
+                objs = objs.Any(existingObj => (existingObj as IPersistedData).Id.Equals(obj.Id))
+                    ? Update<T>(objs as List<IPersistedData>, obj)
+                    : Add<T>(objs as List<IPersistedData>, obj);
 
             Save<T>(objs);
         }
