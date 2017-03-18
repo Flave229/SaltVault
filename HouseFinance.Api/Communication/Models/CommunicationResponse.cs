@@ -7,5 +7,11 @@ namespace HouseFinance.Api.Communication.Models
         public Error Error { get; set; }
         public bool HasError { get; set; }
         public List<string> Notifications { get; set; }
+
+        public void AddError(Error error)
+        {
+            Error = error;
+            HasError = true;
+        }
     }
 }

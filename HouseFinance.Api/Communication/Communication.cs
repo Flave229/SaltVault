@@ -37,32 +37,37 @@ namespace HouseFinance.Api.Communication
 
         public static CommunicationResponse AddBill(string requestPostBody)
         {
+            var response = new CommunicationResponse();
             try
             {
+                if (requestPostBody == "")
+                {
+                    response.AddError(new Error
+                    {
+                        UserMessage = "No request post body provided"
+                    });
+                    return response;
+                }
+
                 var item = JsonConvert.DeserializeObject<Bill>(requestPostBody);
 
                 var genericFileHelper = new GenericFileHelper(FilePath.Bills);
                 genericFileHelper.AddOrUpdate<Bill>(item);
 
-                return new CommunicationResponse
+                response.Notifications = new List<string>
                 {
-                    Notifications = new List<string>
-                    {
-                        $"The bill '{item.Name}' has been added"
-                    }
+                    $"The bill '{item.Name}' has been added"
                 };
             }
             catch (Exception exception)
             {
-                return new CommunicationResponse
+                response.AddError(new Error
                 {
-                    Error = new Error
-                    {
-                        TechnicalMessage = exception.Message,
-                        UserMessage = $"Failed to add the bill"
-                    }
-                };
+                    TechnicalMessage = exception.Message,
+                    UserMessage = $"Failed to add the bill"
+                });
             }
+            return response;
         }
 
         public static string RequestBillList()
