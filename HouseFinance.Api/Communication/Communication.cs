@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using HouseFinance.Api.Communication.Models;
 using Services.FileIO;
+using Services.FormHelpers;
 using Services.Models.FinanceModels;
 using Services.Models.ShoppingModels;
 
@@ -51,6 +52,7 @@ namespace HouseFinance.Api.Communication
 
                 var item = JsonConvert.DeserializeObject<Bill>(requestPostBody);
 
+                BillValidator.CheckIfValidBill(item);
                 var genericFileHelper = new GenericFileHelper(FilePath.Bills);
                 genericFileHelper.AddOrUpdate<Bill>(item);
 
