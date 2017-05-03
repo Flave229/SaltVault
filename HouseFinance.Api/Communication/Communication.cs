@@ -30,7 +30,10 @@ namespace HouseFinance.Api.Communication
                 case "RequestShoppingList":
                     return RequestShoppingList();
                 case "AddShoppingItem":
-                    return AddShoppingItem(request.PostBody);
+                {
+                    var itemResponse = AddShoppingItem(request.PostBody);
+                    return JsonConvert.SerializeObject(itemResponse);
+                }
                 default:
                     return "Request type was invalid.";
             }
@@ -116,19 +119,30 @@ namespace HouseFinance.Api.Communication
             }
         }
 
-        public static string AddShoppingItem(string postBody)
+        public static CommunicationResponse AddShoppingItem(string postBody)
         {
+            var response = new CommunicationResponse();
             try
             {
                 var item = JsonConvert.DeserializeObject<ShoppingItem>(postBody);
+                ShoppingValidator.CheckIfValidItem(item);
                 new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(item);
 
-                return "Item Added";
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{item.Name}' has been added"
+                };
             }
-            catch
+            catch (Exception exception)
             {
-                return "An Error occured while adding the shopping item!";
+                response.AddError(new Error
+                {
+                    TechnicalMessage = exception.Message,
+                    UserMessage = "An Error occured while adding the shopping item!"
+                });
             }
+
+            return response;
         }
     }
 }

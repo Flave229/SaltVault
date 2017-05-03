@@ -80,6 +80,7 @@
     <Compile Include="FormHelpers\BillHelper.cs" />
     <Compile Include="FormHelpers\BillValidator .cs" />
     <Compile Include="FormHelpers\PaymentValidator.cs" />
+    <Compile Include="FormHelpers\ShoppingValidator.cs" />
     <Compile Include="Models\IPersistedData.cs" />
     <Compile Include="Models\Helpers\BillFormModel.cs" />
     <Compile Include="Models\FinanceModels\Bill.cs" />

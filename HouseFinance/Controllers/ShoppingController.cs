@@ -4,6 +4,7 @@ using Services.FileIO;
 using Services.Models.Helpers;
 using Services.Models.ShoppingModels;
 using HouseFinance.Api.Builders;
+using Services.FormHelpers;
 
 namespace HouseFinance.Controllers
 {
@@ -48,7 +49,7 @@ namespace HouseFinance.Controllers
                         itemForm.Item.ItemFor.Add(person.Person.Id);
                     }
                 }
-                
+                ShoppingValidator.CheckIfValidItem(itemForm.Item);
                 new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(itemForm.Item);
             }
             catch (Exception exception)
