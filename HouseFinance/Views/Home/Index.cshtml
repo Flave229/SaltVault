@@ -36,43 +36,42 @@
 
                     <div class="fh5co-portfolio-item">
                         <div class="@divClass">
-                            <table class="table">
-                                <tr>
-                                    <td style="width: 75%; border: none">
-                                        <h2>@bill.Name : @bill.FullDateDue.ToString("MMMM yyyy")</h2>
-                                        <p>@bill.FullDateDue.ToString("dd/MM/yyyy")</p>
-                                        <p>
-                                            @foreach (var person in bill.People)
-                                            {
-                                                var grayscale = "grayscale(100%)";
-                                                var opacity = "opacity(50%)";
+                            <div class="col-sm-6 col-md-6">
+                                <h3 style="font-family: NatterMedium; font-size: 33px; color: rgb(51, 51, 51)">
+                                    <b>@bill.Name</b>
+                                </h3>
+                                <h5 style="font-family: WhisperLight; font-size: 20px; color: rgb(51, 51, 51)">
+                                    Total:
+                                </h5>
+                                <h1 style="font-family: WhisperLight; font-size: 65px; color: rgb(51, 51, 51)">
+                                    £@bill.TotalAmount.ToString("###0.00")
+                                </h1>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <span style="font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)">
+                                    Bill Date: <b>@bill.FullDateDue.ToString("dd MMMM yyyy")</b>
+                                </span>
+                                <hr style="margin: 5px"/>
+                                <span style="font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)">
+                                    Balance Left: <b>£@bill.AmountDue.ToString("###0.00")</b>
+                                </span>
+                                <hr/>
+                                <span>
+                                    @foreach (var person in bill.People)
+                                    {
+                                        var grayscale = "grayscale(100%)";
+                                        var opacity = "opacity(50%)";
 
-                                                if (person.Paid)
-                                                {
-                                                    grayscale = "grayscale(0%)";
-                                                    opacity = "opacity(100%)";
-                                                }
+                                        if (person.Paid)
+                                        {
+                                            grayscale = "grayscale(0%)";
+                                            opacity = "opacity(100%)";
+                                        }
 
-                                                <img src="@person.ImageLink" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity"/>
-                                            }
-                                        </p>
-                                        <p>
-                                            <a href="@Url.Action("BillDetails", "Finance", new {billId = @bill.Id })" class="btn btn-primary">See Bill Details</a>
-                                        </p>
-                                    </td>
-                                    <td style="width: 60%; border: none">
-                                        @if (bill.Paid)
-                                        {
-                                            <span style="font-size: 40px; color: rgb(80, 80, 80)">PAID</span>
-                                        }
-                                        else
-                                        {
-                                            <span style="font-size: 40px">£@bill.AmountDue.ToString("####.00")</span>
-                                            <span> due</span>
-                                        }
-                                    </td>
-                                </tr>
-                            </table>
+                                        <img src="@person.ImageLink" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity" />
+                                    }
+                                </span>
+                            </div>
                         </div>
                     </div>
                 }

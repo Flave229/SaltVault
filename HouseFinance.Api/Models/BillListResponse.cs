@@ -23,6 +23,7 @@ namespace HouseFinance.Api.Models
         public bool Paid { get; set; }
         public decimal AmountDue { get; set; }
         public List<BillPeopleDetails> People { get; set; }
+        public decimal TotalAmount { get; set; }
 
         public BillDetails()
         {
