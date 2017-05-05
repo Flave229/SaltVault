@@ -34,9 +34,50 @@ namespace HouseFinance.Api.Communication
                     var itemResponse = AddShoppingItem(request.PostBody);
                     return JsonConvert.SerializeObject(itemResponse);
                 }
+                case "AddPayment":
+                {
+                    var paymentResponse = AddPayment(request.PostBody);
+                    return JsonConvert.SerializeObject(paymentResponse);
+                }
                 default:
                     return "Request type was invalid.";
             }
+        }
+
+        public static CommunicationResponse AddPayment(string requestPostBody)
+        {
+            var response = new CommunicationResponse();
+            try
+            {
+                if (requestPostBody == "")
+                {
+                    response.AddError(new Error
+                    {
+                        UserMessage = "No request post body provided"
+                    });
+                    return response;
+                }
+
+                var payment = JsonConvert.DeserializeObject<Payment>(requestPostBody);
+
+                PaymentValidator.CheckIfValidPayment(payment);
+                var genericFileHelper = new GenericFileHelper(FilePath.Payments);
+                genericFileHelper.AddOrUpdate<Payment>(payment);
+
+                response.Notifications = new List<string>
+                {
+                    "The payment has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError(new Error
+                {
+                    TechnicalMessage = exception.Message,
+                    UserMessage = $"Failed to add the payment"
+                });
+            }
+            return response;
         }
 
         public static CommunicationResponse AddBill(string requestPostBody)
