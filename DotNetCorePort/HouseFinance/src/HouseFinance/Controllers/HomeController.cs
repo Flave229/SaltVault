@@ -9,7 +9,7 @@ namespace HouseFinance.Controllers
         {
             var billModel = BillListBuilder.BuildBillList();
 
-            return View(billModel);
+            return View("Index", billModel);
         }
 
         public IActionResult Error()

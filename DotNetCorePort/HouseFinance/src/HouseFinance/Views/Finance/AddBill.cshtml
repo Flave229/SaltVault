@@ -1,0 +1,70 @@
+﻿@using System.Threading.Tasks
+@using HouseFinance.Core.Bills
+@model HouseFinance.Models.AddBillModel
+@{
+    ViewBag.Title = "Add Bill";
+}
+
+<div class="jumbotron">
+    <h1>Add Bill</h1>
+</div>
+
+<div class="row">
+    <div id="fh5co-portfolio">
+        @using (Html.BeginForm("AddBill", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <h4>Add a bill here to add it to the bill list</h4>
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(m => m.Bill.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Bill.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Amount", "Woof", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Bill.AmountOwed, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Bill.Due, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Bill.Due, DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("People Bill Applies To", "People Bill Applies To", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @for (var i = 0; i < Model.SelectedPeople.Count; i++)
+                    {
+                        var label = Model.SelectedPeople.ElementAt(i).Person.FirstName + " " + Model.SelectedPeople.ElementAt(i).Person.LastName;
+                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.Id)
+                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.FirstName)
+                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.LastName)
+                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.Image)
+                        @Html.CheckBoxFor(m => Model.SelectedPeople[i].Selected)
+                        @Html.Label(label, label, new { @style = "padding-left: 1em" })
+                        <br />
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Bill Type:", "Bill Type:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.RadioButtonFor(m => m.Bill.RecurringType, Enum.GetNames(typeof(RecurringType)).ElementAt(0))
+                    @Html.Label("Regular Bill")
+                    <br />
+                    @Html.RadioButtonFor(m => m.Bill.RecurringType, Enum.GetNames(typeof(RecurringType)).ElementAt(1))
+                    @Html.Label("Monthly Recurring Bill")
+                </div>
+            </div>
+            <p style="color:red">@ViewBag.ExceptionMessage</p>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Add Bill" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
