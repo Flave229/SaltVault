@@ -121,6 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 .mainContentWrapper .billCard {
   float: left;
   width: 100%;
+  margin-top: 20px;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -138,7 +139,6 @@ h1, h2, h3, h4, h5, h6 {
 .mainContentWrapper .billCard .billCard_Alert,
 .mainContentWrapper .billCard .billCard_Complete {
   width: 100%;
-  margin-bottom: 20px;
   background: #fff;
   padding: 4em;
   padding-bottom: 2em;
