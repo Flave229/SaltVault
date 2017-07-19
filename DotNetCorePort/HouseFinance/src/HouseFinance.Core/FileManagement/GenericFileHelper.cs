@@ -11,7 +11,7 @@ namespace HouseFinance.Core.FileManagement
 
         public GenericFileHelper(string filePath)
         {
-            _filePath = AppContext.BaseDirectory + filePath;
+            _filePath = filePath;
         }
 
         public List<T> Open<T>()
