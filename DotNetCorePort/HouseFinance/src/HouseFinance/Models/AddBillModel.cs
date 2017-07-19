@@ -19,17 +19,5 @@ namespace HouseFinance.Models
     {
         public Person Person { get; set; }
         public bool Selected { get; set; }
-
-        public AddBillPerson()
-        {
-            Person = new Person();
-            Selected = true;
-        }
-
-        public AddBillPerson(Person person)
-        {
-            Person = person;
-            Selected = true;
-        }
     }
 }

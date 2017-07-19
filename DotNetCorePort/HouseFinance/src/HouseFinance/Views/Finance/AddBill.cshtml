@@ -10,7 +10,7 @@
 </div>
 
 <div class="row">
-    <div id="fh5co-portfolio">
+    <div class="mainContentWrapper">
         @using (Html.BeginForm("AddBill", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <h4>Add a bill here to add it to the bill list</h4>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Amount", "Woof", new { @class = "col-md-2 control-label" })
+                @Html.Label("Amount", "Amount", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
                     @Html.TextBoxFor(m => m.Bill.AmountOwed, new { @class = "form-control" })
                 </div>
