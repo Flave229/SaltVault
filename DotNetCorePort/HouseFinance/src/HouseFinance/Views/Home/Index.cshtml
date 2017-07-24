@@ -23,15 +23,15 @@
             {
                 foreach (var bill in Model)
                 {
-                    var divClass = "billCard_Normal";
+                    var divClass = "card_Normal";
 
                     if (bill.Overdue)
                     {
-                        divClass = "billCard_Alert";
+                        divClass = "card_Alert";
                     }
                     else if (bill.Paid)
                     {
-                        divClass = "billCard_Complete";
+                        divClass = "card_Complete";
                     }
 
                     <div class="billCard">

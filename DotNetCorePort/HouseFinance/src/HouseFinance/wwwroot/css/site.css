@@ -135,9 +135,9 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.mainContentWrapper .billCard .billCard_Normal,
-.mainContentWrapper .billCard .billCard_Alert,
-.mainContentWrapper .billCard .billCard_Complete {
+.mainContentWrapper .billCard .card_Normal,
+.mainContentWrapper .billCard .card_Alert,
+.mainContentWrapper .billCard .card_Complete {
   width: 100%;
   background: #fff;
   padding: 4em;
@@ -147,30 +147,30 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 36px;
 }
 @media screen and (max-width: 1200px) {
-  .mainContentWrapper .billCard .billCard_Normal,
-  .mainContentWrapper .billCard .billCard_Alert,
-  .mainContentWrapper .billCard .billCard_Complete  {
+  .mainContentWrapper .billCard .card_Normal,
+  .mainContentWrapper .billCard .card_Alert,
+  .mainContentWrapper .billCard .card_Complete  {
     padding: 2em;
   }
 }
 @media screen and (max-width: 768px) {
-  .billCard_Normal {
+  .card_Normal {
     display: block;
     width: 100%;
     padding: 1em;
   }
 }
 
-.mainContentWrapper .billCard .billCard_Normal h2, 
-.mainContentWrapper .billCard .billCard_Alert h2, 
-.mainContentWrapper .billCard .billCard_Complete h2 {
+.mainContentWrapper .billCard .card_Normal h2, 
+.mainContentWrapper .billCard .card_Alert h2, 
+.mainContentWrapper .billCard .card_Complete h2 {
   font-family: "Roboto Slab", arial, sans-serif;
   font-size: 30px;
   line-height: 34px;
   font-weight: 300;
 }
 
-.billCard_Alert {
+.card_Alert {
     background-color: rgb(255, 80, 80) !important;
     animation: changeColorRedFlash ease;
     animation-iteration-count: infinite;
@@ -178,7 +178,7 @@ h1, h2, h3, h4, h5, h6 {
     animation-name: changeColorRedFlash; 
 }
 
-.billCard_Complete {
+.card_Complete {
     background-color: rgb(92, 184, 92) !important;
     animation: changeColorSubtleGreenFlash ease;
     animation-iteration-count: infinite;

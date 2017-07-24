@@ -34,11 +34,11 @@
 
                     @foreach (var item in Model.ShoppingList)
                     {
-                    var classStyle = "incomplete";
+                    var classStyle = "card_Normal";
 
                     if (item.Purchased)
                     {
-                        classStyle = "completed";
+                        classStyle = "card_Complete";
                     }
 
                     <tr>
