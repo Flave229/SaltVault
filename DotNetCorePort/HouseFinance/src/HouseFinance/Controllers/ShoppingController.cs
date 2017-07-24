@@ -34,5 +34,25 @@ namespace HouseFinance.Controllers
 
             return RedirectToActionPermanent("Index", "Shopping");
         }
+
+        public IActionResult CompleteItem(Guid itemId)
+        {
+            var fileHelper = new GenericFileHelper(FilePath.Shopping);
+            var shoppingItem = fileHelper.Get<ShoppingItem>(itemId);
+
+            shoppingItem.Purchased = true;
+
+            fileHelper.AddOrUpdate<ShoppingItem>(shoppingItem);
+
+            return RedirectToActionPermanent("Index", "Shopping");
+        }
+
+        public IActionResult DeleteItem(Guid itemId)
+        {
+            var fileHelper = new GenericFileHelper(FilePath.Shopping);
+            fileHelper.Delete<ShoppingItem>(itemId);
+
+            return RedirectToActionPermanent("Index", "Shopping");
+        }
     }
 }
