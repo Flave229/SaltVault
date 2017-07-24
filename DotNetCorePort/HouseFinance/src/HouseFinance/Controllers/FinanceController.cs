@@ -88,5 +88,12 @@ namespace HouseFinance.Controllers
 
             return RedirectToActionPermanent("BillDetails", new { billId = formPayment.BillId, name = fileHelper.Get<Bill>(formPayment.BillId).Name });
         }
+
+        public IActionResult DeleteBill(Guid billId)
+        {
+            new GenericFileHelper(FilePath.Bills).Delete<Bill>(billId);
+
+            return RedirectToActionPermanent("Index", "Home");
+        }
     }
 }
