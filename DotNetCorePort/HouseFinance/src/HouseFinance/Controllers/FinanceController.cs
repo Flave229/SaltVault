@@ -55,5 +55,38 @@ namespace HouseFinance.Controllers
 
             return View(billModel);
         }
+
+        public IActionResult AddPayment(Guid billId)
+        {
+            var payment = new PaymentFormHelper
+            {
+                BillId = billId
+            };
+
+            return View("AddPayment", payment);
+        }
+
+        [HttpPost]
+        public ActionResult AddPayment(PaymentFormHelper formPayment)
+        {
+            var fileHelper = new GenericFileHelper(FilePath.Bills);
+
+            try
+            {
+                var realBill = fileHelper.Get<Bill>(formPayment.BillId);
+
+                BillHelper.AddOrUpdatePayment(ref realBill, formPayment.Payment);
+
+                fileHelper.AddOrUpdate<Bill>(realBill);
+            }
+            catch (Exception ex)
+            {
+                TempData["Exception"] = ex.Message;
+
+                return RedirectToActionPermanent("AddPayment", new { billId = formPayment.BillId });
+            }
+
+            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.BillId, name = fileHelper.Get<Bill>(formPayment.BillId).Name });
+        }
     }
 }
