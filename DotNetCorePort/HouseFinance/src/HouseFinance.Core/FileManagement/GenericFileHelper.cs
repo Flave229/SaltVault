@@ -28,6 +28,8 @@ namespace HouseFinance.Core.FileManagement
                     existingFileAsString = existingFileAsString + existingFileAsJson.ElementAt(i);
                 }
 
+                Console.WriteLine($"LAST DITCH EFFORT - THIS FILE ({_filePath}) HAS THIS CONTENT - \"{existingFileAsString}\"");
+
                 if (existingFileAsString.Equals(""))
                 {
                     Console.WriteLine($"File was empty - {_filePath}");
