@@ -37,8 +37,9 @@ namespace HouseFinance.Core.FileManagement
             }
             catch (Exception exception)
             {
-                throw new Exception("Error: An Error occured while trying to retrieve data at: " + _filePath
-                    + ".\n Exception: " + exception.Message, exception);
+                var message = "Error: An Error occured while trying to retrieve data at: " + _filePath + ".\n Exception: " + exception.Message;
+                Console.WriteLine(message);
+                throw new Exception(message, exception);
             }
         }
 
