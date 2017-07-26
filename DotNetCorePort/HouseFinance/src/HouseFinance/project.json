@@ -42,7 +42,8 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "copyToOutput": [ "**/bills.txt", "**/payments.txt", "**/People.txt", "**/ShoppingItems.txt" ]
   },
 
   "runtimeOptions": {
