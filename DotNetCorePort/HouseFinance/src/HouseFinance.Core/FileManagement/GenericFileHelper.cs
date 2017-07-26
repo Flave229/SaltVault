@@ -30,6 +30,7 @@ namespace HouseFinance.Core.FileManagement
 
                 if (existingFileAsString.Equals(""))
                 {
+                    Console.WriteLine($"File was empty - {_filePath}");
                     return new List<T>();
                 }
 
