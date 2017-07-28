@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using HouseFinance.Core.Authentication;
 using HouseFinance.Core.Bills;
+using HouseFinance.Core.Shopping;
+using HouseFinance.Models.API;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -55,43 +56,33 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("Api/Shopping")]
+        public GetShoppingResponse GetShoppingItems()
+        {
+            var response = new GetShoppingResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Items = ShoppingListBuilder.BuildShoppingList();
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
             return Authentication.CheckKey(apiKey);
         }
-    }
-
-    public class GetBillResponse : CommunicationResponse
-    {
-        public BillDetailsResponse Bill { get; set; }
-    }
-
-    public class GetBillRequest
-    {
-        public string BillId { get; set; }
-    }
-
-    public class GetBillListResponse : CommunicationResponse
-    {
-        public List<BillOverview> Bills { get; set; }
-    }
-
-    public class CommunicationResponse
-    {
-        public Error Error { get; set; }
-        public bool HasError { get; set; }
-        public List<string> Notifications { get; set; }
-
-        public void AddError(string message)
-        {
-            Error = new Error { Message = message };
-            HasError = true;
-        }
-    }
-
-    public class Error
-    {
-        public string Message { get; set; }
     }
 }
