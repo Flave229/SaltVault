@@ -142,6 +142,35 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/Shopping/Add")]
+        public CommunicationResponse AddShoppingItem([FromBody]ShoppingItem shoppingRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                ShoppingValidator.CheckIfValidItem(shoppingRequest);
+                new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(shoppingRequest);
+
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{shoppingRequest.Name}' has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
