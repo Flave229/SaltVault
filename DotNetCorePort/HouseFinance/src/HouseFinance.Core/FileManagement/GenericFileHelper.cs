@@ -28,11 +28,8 @@ namespace HouseFinance.Core.FileManagement
                     existingFileAsString = existingFileAsString + existingFileAsJson.ElementAt(i);
                 }
 
-                Console.WriteLine($"LAST DITCH EFFORT - THIS FILE ({_filePath}) HAS THIS CONTENT - \"{existingFileAsString}\"");
-
                 if (existingFileAsString.Equals(""))
                 {
-                    Console.WriteLine($"File was empty - {_filePath}");
                     return new List<T>();
                 }
 
@@ -41,7 +38,6 @@ namespace HouseFinance.Core.FileManagement
             catch (Exception exception)
             {
                 var message = "Error: An Error occured while trying to retrieve data at: " + _filePath + ".\n Exception: " + exception.Message;
-                Console.WriteLine(message);
                 throw new Exception(message, exception);
             }
         }

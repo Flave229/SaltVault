@@ -95,5 +95,27 @@ namespace HouseFinance.Controllers
 
             return RedirectToActionPermanent("Index", "Home");
         }
+
+        public IActionResult AddPerson()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddPerson(AddPersonModel personModel)
+        {
+            var person = new Person
+            {
+                Id = Guid.NewGuid(),
+                FirstName = personModel.FirstName,
+                LastName = personModel.LastName,
+                Image = personModel.ImageUrl
+            };
+
+            var fileHelper = new GenericFileHelper(FilePath.People);
+            fileHelper.AddOrUpdate<Person>(person);
+
+            return RedirectToActionPermanent("Index", "Home");
+        }
     }
 }
