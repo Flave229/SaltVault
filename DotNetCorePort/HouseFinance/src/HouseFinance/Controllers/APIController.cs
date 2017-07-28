@@ -91,7 +91,7 @@ namespace HouseFinance.Controllers
 
         [HttpPost]
         [Route("Api/Bills/AddPayment")]
-        public CommunicationResponse AddPayment([FromBody]Payment paymentRequest)
+        public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -102,9 +102,24 @@ namespace HouseFinance.Controllers
 
             try
             {
-                PaymentValidator.CheckIfValidPayment(paymentRequest);
-                var genericFileHelper = new GenericFileHelper(FilePath.Payments);
-                genericFileHelper.AddOrUpdate<Payment>(paymentRequest);
+                var payment = new Payment
+                {
+                    Id = Guid.NewGuid(),
+                    Amount = paymentRequest.Amount,
+                    Created = paymentRequest.Created,
+                    PersonId = paymentRequest.PersonId
+                };
+
+                PaymentValidator.CheckIfValidPayment(payment);
+                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
+                paymentFileHelper.AddOrUpdate<Payment>(payment);
+
+                var billFileHelper = new GenericFileHelper(FilePath.Payments);
+                var realBill = billFileHelper.Get<Bill>(paymentRequest.BillId);
+
+                BillHelper.AddOrUpdatePayment(ref realBill, payment);
+
+                billFileHelper.AddOrUpdate<Bill>(realBill);
 
                 response.Notifications = new List<string>
                 {
@@ -176,6 +191,14 @@ namespace HouseFinance.Controllers
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
             return Authentication.CheckKey(apiKey);
         }
+    }
+
+    public class AddPaymentRequest
+    {
+        public Guid BillId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Created { get; set; }
+        public Guid PersonId { get; set; }
     }
 
     public class GetShoppingDetailsResponse : CommunicationResponse
