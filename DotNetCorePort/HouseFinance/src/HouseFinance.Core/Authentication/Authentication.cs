@@ -10,9 +10,11 @@ namespace HouseFinance.Core.Authentication
             Guid.Parse("D2DB7539-634F-47C4-818D-59AD03C592E3")
         };
 
-        public static bool CheckKey(Guid authKey)
+        public static bool CheckKey(string authKey)
         {
-            return AuthenticatedUsers.Contains(authKey);
+            Guid authKeyGuid;
+
+            return Guid.TryParse(authKey, out authKeyGuid) && AuthenticatedUsers.Contains(authKeyGuid);
         }
     }
 }

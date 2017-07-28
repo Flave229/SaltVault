@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using HouseFinance.Core.Authentication;
 using HouseFinance.Core.Bills;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +8,16 @@ namespace HouseFinance.Controllers
 {
     public class ApiController : Controller
     {
+        [HttpGet]
         [Route("Api/Bills")]
-        public GetBillsResponse GetBills(CommunicationRequest billsRequest)
+        public GetBillsResponse GetBills()
         {
+            var authorizationHeader = Request.Headers["Authorization"];
+            var apiKey = authorizationHeader.ToString().Replace("Token ", "");
             var response = new GetBillsResponse();
             try
             {
-                if (Authentication.CheckKey(billsRequest.ApiKey) == false)
+                if (Authentication.CheckKey(apiKey) == false)
                 {
                     response.AddError("The API Key was invalid");
                     return response;
@@ -53,10 +55,5 @@ namespace HouseFinance.Controllers
     public class Error
     {
         public string Message { get; set; }
-    }
-
-    public class CommunicationRequest
-    {
-        public Guid ApiKey { get; set; }
     }
 }
