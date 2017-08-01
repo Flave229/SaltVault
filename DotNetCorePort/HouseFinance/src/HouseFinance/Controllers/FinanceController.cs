@@ -1,8 +1,9 @@
 ﻿using System;
-using Discord.Rest;
+using Discord.WebSocket;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
+using HouseFinance.Core.Services.Discord;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,11 @@ namespace HouseFinance.Controllers
 {
     public class FinanceController : Controller
     {
-        //private readonly DiscordService _discordService;
+        private readonly DiscordService _discordService;
 
         public FinanceController()
         {
-            //_discordService = new DiscordService(new DiscordRestClient());
+            _discordService = new DiscordService(new DiscordSocketClient());
         }
 
         public IActionResult AddBill()
@@ -48,7 +49,7 @@ namespace HouseFinance.Controllers
             BillValidator.CheckIfValidBill(addBillModel.Bill);
             new GenericFileHelper(FilePath.Bills).AddOrUpdate<Bill>(addBillModel.Bill);
 
-            //_discordService.AddBillNotification(addBillModel.Bill.Name);
+            _discordService.AddBillNotification(addBillModel.Bill.Name, addBillModel.Bill.Due, addBillModel.Bill.AmountOwed);
 
             return RedirectToActionPermanent("Index", "Home");
         }
