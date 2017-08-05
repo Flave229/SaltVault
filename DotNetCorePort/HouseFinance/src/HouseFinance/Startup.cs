@@ -46,7 +46,6 @@ namespace HouseFinance
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -57,9 +56,7 @@ namespace HouseFinance
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            app.UseApplicationInsightsExceptionTelemetry();
-
+            
             app.UseStaticFiles();
             
             app.UseMvc(routes =>

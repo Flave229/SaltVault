@@ -1,8 +1,5 @@
 ﻿using System;
-<<<<<<< HEAD
 using Discord.WebSocket;
-=======
->>>>>>> parent of 1f4bf10... Starting working in VS2017 and also updated all the third party libraries (Including some .NET Core stuff). There is a new class for Discord intergration that is yet to be added
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
@@ -14,7 +11,6 @@ namespace HouseFinance.Controllers
 {
     public class FinanceController : Controller
     {
-<<<<<<< HEAD
         private readonly DiscordService _discordService;
 
         public FinanceController()
@@ -22,8 +18,6 @@ namespace HouseFinance.Controllers
             _discordService = new DiscordService(new DiscordSocketClient());
         }
 
-=======
->>>>>>> parent of 1f4bf10... Starting working in VS2017 and also updated all the third party libraries (Including some .NET Core stuff). There is a new class for Discord intergration that is yet to be added
         public IActionResult AddBill()
         {
             var billModel = new AddBillModel();
@@ -53,12 +47,9 @@ namespace HouseFinance.Controllers
             }
 
             BillValidator.CheckIfValidBill(addBillModel.Bill);
-
-<<<<<<< HEAD
-            _discordService.AddBillNotification(addBillModel.Bill.Name, addBillModel.Bill.Due, addBillModel.Bill.AmountOwed);
-=======
             new GenericFileHelper(FilePath.Bills).AddOrUpdate<Bill>(addBillModel.Bill);
->>>>>>> parent of 1f4bf10... Starting working in VS2017 and also updated all the third party libraries (Including some .NET Core stuff). There is a new class for Discord intergration that is yet to be added
+
+            _discordService.AddBillNotification(addBillModel.Bill.Name, addBillModel.Bill.Due, addBillModel.Bill.AmountOwed);
 
             return RedirectToActionPermanent("Index", "Home");
         }
