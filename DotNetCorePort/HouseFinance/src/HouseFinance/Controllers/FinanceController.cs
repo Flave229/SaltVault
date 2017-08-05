@@ -4,6 +4,7 @@ using HouseFinance.Core.Bills;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
 using HouseFinance.Core.Services;
+using HouseFinance.Core.Services.Discord;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using HouseFinance.Core.Services.Discord.Models;
 using Newtonsoft.Json;
 
-namespace HouseFinance.Core.Services
+namespace HouseFinance.Core.Services.Discord
 {
     public class DiscordService
     {
