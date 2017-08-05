@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Net.Http;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
+using HouseFinance.Core.Services;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,13 @@ namespace HouseFinance.Controllers
 {
     public class FinanceController : Controller
     {
+        private DiscordService _discordService;
+
+        public FinanceController()
+        {
+            _discordService = new DiscordService(new HttpClient());    
+        }
+
         public IActionResult AddBill()
         {
             var billModel = new AddBillModel();
@@ -40,6 +49,7 @@ namespace HouseFinance.Controllers
             BillValidator.CheckIfValidBill(addBillModel.Bill);
 
             new GenericFileHelper(FilePath.Bills).AddOrUpdate<Bill>(addBillModel.Bill);
+            _discordService.AddBillNotification(addBillModel.Bill.Name, addBillModel.Bill.Due, addBillModel.Bill.AmountOwed);
 
             return RedirectToActionPermanent("Index", "Home");
         }
