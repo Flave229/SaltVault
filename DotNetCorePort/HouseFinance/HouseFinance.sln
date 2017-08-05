@@ -1,15 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D32CE51B-19D8-48BE-9CEF-0DE0BB91573C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2A9D74B7-0BA6-484C-874F-535E9F6BA50C}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseFinance", "src\HouseFinance\HouseFinance.csproj", "{D00CA651-3BCE-4646-99C7-668BF8446C9E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HouseFinance.WebApp", "src\HouseFinance\HouseFinance.WebApp.xproj", "{D00CA651-3BCE-4646-99C7-668BF8446C9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseFinance.Core", "src\HouseFinance.Core\HouseFinance.Core.csproj", "{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HouseFinance.Core", "src\HouseFinance.Core\HouseFinance.Core.xproj", "{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
