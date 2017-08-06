@@ -6,6 +6,7 @@ using HouseFinance.Core.Bills.Payments;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models.API;
+using HouseFinance.Models.Bills;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -79,6 +80,35 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     $"The bill '{billRequest.Name}' has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpDelete]
+        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
+                var bill = genericFileHelper.Get<Bill>(deleteBillRequest.BillId);
+                genericFileHelper.Delete<Bill>(deleteBillRequest.BillId);
+
+                response.Notifications = new List<string>
+                {
+                    $"The bill '{bill.Name}' has been deleted"
                 };
             }
             catch (Exception exception)
