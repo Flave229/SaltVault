@@ -203,11 +203,66 @@ namespace HouseFinance.Controllers
             try
             {
                 ShoppingValidator.CheckIfValidItem(shoppingRequest);
-                new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(shoppingRequest);
+                var shoppingFileHelper = new GenericFileHelper(FilePath.Shopping);
+
+                if (shoppingFileHelper.Get<ShoppingItem>(shoppingRequest.Id) != null)
+                {
+                    response.AddError("Cannot update a shopping item via POST. Please use a PATCH request");
+                    return response;
+                }
+
+                shoppingFileHelper.AddOrUpdate<ShoppingItem>(shoppingRequest);
 
                 response.Notifications = new List<string>
                 {
                     $"The shopping item '{shoppingRequest.Name}' has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpPatch]
+        [Route("Api/Shopping")]
+        public CommunicationResponse UpdateShoppingItem([FromBody]UpdateShoppingItemRequest shoppingRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var shoppingFileHelper = new GenericFileHelper(FilePath.Shopping);
+                var existingShoppingItem = shoppingFileHelper.Get<ShoppingItem>(shoppingRequest.Id);
+
+                if (existingShoppingItem == null)
+                {
+                    response.AddError("The requested shopping item does not exist");
+                    return response;
+                }
+
+                var newShoppingItem = new ShoppingItem
+                {
+                    Id = shoppingRequest.Id,
+                    Name = shoppingRequest.Name,
+                    Added = existingShoppingItem.Added,
+                    AddedBy = existingShoppingItem.AddedBy,
+                    ItemFor = shoppingRequest.ItemFor,
+                    Purchased = shoppingRequest.Purchased
+                };
+                ShoppingValidator.CheckIfValidItem(newShoppingItem);
+                shoppingFileHelper.AddOrUpdate<ShoppingItem>(newShoppingItem);
+
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{shoppingRequest.Name}' has been updated"
                 };
             }
             catch (Exception exception)
