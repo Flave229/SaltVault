@@ -33,7 +33,7 @@ namespace HouseFinance.Core.FileManagement
                     return new List<T>();
                 }
 
-                return JsonConvert.DeserializeObject<List<T>>(existingFileAsString) as List<T>;
+                return JsonConvert.DeserializeObject<List<T>>(existingFileAsString);
             }
             catch (Exception exception)
             {
@@ -42,7 +42,7 @@ namespace HouseFinance.Core.FileManagement
             }
         }
 
-        public void Save<T>(List<IPersistedData> obj)
+        public void Save(List<IPersistedData> obj)
         {
             try
             {
@@ -60,14 +60,14 @@ namespace HouseFinance.Core.FileManagement
             }
         }
 
-        public List<IPersistedData> Add<T>(List<IPersistedData> obj, IPersistedData objToAdd)
+        public List<IPersistedData> Add(List<IPersistedData> obj, IPersistedData objToAdd)
         {
             obj.Add(objToAdd);
 
             return obj;
         }
 
-        public List<IPersistedData> Update<T>(List<IPersistedData> objs, IPersistedData updatedObj)
+        public List<IPersistedData> Update(List<IPersistedData> objs, IPersistedData updatedObj)
         {
             var index = objs.FindIndex(obj => obj.Id.Equals(updatedObj.Id));
             objs[index] = updatedObj;
@@ -75,7 +75,7 @@ namespace HouseFinance.Core.FileManagement
             return objs;
         }
 
-        public void Delete<T>(Guid Id)
+        public void Delete<T>(Guid id)
         {
             try
             {
@@ -83,13 +83,13 @@ namespace HouseFinance.Core.FileManagement
 
                 for (var i = 0; i < objList.Count; i++)
                 {
-                    if ((objList[i] as IPersistedData).Id != Id) continue;
+                    if (objList[i].Id != id) continue;
 
                     objList.RemoveAt(i);
                     break;
                 }
 
-                Save<T>(objList);
+                Save(objList);
             }
             catch (Exception exception)
             {
@@ -104,14 +104,14 @@ namespace HouseFinance.Core.FileManagement
             if (obj.Id == Guid.Empty)
             {
                 obj.Id = Guid.NewGuid();
-                objs = Add<T>(objs, obj);
+                objs = Add(objs, obj);
             }
             else
-                objs = objs.Any(existingObj => (existingObj as IPersistedData).Id.Equals(obj.Id))
-                    ? Update<T>(objs as List<IPersistedData>, obj)
-                    : Add<T>(objs as List<IPersistedData>, obj);
+                objs = objs.Any(existingObj => existingObj.Id.Equals(obj.Id))
+                    ? Update(objs, obj)
+                    : Add(objs, obj);
 
-            Save<T>(objs);
+            Save(objs);
         }
 
         public void AddOrUpdate<T>(List<IPersistedData> obj)
