@@ -251,11 +251,11 @@ namespace HouseFinance.Controllers
                 var newShoppingItem = new ShoppingItem
                 {
                     Id = shoppingRequest.Id,
-                    Name = shoppingRequest.Name,
+                    Name = shoppingRequest.Name ?? existingShoppingItem.Name,
                     Added = existingShoppingItem.Added,
                     AddedBy = existingShoppingItem.AddedBy,
-                    ItemFor = shoppingRequest.ItemFor,
-                    Purchased = shoppingRequest.Purchased
+                    ItemFor = shoppingRequest.ItemFor ?? existingShoppingItem.ItemFor,
+                    Purchased = shoppingRequest.Purchased ?? existingShoppingItem.Purchased
                 };
                 ShoppingValidator.CheckIfValidItem(newShoppingItem);
                 shoppingFileHelper.AddOrUpdate<ShoppingItem>(newShoppingItem);
