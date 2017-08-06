@@ -36,25 +36,6 @@ namespace HouseFinance.Controllers
             return View(billModel);
         }
 
-        [HttpPost]
-        public IActionResult AddBill(AddBillModel addBillModel)
-        {
-            foreach (var person in addBillModel.SelectedPeople)
-            {
-                if (person.Selected)
-                {
-                    addBillModel.Bill.People.Add(person.Person.Id);
-                }
-            }
-
-            BillValidator.CheckIfValidBill(addBillModel.Bill);
-
-            new GenericFileHelper(FilePath.Bills).AddOrUpdate<Bill>(addBillModel.Bill);
-            _discordService.AddBillNotification(addBillModel.Bill.Name, addBillModel.Bill.Due, addBillModel.Bill.AmountOwed);
-
-            return RedirectToActionPermanent("Index", "Home");
-        }
-
         public IActionResult Error()
         {
             return View();
@@ -78,36 +59,6 @@ namespace HouseFinance.Controllers
             };
 
             return View("AddPayment", payment);
-        }
-
-        [HttpPost]
-        public ActionResult AddPayment(PaymentFormHelper formPayment)
-        {
-            var fileHelper = new GenericFileHelper(FilePath.Bills);
-
-            try
-            {
-                var realBill = fileHelper.Get<Bill>(formPayment.Bill.Id);
-
-                BillHelper.AddOrUpdatePayment(ref realBill, formPayment.Payment);
-
-                fileHelper.AddOrUpdate<Bill>(realBill);
-            }
-            catch (Exception ex)
-            {
-                TempData["Exception"] = ex.Message;
-
-                return RedirectToActionPermanent("AddPayment", new { billId = formPayment.Bill.Id });
-            }
-
-            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.Bill.Id, name = fileHelper.Get<Bill>(formPayment.Bill.Id).Name });
-        }
-
-        public IActionResult DeleteBill(Guid billId)
-        {
-            new GenericFileHelper(FilePath.Bills).Delete<Bill>(billId);
-
-            return RedirectToActionPermanent("Index", "Home");
         }
 
         public IActionResult AddPerson()
