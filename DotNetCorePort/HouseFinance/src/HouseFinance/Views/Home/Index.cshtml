@@ -1,11 +1,4 @@
 ﻿@using System.Threading.Tasks
-@using HouseFinance.Core.Bills.Payments
-@using HouseFinance.Core.FileManagement
-@model List<HouseFinance.Core.Bills.BillOverview>
-@{
-    var payments = new GenericFileHelper(FilePath.Payments).GetAll<Payment>();
-    ViewBag.Title = "Home Page";
-}
 
 <div class="jumbotron">
     <h1>House Finance</h1>
