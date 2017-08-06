@@ -13,90 +13,94 @@
 </div>
 
 <div class="row">
-    <div class="mainContentWrapper">
+    <div class="mainContentWrapper" id="billContainer">
         <p>@ViewBag.ExceptionMessage</p>
         <h1 class="mainContentHeader">List of Current Bills</h1>
         <a href="@Url.Action("AddBill", "Finance")" class="btn btn-primary" style="float: right">Add New Bill</a>
-        @if (ViewBag.ExceptionMessage != "")
-        {
-            try
-            {
-                foreach (var bill in Model)
-                {
-                    var divClass = "card_Normal";
-
-                    if (bill.Overdue)
-                    {
-                        divClass = "card_Alert";
-                    }
-                    else if (bill.Paid)
-                    {
-                        divClass = "card_Complete";
-                    }
-
-                    <div class="billCard">
-                        <div class="@divClass">
-                            <div class="col-sm-6 col-md-6">
-                                <h3 style="font-family: NatterMedium; font-size: 33px; color: rgb(51, 51, 51)">
-                                    <b>@bill.Name</b>
-                                </h3>
-                                <h5 style="font-family: WhisperLight; font-size: 20px; color: rgb(51, 51, 51)">
-                                    Total:
-                                </h5>
-                                <h1 style="font-family: WhisperLight; font-size: 65px; color: rgb(51, 51, 51)">
-                                    £@bill.TotalAmount.ToString("###0.00")
-                                </h1>
-                                <a href="@Url.Action("BillDetails", "Finance", new {billId = @bill.Id })" class="btn btn-primary">See Bill Details</a>
-                            </div>
-                            <div class="col-md-6 col-sm-6">
-                                <span style="font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)">
-                                    Bill Date: <b>@bill.FullDateDue.ToString("dd MMMM yyyy")</b>
-                                </span>
-                                <hr style="margin: 5px" />
-                                <span style="font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)">
-                                    Balance Left: <b>£@bill.AmountDue.ToString("###0.00")</b>
-                                </span>
-                                <hr />
-                                <span>
-                                    @foreach (var person in bill.People)
-                                    {
-                                        var grayscale = "grayscale(100%)";
-                                        var opacity = "opacity(50%)";
-
-                                        if (person.Paid)
-                                        {
-                                            grayscale = "grayscale(0%)";
-                                            opacity = "opacity(100%)";
-                                        }
-
-                                        <img src="@person.ImageLink" width="40" style="filter: @grayscale @opacity; -webkit-filter: @grayscale @opacity" />
-                                    }
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                <a href="#" class="btn btn-primary" style="float: right; margin-top: 20px">See All Bills [DEAD]</a>
-            }
-            catch (Exception exception)
-            {
-                ViewBag.ExceptionMessage = "An Error occured while rendering the Bill list.";
-
-                <div class="fh5co-portfolio-item">
-                    <div class="fh5co-portfolio-description">
-                        <p>@ViewBag.ExceptionMessage @exception.Message</p>
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="fh5co-portfolio-item">
-                <div class="fh5co-portfolio-description">
-                    <p>@ViewBag.ExceptionMessage</p>
-                </div>
-            </div>
-        }
     </div>
 </div>
+
+<script>
+    var billDetailsUrl = '@Url.Action("BillDetails", "Finance")';
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    window.onload = function getBills() {
+        $.ajax({
+            url: '@Url.Action("GetBillList", "Api")',
+            type: "GET",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'D2DB7539-634F-47C4-818D-59AD03C592E3');
+            },
+            success: function (billList) {
+                var billContainer = document.getElementById("billContainer");
+                
+                console.log(billList);
+                var bills = billList.bills;
+                for (var i = 0; i < bills.length; i++) {
+                    var cardStyle;
+
+                    if (bills[i].overdue) {
+                        cardStyle = "card_Alert";
+                    }
+                    else if (bills[i].paid) {
+                        cardStyle = "card_Complete";
+                    }
+                    else {
+                        cardStyle = "card_Normal";
+                    }
+
+                    var dateDue = new Date(Date.parse(bills[i].fullDateDue));
+                    var dateDueString = (dateDue.getDay() + 1) + " " + monthNames[dateDue.getMonth()] + " " + dateDue.getFullYear();
+
+                    var billCard = "<div class='billCard'>" +
+                        "<div class=" + cardStyle + "> " +
+                        "<div class='col-sm-6 col-md-6'>" +
+                        "<h3 style='font-family: NatterMedium; font-size: 33px; color: rgb(51, 51, 51)'>" +
+                        "<b>" + bills[i].name + "</b>" +
+                        "</h3>" +
+                        "<h5 style='font-family: WhisperLight; font-size: 20px; color: rgb(51, 51, 51)'>" +
+                        "Total:" +
+                        "</h5>" +
+                        "<h1 style='font-family: WhisperLight; font-size: 65px; color: rgb(51, 51, 51)'>" +
+                        "£" + Number(Math.round(bills[i].totalAmount + 'e2') + 'e-2').toFixed(2) +
+                        "</h1>" +
+                        "<a href='" + billDetailsUrl + "?billId=" + bills[i].id + "' class='btn btn-primary'>See Bill Details</a>" +
+                        "</div>" +
+                        "<div class='col-md-6 col-sm-6'>" +
+                        "<span style='font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)'>" +
+                        "Bill Date: <b>" + dateDueString + "</b>" +
+                        "</span>" +
+                        "<hr style='margin: 5px' />" +
+                        "<span style='font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)'>" +
+                        "Balance Left: <b>£" + Number(Math.round(bills[i].amountDue + 'e2') + 'e-2').toFixed(2) + "</b>" +
+                        "</span>" +
+                        "<hr />" +
+                        "<span>";
+
+                    var people = bills[i].people;
+                    for (var j = 0; j < people.length; j++) {
+                        var grayscale = "grayscale(100%)";
+                        var opacity = "opacity(50%)";
+
+                        if (people[j].paid)
+                        {
+                            grayscale = "grayscale(0%)";
+                            opacity = "opacity(100%)";
+                        }
+
+                        billCard += "<img src=" + people[j].imageLink + " width='40' style='filter: " + grayscale + " " + opacity + "; -webkit-filter: " + grayscale + " " + opacity + "' />";
+                    }
+
+                    billCard += "</span>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+
+                    billContainer.innerHTML += billCard;
+                }
+            }
+        });
+    }
+</script>
