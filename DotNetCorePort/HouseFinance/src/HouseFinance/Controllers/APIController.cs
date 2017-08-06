@@ -7,6 +7,7 @@ using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models.API;
 using HouseFinance.Models.Bills;
+using HouseFinance.Models.Shopping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -221,17 +222,5 @@ namespace HouseFinance.Controllers
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
             return Authentication.CheckKey(apiKey);
         }
-    }
-
-    public class AddPaymentRequest
-    {
-        public Guid BillId { get; set; }
-        public decimal Amount { get; set; }
-        public DateTime Created { get; set; }
-        public Guid PersonId { get; set; }
-    }
-
-    public class GetShoppingDetailsResponse : CommunicationResponse
-    {
     }
 }
