@@ -92,6 +92,7 @@ namespace HouseFinance.Controllers
         }
 
         [HttpDelete]
+        [Route("Api/Bills/Delete")]
         public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
         {
             var response = new CommunicationResponse();
