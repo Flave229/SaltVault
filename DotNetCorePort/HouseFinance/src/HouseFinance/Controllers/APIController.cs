@@ -138,15 +138,15 @@ namespace HouseFinance.Controllers
                     Id = Guid.NewGuid(),
                     Amount = paymentRequest.Amount,
                     Created = paymentRequest.Created,
-                    PersonId = paymentRequest.PersonId
+                    PersonId = Guid.Parse(paymentRequest.PersonId)
                 };
 
                 PaymentValidator.CheckIfValidPayment(payment);
                 var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
                 paymentFileHelper.AddOrUpdate<Payment>(payment);
 
-                var billFileHelper = new GenericFileHelper(FilePath.Payments);
-                var realBill = billFileHelper.Get<Bill>(paymentRequest.BillId);
+                var billFileHelper = new GenericFileHelper(FilePath.Bills);
+                var realBill = billFileHelper.Get<Bill>(Guid.Parse(paymentRequest.BillId));
 
                 BillHelper.AddOrUpdatePayment(ref realBill, payment);
 
