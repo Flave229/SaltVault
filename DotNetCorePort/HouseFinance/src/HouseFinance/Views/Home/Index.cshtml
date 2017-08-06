@@ -45,7 +45,7 @@
                     }
 
                     var dateDue = new Date(Date.parse(bills[i].fullDateDue));
-                    var dateDueString = (dateDue.getDay() + 1) + " " + monthNames[dateDue.getMonth()] + " " + dateDue.getFullYear();
+                    var dateDueString = dateDue.getDate() + " " + monthNames[dateDue.getMonth()] + " " + dateDue.getFullYear();
 
                     var billCard = "<div class='billCard'>" +
                         "<div class=" + cardStyle + "> " +
