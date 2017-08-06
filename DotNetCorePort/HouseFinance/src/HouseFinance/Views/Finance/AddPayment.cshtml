@@ -1,7 +1,4 @@
 ﻿@using System.Threading.Tasks
-@using HouseFinance.Core.Bills
-@using HouseFinance.Core.FileManagement
-@using HouseFinance.Core.People
 @model HouseFinance.Models.PaymentFormHelper
 @{
     ViewBag.Title = "Add Payment";
@@ -15,17 +12,15 @@
     <div class="mainContentWrapper">
         @using (Html.BeginForm("AddPayment", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
-            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(Model.BillId);
-            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
-            @Html.HiddenFor(m => m.BillId, Model.BillId)
+            @Html.HiddenFor(m => m.Bill.Id, Model.Bill.Id)
 
-            <h4>Add a payment here to add it to @bill.Name : @bill.Due.ToString("MMMM yyyy")</h4>
+            <h4>Add a payment here to add it to @Model.Bill.Name : @Model.Bill.Due.ToString("MMMM yyyy")</h4>
             <hr />
             <div class="form-group">
                 @Html.Label("Amount:", "Amount", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Payment.Amount, new { @class = "form-control", Value = (bill.AmountOwed / bill.People.Count).ToString("0.00") })
+                    @Html.TextBoxFor(m => m.Payment.Amount, new { @class = "form-control", Value = (Model.Bill.AmountOwed / Model.Bill.People.Count).ToString("0.00") })
                 </div>
             </div>
             <div class="form-group">
@@ -36,14 +31,18 @@
             </div>
             <div class="form-group">
                 @Html.Label("Person:", "Person", new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    @for (var i = 0; i < people.Count; i++)
-                    {
-                        @Html.RadioButtonFor(m => m.Payment.PersonId, people[i].Id)
-                        @Html.Label(people[i].FirstName + " " + people[i].LastName, people[i].FirstName + " " + people[i].LastName, new { @style = "padding-left: 1em" })
-                        <br />
-                    }
-                </div>
+                @{
+                    var people = Model.People;
+
+                    <div class="col-md-10">
+                        @foreach (var person in people)
+                        {
+                            @Html.RadioButtonFor(m => m.Payment.PersonId, person.Id)
+                            @Html.Label(person.FirstName + " " + person.LastName, person.FirstName + " " + person.LastName, new {@style = "padding-left: 1em"})
+                            <br/>
+                        }
+                    </div>
+                }
             </div>
             <p style="color:red">@ViewBag.ExceptionMessage</p>
             <div class="form-group">

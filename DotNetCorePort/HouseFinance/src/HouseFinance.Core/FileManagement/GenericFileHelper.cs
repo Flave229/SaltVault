@@ -129,6 +129,13 @@ namespace HouseFinance.Core.FileManagement
             return (T)objs.FirstOrDefault(obj => obj.Id.Equals(id));
         }
 
+        public List<T> Get<T>(List<Guid> ids)
+        {
+            var objs = Open<T>().Cast<IPersistedData>().ToList();
+
+            return objs.Where(obj => ids.Contains(obj.Id)).Cast<T>().ToList();
+        }
+
         public List<T> GetAll<T>()
         {
             return Open<T>().ToList();

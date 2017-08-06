@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using HouseFinance.Core.Bills;
 using HouseFinance.Core.Bills.Payments;
+using HouseFinance.Core.People;
 
 namespace HouseFinance.Models
 {
     public class PaymentFormHelper
     {
-        public Guid BillId { get; set; }
+        public Bill Bill { get; set; }
         public Payment Payment { get; set; }
-
-        public PaymentFormHelper()
-        {
-            BillId = new Guid();
-        }
+        public List<Person> People { get; set; }
     }
 }

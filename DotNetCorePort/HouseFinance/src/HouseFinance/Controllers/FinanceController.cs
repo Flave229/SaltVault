@@ -69,9 +69,12 @@ namespace HouseFinance.Controllers
 
         public IActionResult AddPayment(Guid billId)
         {
+            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
+            var people = new GenericFileHelper(FilePath.People).Get<Person>(bill.People);
             var payment = new PaymentFormHelper
             {
-                BillId = billId
+                Bill = bill,
+                People = people
             };
 
             return View("AddPayment", payment);
@@ -84,7 +87,7 @@ namespace HouseFinance.Controllers
 
             try
             {
-                var realBill = fileHelper.Get<Bill>(formPayment.BillId);
+                var realBill = fileHelper.Get<Bill>(formPayment.Bill.Id);
 
                 BillHelper.AddOrUpdatePayment(ref realBill, formPayment.Payment);
 
@@ -94,10 +97,10 @@ namespace HouseFinance.Controllers
             {
                 TempData["Exception"] = ex.Message;
 
-                return RedirectToActionPermanent("AddPayment", new { billId = formPayment.BillId });
+                return RedirectToActionPermanent("AddPayment", new { billId = formPayment.Bill.Id });
             }
 
-            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.BillId, name = fileHelper.Get<Bill>(formPayment.BillId).Name });
+            return RedirectToActionPermanent("BillDetails", new { billId = formPayment.Bill.Id, name = fileHelper.Get<Bill>(formPayment.Bill.Id).Name });
         }
 
         public IActionResult DeleteBill(Guid billId)
