@@ -11,60 +11,107 @@
 
 <div class="row">
     <div class="mainContentWrapper">
-        @using (Html.BeginForm("AddBill", "Finance", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
+        <div class="form-horizontal">
             <h4>Add a bill here to add it to the bill list</h4>
             <hr />
             <div class="form-group">
-                @Html.LabelFor(m => m.Bill.Name, new { @class = "col-md-2 control-label" })
+                <label class="col-md-2 control-label">Name: </label>
                 <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Bill.Name, new { @class = "form-control" })
+                    <input id="billName" class="form-control" type="text"/>
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Amount", "Amount", new { @class = "col-md-2 control-label" })
+                <label class="col-md-2 control-label" for="billAmount">Amount: </label>
                 <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Bill.AmountOwed, new { @class = "form-control" })
+                    <input class="form-control" id="billAmount" type="text" value="0" data-val-number="The field Amount must be a number" data-val-required="The Amount field is required" />
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(m => m.Bill.Due, new { @class = "col-md-2 control-label" })
+                <label class="col-md-2 control-label" for="billDue">Due: </label>
                 <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Bill.Due, DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
+                    <input class="form-control" id="billDue" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd"))"
+                           data-val="true" data-val-required="The Bill Due field is required" />
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("People Bill Applies To", "People Bill Applies To", new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
+                <div id="selectedPeople" class="col-md-10">
                     @for (var i = 0; i < Model.SelectedPeople.Count; i++)
                     {
-                        var label = Model.SelectedPeople.ElementAt(i).Person.FirstName + " " + Model.SelectedPeople.ElementAt(i).Person.LastName;
-                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.Id)
-                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.FirstName)
-                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.LastName)
-                        @Html.HiddenFor(m => Model.SelectedPeople[i].Person.Image)
-                        @Html.CheckBoxFor(m => Model.SelectedPeople[i].Selected)
-                        @Html.Label(label, label, new { @style = "padding-left: 1em" })
+                        var person = Model.SelectedPeople[i];
+                        <input id="selectedPerson_@(i)__Person_Id" type="hidden" value="@person.Person.Id" data-val="true" data-val-required="The Person Id field is required" />
+                        <input id="selectedPerson_@(i)__Selected" type="checkbox" value="@person.Selected" checked="@person.Selected" data-val="true" data-val-required="At least one person needs selected for the bill" />
+                        <label style="padding-left: 1em">@person.Person.FirstName @person.Person.LastName</label>
                         <br />
                     }
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Bill Type:", "Bill Type:", new { @class = "col-md-2 control-label" })
+                <label class="col-md-2 control-label" for="recurringType">Bill Type: </label>
                 <div class="col-md-10">
-                    @Html.RadioButtonFor(m => m.Bill.RecurringType, Enum.GetNames(typeof(RecurringType)).ElementAt(0))
-                    @Html.Label("Regular Bill")
-                    <br />
-                    @Html.RadioButtonFor(m => m.Bill.RecurringType, Enum.GetNames(typeof(RecurringType)).ElementAt(1))
-                    @Html.Label("Monthly Recurring Bill")
+                    @{
+                        var notRecurring = Enum.GetNames(typeof(RecurringType)).ElementAt(0);
+                        var recurring = Enum.GetNames(typeof(RecurringType)).ElementAt(1);
+
+                        <input id="recurringType" type="radio" value="@notRecurring" />
+                        <label>Regular Bill</label>
+                        <br />
+                        <input id="recurringType" type="radio" value="@recurring" />
+                        <label>Monthly Recurring Bill</label>
+                    }
                 </div>
             </div>
-            <p style="color:red">@ViewBag.ExceptionMessage</p>
+            <p style="color: red">@ViewBag.ExceptionMessage</p>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Add Bill" class="btn btn-default" />
+                    <input type="submit" value="Add Bill" class="btn btn-default" onclick="addBill()"/>
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
+
+<script>
+    var homeUrl = '@Url.Action("Index", "Home")';
+    
+    function addBill() {
+        var billName = document.getElementById("billName").value;
+        var billAmount = document.getElementById("billAmount").value;
+        var billDue = document.getElementById("billDue").value;
+        var billRecurringType = document.getElementById("recurringType").value;
+
+        var selectedPeople = [];
+        var selectedPeopleElement = document.getElementById("selectedPeople").getElementsByTagName("input");
+
+        for (var i = 0; i < selectedPeopleElement.length; i += 2) {
+            var isSelected = document.getElementById("selectedPerson_" + (i / 2) + "__Selected").checked;
+
+            if (isSelected === false)
+                continue;
+
+            var personId = document.getElementById("selectedPerson_" + (i / 2) + "__Person_Id").value;
+            selectedPeople.push(personId);
+        }
+
+        var billRequest = {
+            "Name": billName,
+            "AmountOwed": billAmount,
+            "Due": billDue,
+            "People": selectedPeople,
+            "RecurringType": billRecurringType
+        }
+
+        $.ajax({
+            url: '@Url.Action("AddBill", "Api")',
+            contentType: "application/json",
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'D2DB7539-634F-47C4-818D-59AD03C592E3');
+            },
+            data: JSON.stringify(billRequest),
+            success: function (response) {
+                window.top.location.href = homeUrl;
+            }
+        });
+    }
+</script>
