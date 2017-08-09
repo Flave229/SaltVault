@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using HouseFinance.Core.Authentication;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.Bills.Payments;
 using HouseFinance.Core.FileManagement;
+using HouseFinance.Core.Services.Discord;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models.API;
 using HouseFinance.Models.Bills;
@@ -15,6 +17,13 @@ namespace HouseFinance.Controllers
 {
     public class ApiController : Controller
     {
+        private DiscordService _discordService;
+
+        public ApiController()
+        {
+            _discordService = new DiscordService(new HttpClient());    
+        }
+
         [HttpGet]
         [Route("Api/Bills")]
         public GetBillListResponse GetBillList()
@@ -77,6 +86,8 @@ namespace HouseFinance.Controllers
                 BillValidator.CheckIfValidBill(billRequest);
                 var genericFileHelper = new GenericFileHelper(FilePath.Bills);
                 genericFileHelper.AddOrUpdate<Bill>(billRequest);
+
+                _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.AmountOwed);
 
                 response.Notifications = new List<string>
                 {
