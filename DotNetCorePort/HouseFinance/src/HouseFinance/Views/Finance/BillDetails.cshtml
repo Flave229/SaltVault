@@ -18,7 +18,7 @@
 <div class="row">
     <div class="mainContentWrapper">
         <div style="float: right">
-            <a href="@Url.Action("EditBill", "Finance", new {billId = @Model.Id})" class="btn btn-primary" style="float: right">Edit Bill</a>
+            <a href="@Url.Action("EditBill", "Finance", new {billId = @Model.Id})" class="btn btn-primary">Edit Bill</a>
             <div class="btn btn-danger" onclick="deleteBill('@Model.Id')">Delete Bill</div>
         </div>
         <table id="example" class="table" cellspacing="0" width="100%">
