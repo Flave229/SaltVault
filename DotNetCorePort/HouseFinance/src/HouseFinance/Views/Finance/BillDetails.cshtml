@@ -62,7 +62,7 @@
                             <a href="@Url.Action("EditPayment", "Finance", new {billId = Model.Id, paymentId = payment.Id})">
                                 <img src="http://i.imgur.com/OJvwwyE.png" alt="Edit" height="20" width="20"/>
                             </a>
-                            <a href="@Url.Action("DeletePayment", "Finance", new {billId = Model.Id, paymentId = payment.Id})" onclick="confirmSubmission('Are you sure you wish to delete this payment?')">
+                            <a onclick="deletePayment('@Model.Id', '@payment.Id')">
                                 <img src="http://i.imgur.com/ltfOB60.png" alt="Delete" height="20" width="20"/>
                             </a>
                         </th>
@@ -76,6 +76,8 @@
 </div>
 
 <script>
+    var billDetailsUrl = '@Url.Action("BillDetails", "Finance")';
+
     function deleteBill(billId) {
         if (confirm('Are you sure you wish to delete this bill?')) {
             var deleteBillRequest = { "BillId": billId };
@@ -90,6 +92,28 @@
                 data: JSON.stringify(deleteBillRequest),
                 success: function (response) {
                     window.top.location.href = "/home";
+                }
+            });
+        }
+    }
+
+    function deletePayment(billId, paymentId) {
+        if (confirm('Are you sure you wish to delete this payment?')) {
+            var deletePaymentRequest = {
+                "BillId": billId,
+                "PaymentId": paymentId
+            }
+
+            $.ajax({
+                url: '@Url.Action("DeletePayment", "Api")',
+                contentType: "application/json",
+                type: "DELETE",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'D2DB7539-634F-47C4-818D-59AD03C592E3');
+                },
+                data: JSON.stringify(deletePaymentRequest),
+                success: function(response) {
+                    window.top.location.href = billDetailsUrl + "?billId=" + billId;
                 }
             });
         }

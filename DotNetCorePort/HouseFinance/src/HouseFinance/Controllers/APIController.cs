@@ -192,6 +192,13 @@ namespace HouseFinance.Controllers
         [Route("Api/Bills/AddPayment")]
         public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
+            return AddPaymentV2(paymentRequest);
+        }
+
+        [HttpPost]
+        [Route("Api/Bills/Payments")]
+        public CommunicationResponse AddPaymentV2([FromBody]AddPaymentRequest paymentRequest)
+        {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
             {
@@ -223,6 +230,51 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     "The payment has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpDelete]
+        [Route("Api/Bills/Payments")]
+        public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var billFileHelper = new GenericFileHelper(FilePath.Bills);
+                var bill = billFileHelper.Get<Bill>(paymentRequest.BillId);
+                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
+                var payment = paymentFileHelper.Get<Payment>(paymentRequest.PaymentId);
+
+                if (bill == null)
+                {
+                    response.AddError($"Cannot delete the payment (ID: {paymentRequest.PaymentId}) because the bill (ID {paymentRequest.BillId}) does not exist");
+                    return response;
+                }
+                if (payment == null)
+                {
+                    response.AddError($"Cannot delete the payment (ID: {paymentRequest.PaymentId}) because it does not exist");
+                    return response;
+                }
+
+                paymentFileHelper.Delete<Payment>(paymentRequest.PaymentId);
+                bill.AmountPaid.Remove(payment.Id);
+                billFileHelper.AddOrUpdate<Bill>(bill);
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{payment.Id}' has been deleted"
                 };
             }
             catch (Exception exception)
