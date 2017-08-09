@@ -91,6 +91,55 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPatch]
+        [Route("Api/Bills/Update")]
+        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
+
+                var oldBill = genericFileHelper.Get<Bill>(billRequest.Id);
+                if (oldBill == null)
+                {
+                    response.AddError("The requested bill does not exist");
+                    return response;
+                }
+
+                var newBill = new Bill
+                {
+                    Id = billRequest.Id,
+                    AmountOwed = billRequest.AmountOwed ?? oldBill.AmountOwed,
+                    Due = billRequest.Due ?? oldBill.Due,
+                    People = billRequest.People ?? oldBill.People,
+                    Name = billRequest.Name ?? oldBill.Name,
+                    RecurringType = billRequest.RecurringType ?? oldBill.RecurringType,
+                    AmountPaid = oldBill.AmountPaid
+                };
+
+                BillValidator.CheckIfValidBill(newBill);
+                genericFileHelper.AddOrUpdate<Bill>(newBill);
+
+                response.Notifications = new List<string>
+                {
+                    $"The bill '{billRequest.Name}' has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpDelete]
         [Route("Api/Bills/Delete")]
         public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)

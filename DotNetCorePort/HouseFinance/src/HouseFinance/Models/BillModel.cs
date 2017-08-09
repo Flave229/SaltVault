@@ -4,12 +4,12 @@ using HouseFinance.Core.People;
 
 namespace HouseFinance.Models
 {
-    public class AddBillModel
+    public class BillModel
     {
         public Bill Bill { get; set; }
         public List<AddBillPerson> SelectedPeople { get; set; }
 
-        public AddBillModel()
+        public BillModel()
         {
             SelectedPeople = new List<AddBillPerson>();
         }

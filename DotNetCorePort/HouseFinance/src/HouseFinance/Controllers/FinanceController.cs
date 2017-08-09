@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Net.Http;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
-using HouseFinance.Core.Services;
-using HouseFinance.Core.Services.Discord;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +9,9 @@ namespace HouseFinance.Controllers
 {
     public class FinanceController : Controller
     {
-        private DiscordService _discordService;
-
-        public FinanceController()
-        {
-            _discordService = new DiscordService(new HttpClient());    
-        }
-
         public IActionResult AddBill()
         {
-            var billModel = new AddBillModel();
+            var billModel = new BillModel();
             var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
 
             foreach (var person in people)
@@ -39,6 +29,27 @@ namespace HouseFinance.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public IActionResult EditBill(Guid billId)
+        {
+            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
+            var billModel = new BillModel
+            {
+                Bill = bill
+            };
+
+            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
+            foreach (var person in people)
+            {
+                billModel.SelectedPeople.Add(new AddBillPerson
+                {
+                    Person = person,
+                    Selected = bill.People.Contains(person.Id)
+                });
+            }
+
+            return View(billModel);
         }
 
         public IActionResult BillDetails(Guid billId)
