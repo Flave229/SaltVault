@@ -1,5 +1,6 @@
 ﻿using System;
 using HouseFinance.Core.Bills;
+using HouseFinance.Core.Bills.Payments;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.People;
 using HouseFinance.Models;
@@ -69,7 +70,21 @@ namespace HouseFinance.Controllers
                 People = people
             };
 
-            return View("AddPayment", payment);
+            return View(payment);
+        }
+
+        public IActionResult EditPayment(Guid billId, Guid paymentId)
+        {
+            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
+            var people = new GenericFileHelper(FilePath.People).Get<Person>(bill.People);
+            var payment = new PaymentFormHelper
+            {
+                Bill = bill,
+                People = people,
+                Payment = new GenericFileHelper(FilePath.Payments).Get<Payment>(paymentId)
+            };
+
+            return View(payment);
         }
 
         public IActionResult AddPerson()

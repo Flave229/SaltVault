@@ -240,6 +240,51 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPatch]
+        [Route("Api/Bills/Payments")]
+        public CommunicationResponse UpdatePayment([FromBody]UpdatePaymentRequest paymentRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
+                var existingPayment = paymentFileHelper.Get<Payment>(paymentRequest.PaymentId);
+
+                if (existingPayment == null)
+                {
+                    response.AddError("The requested payment does not exist");
+                    return response;
+                }
+
+                var newPayment = new Payment
+                {
+                    Id = paymentRequest.PaymentId,
+                    Amount = paymentRequest.Amount,
+                    Created = existingPayment.Created,
+                    PersonId = existingPayment.PersonId
+                };
+                PaymentValidator.CheckIfValidPayment(newPayment);
+                paymentFileHelper.AddOrUpdate<Payment>(newPayment);
+
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{newPayment.Id}' has been updated"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpDelete]
         [Route("Api/Bills/Payments")]
         public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
@@ -433,5 +478,12 @@ namespace HouseFinance.Controllers
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
             return Authentication.CheckKey(apiKey);
         }
+    }
+
+    public class UpdatePaymentRequest
+    {
+        public Guid PaymentId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Created { get; set; }
     }
 }
