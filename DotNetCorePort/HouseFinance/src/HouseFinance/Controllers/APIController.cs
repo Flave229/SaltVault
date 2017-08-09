@@ -155,6 +155,13 @@ namespace HouseFinance.Controllers
             {
                 var genericFileHelper = new GenericFileHelper(FilePath.Bills);
                 var bill = genericFileHelper.Get<Bill>(deleteBillRequest.BillId);
+
+                if (bill == null)
+                {
+                    response.AddError($"Cannot delete the bill (ID: {deleteBillRequest.BillId}) because it does not exist");
+                    return response;
+                }
+
                 genericFileHelper.Delete<Bill>(deleteBillRequest.BillId);
 
                 response.Notifications = new List<string>
@@ -239,7 +246,7 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPost]
-        [Route("Api/Shopping/Add")]
+        [Route("Api/Shopping")]
         public CommunicationResponse AddShoppingItem([FromBody]ShoppingItem shoppingRequest)
         {
             var response = new CommunicationResponse();
@@ -312,6 +319,42 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     $"The shopping item '{shoppingRequest.Name}' has been updated"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+        
+        [HttpDelete]
+        [Route("Api/Shopping")]
+        public CommunicationResponse DeleteShoppingItem([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var genericFileHelper = new GenericFileHelper(FilePath.Shopping);
+                var shoppingItem = genericFileHelper.Get<ShoppingItem>(deleteShoppingItemRequest.ShoppingItemId);
+
+                if (shoppingItem == null)
+                {
+                    response.AddError($"Cannot delete the shopping item (ID: {deleteShoppingItemRequest.ShoppingItemId}) because it does not exist");
+                    return response;
+                }
+
+                genericFileHelper.Delete<ShoppingItem>(deleteShoppingItemRequest.ShoppingItemId);
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item '{shoppingItem.Name}' has been deleted"
                 };
             }
             catch (Exception exception)
