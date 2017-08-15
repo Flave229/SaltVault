@@ -51,7 +51,7 @@ namespace HouseFinance.Core.Bills
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\") " +
                                                 $"VALUES ('{bill.Name}', {bill.AmountOwed}, '{bill.Due}', {(int)bill.RecurringType}) " +
-                                                "RETURNING Id", _connection);
+                                                "RETURNING \"Id\"", _connection);
                 var reader = command.ExecuteReader();
                 var rowId = -1;
                 while (reader.Read())
