@@ -473,6 +473,14 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [Route("Experimental/DatabaseMigration")]
+        public void DatabaseMigrationForBills()
+        {
+            var bills = new GenericFileHelper(FilePath.Bills).GetAll<Bill>();
+            var repository = new BillRepository();
+            repository.EnterAllIntoDatabase(bills);
+        }
+
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
