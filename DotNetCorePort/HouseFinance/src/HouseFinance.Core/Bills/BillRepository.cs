@@ -53,10 +53,10 @@ namespace HouseFinance.Core.Bills
                                                 $"VALUES ('{bill.Name}', {bill.AmountOwed}, '{bill.Due}', {(int)bill.RecurringType}) " +
                                                 "RETURNING \"Id\"", _connection);
                 var reader = command.ExecuteReader();
-                var rowId = -1;
+                Int64 rowId = -1;
                 while (reader.Read())
                 {
-                    rowId = (int)reader[0];
+                    rowId = (Int64)reader[0];
                 }
 
                 foreach (var paymentId in bill.AmountPaid)
