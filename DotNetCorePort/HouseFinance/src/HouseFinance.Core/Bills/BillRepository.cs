@@ -13,7 +13,7 @@ namespace HouseFinance.Core.Bills
 
         public BillRepository()
         {
-            var connectionString = File.ReadAllText("./Data/config/LIVEConnectionString.config");
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
             _connection = new NpgsqlConnection(connectionString);
         }
 
@@ -49,7 +49,7 @@ namespace HouseFinance.Core.Bills
 
             foreach (var bill in bills)
             {
-                var command = new NpgsqlCommand("INSERT INTO public.Bill (Name, Amount, Due, RecurringType) " +
+                var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (Name, Amount, Due, RecurringType) " +
                                                 $"VALUES ('{bill.Name}', {bill.AmountOwed}, '{bill.Due}', {(int)bill.RecurringType}) " +
                                                 "RETURNING Id", _connection);
                 var reader = command.ExecuteReader();
@@ -72,7 +72,7 @@ namespace HouseFinance.Core.Bills
                     else if (payment.PersonId == new Guid("f97a50c9-8451-4537-bccb-e89ba5ade95a"))
                         personId = 3;
 
-                    var paymentCommand = new NpgsqlCommand("INSERT INTO public.Payment (BillId, PersonId, Amount, Created) " +
+                    var paymentCommand = new NpgsqlCommand("INSERT INTO public.\"Payment\" (BillId, PersonId, Amount, Created) " +
                                                            $"VALUES ({rowId}, {personId}, {payment.Amount}, '{payment.Created}'", _connection);
                 }
             }
