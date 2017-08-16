@@ -147,7 +147,7 @@ namespace HouseFinance.Core.Bills
             var command = new NpgsqlCommand("SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"FirstName\", Person.\"LastName\" " +
                                             "FROM public.\"Bill\" AS Bill " +
                                             "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
-                                            "INNER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
+                                            "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
                                             $"WHERE Bill.\"Id\" = {billId}", _connection);
             var reader = command.ExecuteReader();
 
@@ -166,7 +166,10 @@ namespace HouseFinance.Core.Bills
                     };
                 }
 
-                var amount = (double) reader[4];
+                if (reader[4] == DBNull.Value)
+                    continue;
+
+                var amount = (double)reader[4];
                 bill.Payments.Add(new BillPaymentsV2
                 {
                     Id = Convert.ToInt32(reader[3]),
@@ -181,6 +184,21 @@ namespace HouseFinance.Core.Bills
 
             _connection.Close();
             return bill;
+        }
+    }
+
+    public class AddBillRequest
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal TotalAmount { get; set; }
+        public DateTime Due { get; set; }
+        public List<int> PeopleIds { get; set; }
+        public RecurringType RecurringType { get; set; }
+
+        public AddBillRequest()
+        {
+            PeopleIds = new List<int>();
         }
     }
 }
