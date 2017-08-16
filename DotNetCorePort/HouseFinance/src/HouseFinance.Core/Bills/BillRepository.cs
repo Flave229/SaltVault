@@ -185,11 +185,39 @@ namespace HouseFinance.Core.Bills
             _connection.Close();
             return bill;
         }
+
+        public int AddBill(AddBillRequest bill)
+        {
+            _connection.Open();
+
+            var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\") " +
+                                            $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due}', {(int)bill.RecurringType}) " +
+                                            "RETURNING \"Id\"", _connection);
+            Int64 billId = -1;
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                billId = (Int64) reader[0];
+            }
+            reader.Close();
+
+            foreach (var peopleId in bill.PeopleIds)
+            {
+                command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
+                                            $"VALUES ({billId}, {peopleId})", _connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+            }
+            _connection.Close();
+
+            return Convert.ToInt32(billId);
+        }
     }
 
     public class AddBillRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime Due { get; set; }

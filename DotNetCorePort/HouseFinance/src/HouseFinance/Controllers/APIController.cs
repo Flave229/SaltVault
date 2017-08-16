@@ -150,6 +150,35 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/Bills/Add")]
+        public AddBillResponse AddBillV2([FromBody]AddBillRequest billRequest)
+        {
+            var response = new AddBillResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Id = _billRepository.AddBill(billRequest);
+
+                _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);
+                response.Notifications = new List<string>
+                {
+                    $"The bill '{billRequest.Name}' has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpPatch]
         [Route("Api/Bills/Update")]
         public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
