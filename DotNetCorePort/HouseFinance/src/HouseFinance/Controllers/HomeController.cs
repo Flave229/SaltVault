@@ -1,5 +1,4 @@
-﻿using HouseFinance.Core.Bills;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace HouseFinance.Controllers
 {

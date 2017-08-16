@@ -8,4 +8,9 @@ namespace HouseFinance.Models.Bills
     {
         public List<BillOverview> Bills { get; set; }
     }
+
+    public class GetBillListResponseV2 : CommunicationResponse
+    {
+        public List<BillOverviewV2> Bills { get; set; }
+    }
 }

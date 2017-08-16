@@ -30,13 +30,4 @@ namespace HouseFinance.Core.Bills
             People = new List<Guid>();
         }
     }
-
-    public class BillV2
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Amount { get; set; }
-        public DateTime Due { get; set; }
-        public RecurringType RecurringType { get; set; }
-    }
 }

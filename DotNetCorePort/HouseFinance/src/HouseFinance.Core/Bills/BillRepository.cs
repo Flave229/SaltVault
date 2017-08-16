@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using HouseFinance.Core.Bills.Payments;
 using HouseFinance.Core.FileManagement;
 using Npgsql;
@@ -17,26 +18,56 @@ namespace HouseFinance.Core.Bills
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<BillV2> GetAllBasicBillDetails()
+        public List<BillOverviewV2> GetAllBasicBillDetails()
         {
             _connection.Open();
 
-            var command = new NpgsqlCommand("SELECT * FROM public.\"Bill\"", _connection);
+            var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
+                                            "FROM public.\"Person\" AS Person " +
+                                            "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"PersonId\" = Person.\"Id\" " +
+                                            "LEFT OUTER JOIN \"Bill\" AS Bill ON Bill.\"Id\" = PeopleForBill.\"BillId\" " +
+                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\"", _connection);
             var reader = command.ExecuteReader();
 
-            var bills = new List<BillV2>();
+            var bills = new List<BillOverviewV2>();
 
             while (reader.Read())
             {
-                bills.Add(new BillV2
+                var billId = Convert.ToInt32(reader[0]);
+                BillOverviewV2 billOverview;
+
+                if (bills.Any(x => x.Id == billId))
+                    billOverview = bills.First(x => x.Id == billId);
+                else
                 {
-                    Id = Convert.ToInt32(reader[0]),
-                    Due= (DateTime)reader[1],
-                    Amount = (decimal)reader[2],
-                    RecurringType = (RecurringType)reader[3],
-                    Name = (string)reader[4]
-                });
+                    billOverview = new BillOverviewV2
+                    {
+                        Id = billId,
+                        Name = (string) reader[1],
+                        TotalAmount = (double) reader[2],
+                        FullDateDue = (DateTime) reader[3]
+                    };
+                }
+
+                var personId = Convert.ToInt32(reader[4]);
+                var paymentAmount = (reader[7] == DBNull.Value) ? 0 : (double)reader[7];
+                if (billOverview.People.Any(x => x.Id == personId) == false)
+                {
+                    billOverview.People.Add(new PersonBillDetailsV2
+                    {
+                        Id = personId,
+                        Paid = paymentAmount != 0,
+                        ImageLink = (string) reader[5]
+                    });
+                }
+                else
+                    billOverview.People.First(x => x.Id == personId).Paid = true;
+
+                billOverview.AmountPaid += paymentAmount;
+
+                bills.Add(billOverview);
             }
+            reader.Close();
 
             _connection.Close();
             return bills;

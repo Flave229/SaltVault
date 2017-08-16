@@ -17,11 +17,13 @@ namespace HouseFinance.Controllers
 {
     public class ApiController : Controller
     {
-        private DiscordService _discordService;
+        private readonly DiscordService _discordService;
+        private readonly BillRepository _billRepository;
 
         public ApiController()
         {
-            _discordService = new DiscordService(new HttpClient());    
+            _discordService = new DiscordService(new HttpClient());
+            _billRepository = new BillRepository();
         }
 
         [HttpGet]
@@ -38,6 +40,29 @@ namespace HouseFinance.Controllers
             try
             {
                 response.Bills = BillListBuilder.BuildBillList();
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("Api/v2/Bills")]
+        public GetBillListResponseV2 GetBillListV2()
+        {
+            var response = new GetBillListResponseV2();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Bills = _billRepository.GetAllBasicBillDetails();
             }
             catch (Exception exception)
             {
