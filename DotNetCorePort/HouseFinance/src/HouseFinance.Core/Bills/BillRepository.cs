@@ -26,9 +26,9 @@ namespace HouseFinance.Core.Bills
             try
             {
                 var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
-                                                "FROM public.\"Person\" AS Person " +
-                                                "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"PersonId\" = Person.\"Id\" " +
-                                                "LEFT OUTER JOIN \"Bill\" AS Bill ON Bill.\"Id\" = PeopleForBill.\"BillId\" " +
+                                                "FROM public.\"Bill\" AS Bill " +
+                                                "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
+                                                "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
                                                 "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
                                                 "ORDER BY Bill.\"Due\" DESC", _connection);
                 var reader = command.ExecuteReader();
