@@ -34,7 +34,7 @@ namespace HouseFinance.Core.Services.Discord
         {
             var discordMessage = new DiscordMessage
             {
-                content = $"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:d}."
+                content = $"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:dd/MM/yyyy}."
             };
             var postContent = new StringContent(JsonConvert.SerializeObject(discordMessage), Encoding.UTF8, "application/json");
             var result = _discordHttpClient.PostAsync("channels/340434832310009856/messages", postContent).Result;
