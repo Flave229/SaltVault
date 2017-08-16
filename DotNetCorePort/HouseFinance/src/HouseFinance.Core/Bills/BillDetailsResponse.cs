@@ -29,8 +29,8 @@ namespace HouseFinance.Core.Bills
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime FullDateDue { get; set; }
-        public double TotalAmount { get; set; }
-        public double AmountPaid { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal AmountPaid { get; set; }
         public List<BillPaymentsV2> Payments { get; set; }
 
         public BillDetailsResponseV2()
@@ -52,6 +52,6 @@ namespace HouseFinance.Core.Bills
         public int Id { get; set; }
         public string PersonName { get; set; }
         public DateTime DatePaid { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

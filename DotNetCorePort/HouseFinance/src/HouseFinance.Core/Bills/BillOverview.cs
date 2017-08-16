@@ -30,9 +30,9 @@ namespace HouseFinance.Core.Bills
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime FullDateDue { get; set; }
-        public double AmountPaid { get; set; }
+        public decimal AmountPaid { get; set; }
         public List<PersonBillDetailsV2> People { get; set; }
-        public double TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
 
         public BillOverviewV2()
         {

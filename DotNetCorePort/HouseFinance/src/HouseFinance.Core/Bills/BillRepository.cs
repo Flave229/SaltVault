@@ -45,13 +45,13 @@ namespace HouseFinance.Core.Bills
                     {
                         Id = billId,
                         Name = (string) reader[1],
-                        TotalAmount = (double) reader[2],
+                        TotalAmount = Convert.ToDecimal(reader[2]),
                         FullDateDue = (DateTime) reader[3]
                     };
                 }
 
                 var personId = Convert.ToInt32(reader[4]);
-                var paymentAmount = (reader[7] == DBNull.Value) ? 0 : (double)reader[7];
+                var paymentAmount = (reader[7] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[7]);
                 if (billOverview.People.Any(x => x.Id == personId) == false)
                 {
                     billOverview.People.Add(new PersonBillDetailsV2
@@ -161,7 +161,7 @@ namespace HouseFinance.Core.Bills
                     {
                         Id = billId,
                         Name = (string)reader[0],
-                        TotalAmount = (double)reader[1],
+                        TotalAmount = Convert.ToDecimal(reader[1]),
                         FullDateDue = (DateTime)reader[2]
                     };
                 }
@@ -169,7 +169,7 @@ namespace HouseFinance.Core.Bills
                 if (reader[4] == DBNull.Value)
                     continue;
 
-                var amount = (double)reader[4];
+                var amount = Convert.ToDecimal(reader[4]);
                 bill.Payments.Add(new BillPaymentsV2
                 {
                     Id = Convert.ToInt32(reader[3]),
