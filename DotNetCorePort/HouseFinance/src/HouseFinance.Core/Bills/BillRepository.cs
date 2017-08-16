@@ -22,57 +22,64 @@ namespace HouseFinance.Core.Bills
         {
             _connection.Open();
 
-            var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
-                                            "FROM public.\"Person\" AS Person " +
-                                            "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"PersonId\" = Person.\"Id\" " +
-                                            "LEFT OUTER JOIN \"Bill\" AS Bill ON Bill.\"Id\" = PeopleForBill.\"BillId\" " +
-                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
-                                            "ORDER BY Bill.\"Due\" DESC", _connection);
-            var reader = command.ExecuteReader();
-
             var bills = new List<BillOverviewV2>();
-
-            while (reader.Read())
+            try
             {
-                var billId = Convert.ToInt32(reader[0]);
-                BillOverviewV2 billOverview;
-
-                if (bills.Any(x => x.Id == billId))
-                    billOverview = bills.First(x => x.Id == billId);
-                else
+                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
+                                                "FROM public.\"Person\" AS Person " +
+                                                "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"PersonId\" = Person.\"Id\" " +
+                                                "LEFT OUTER JOIN \"Bill\" AS Bill ON Bill.\"Id\" = PeopleForBill.\"BillId\" " +
+                                                "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
+                                                "ORDER BY Bill.\"Due\" DESC", _connection);
+                var reader = command.ExecuteReader();
+                
+                while (reader.Read())
                 {
-                    billOverview = new BillOverviewV2
+                    var billId = Convert.ToInt32(reader[0]);
+                    BillOverviewV2 billOverview;
+
+                    if (bills.Any(x => x.Id == billId))
+                        billOverview = bills.First(x => x.Id == billId);
+                    else
                     {
-                        Id = billId,
-                        Name = (string) reader[1],
-                        TotalAmount = Convert.ToDecimal(reader[2]),
-                        FullDateDue = (DateTime) reader[3]
-                    };
+                        billOverview = new BillOverviewV2
+                        {
+                            Id = billId,
+                            Name = (string)reader[1],
+                            TotalAmount = Convert.ToDecimal(reader[2]),
+                            FullDateDue = (DateTime)reader[3]
+                        };
+                    }
+
+                    var personId = Convert.ToInt32(reader[4]);
+                    var paymentAmount = (reader[7] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[7]);
+                    if (billOverview.People.Any(x => x.Id == personId) == false)
+                    {
+                        billOverview.People.Add(new PersonBillDetailsV2
+                        {
+                            Id = personId,
+                            Paid = paymentAmount != 0,
+                            ImageLink = (string)reader[5]
+                        });
+                    }
+                    else
+                        billOverview.People.First(x => x.Id == personId).Paid = true;
+
+                    billOverview.AmountPaid += paymentAmount;
+
+                    if (bills.Any(x => x.Id == billId) == false)
+                        bills.Add(billOverview);
                 }
 
-                var personId = Convert.ToInt32(reader[4]);
-                var paymentAmount = (reader[7] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[7]);
-                if (billOverview.People.Any(x => x.Id == personId) == false)
-                {
-                    billOverview.People.Add(new PersonBillDetailsV2
-                    {
-                        Id = personId,
-                        Paid = paymentAmount != 0,
-                        ImageLink = (string) reader[5]
-                    });
-                }
-                else
-                    billOverview.People.First(x => x.Id == personId).Paid = true;
-
-                billOverview.AmountPaid += paymentAmount;
-
-                if (bills.Any(x => x.Id == billId) == false)
-                    bills.Add(billOverview);
+                reader.Close();
+                _connection.Close();
+                return bills;
             }
-            reader.Close();
-
-            _connection.Close();
-            return bills;
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception("An Error occured while getting the bills", exception);
+            }
         }
 
         public void EnterAllIntoDatabase(List<Bill> bills)
@@ -144,75 +151,91 @@ namespace HouseFinance.Core.Bills
         {
             _connection.Open();
 
-            var command = new NpgsqlCommand("SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"FirstName\", Person.\"LastName\" " +
-                                            "FROM public.\"Bill\" AS Bill " +
-                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
-                                            "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
-                                            $"WHERE Bill.\"Id\" = {billId}", _connection);
-            var reader = command.ExecuteReader();
-
-            BillDetailsResponseV2 bill = null;
-
-            while (reader.Read())
+            try
             {
-                if (bill == null)
+                var command = new NpgsqlCommand(
+                    "SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"FirstName\", Person.\"LastName\" " +
+                    "FROM public.\"Bill\" AS Bill " +
+                    "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
+                    "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
+                    $"WHERE Bill.\"Id\" = {billId}", _connection);
+                var reader = command.ExecuteReader();
+
+                BillDetailsResponseV2 bill = null;
+                while (reader.Read())
                 {
-                    bill = new BillDetailsResponseV2
+                    if (bill == null)
                     {
-                        Id = billId,
-                        Name = (string)reader[0],
-                        TotalAmount = Convert.ToDecimal(reader[1]),
-                        FullDateDue = (DateTime)reader[2]
-                    };
+                        bill = new BillDetailsResponseV2
+                        {
+                            Id = billId,
+                            Name = (string) reader[0],
+                            TotalAmount = Convert.ToDecimal(reader[1]),
+                            FullDateDue = (DateTime) reader[2]
+                        };
+                    }
+
+                    if (reader[4] == DBNull.Value)
+                        continue;
+
+                    var amount = Convert.ToDecimal(reader[4]);
+                    bill.Payments.Add(new BillPaymentsV2
+                    {
+                        Id = Convert.ToInt32(reader[3]),
+                        Amount = amount,
+                        DatePaid = (DateTime) reader[5],
+                        PersonName = (string) reader[6] + " " + (string) reader[7]
+                    });
+
+                    bill.AmountPaid += amount;
                 }
 
-                if (reader[4] == DBNull.Value)
-                    continue;
-
-                var amount = Convert.ToDecimal(reader[4]);
-                bill.Payments.Add(new BillPaymentsV2
-                {
-                    Id = Convert.ToInt32(reader[3]),
-                    Amount = amount,
-                    DatePaid = (DateTime) reader[5],
-                    PersonName = (string) reader[6] + " " + (string) reader[7]
-                });
-
-                bill.AmountPaid += amount;
+                reader.Close();
+                _connection.Close();
+                return bill;
             }
-            reader.Close();
-
-            _connection.Close();
-            return bill;
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while getting the bill (ID: {billId})", exception);
+            }
         }
 
         public int AddBill(AddBillRequest bill)
         {
             _connection.Open();
 
-            var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\") " +
-                                            $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due}', {(int)bill.RecurringType}) " +
-                                            "RETURNING \"Id\"", _connection);
-            Int64 billId = -1;
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                billId = (Int64) reader[0];
-            }
-            reader.Close();
-
-            foreach (var peopleId in bill.PeopleIds)
-            {
-                command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
-                                            $"VALUES ({billId}, {peopleId})", _connection);
-                reader = command.ExecuteReader();
+                var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\") " +
+                                                $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due}', {(int)bill.RecurringType}) " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 billId = -1;
+                var reader = command.ExecuteReader();
                 while (reader.Read())
-                { }
+                {
+                    billId = (Int64)reader[0];
+                }
                 reader.Close();
-            }
-            _connection.Close();
 
-            return Convert.ToInt32(billId);
+                foreach (var peopleId in bill.PeopleIds)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
+                                                $"VALUES ({billId}, {peopleId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    { }
+                    reader.Close();
+                }
+                _connection.Close();
+
+                return Convert.ToInt32(billId);
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while adding the bill '{bill.Name}'", exception);
+            }
         }
     }
 
