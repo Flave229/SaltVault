@@ -81,6 +81,27 @@ namespace HouseFinance.Core.Bills
                     }
                     reader.Close();
                 }
+
+                foreach (var person in bill.People)
+                {
+
+                    var personId = -1;
+
+                    if (person == new Guid("e9636bbb-8b54-49b9-9fa2-9477c303032f"))
+                        personId = 1;
+                    else if (person == new Guid("25c15fb4-b5d5-47d9-917b-c572b1119e65"))
+                        personId = 2;
+                    else if (person == new Guid("f97a50c9-8451-4537-bccb-e89ba5ade95a"))
+                        personId = 3;
+                    
+                    var paymentCommand = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
+                                                           $"VALUES ({rowId}, {personId})", _connection);
+                    reader = paymentCommand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                    }
+                    reader.Close();
+                }
             }
 
             _connection.Close();
