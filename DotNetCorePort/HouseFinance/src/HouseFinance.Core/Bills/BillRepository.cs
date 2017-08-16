@@ -74,7 +74,7 @@ namespace HouseFinance.Core.Bills
                         personId = 3;
 
                     var paymentCommand = new NpgsqlCommand("INSERT INTO public.\"Payment\" (\"BillId\", \"PersonId\", \"Amount\", \"Created\") " +
-                                                           $"VALUES ({rowId}, {personId}, {payment.Amount}, '{payment.Created}'", _connection);
+                                                           $"VALUES ({rowId}, {personId}, {payment.Amount}, '{payment.Created}')", _connection);
                     reader = paymentCommand.ExecuteReader();
                     while (reader.Read())
                     {
