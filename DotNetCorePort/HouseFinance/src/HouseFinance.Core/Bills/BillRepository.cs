@@ -26,7 +26,8 @@ namespace HouseFinance.Core.Bills
                                             "FROM public.\"Person\" AS Person " +
                                             "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"PersonId\" = Person.\"Id\" " +
                                             "LEFT OUTER JOIN \"Bill\" AS Bill ON Bill.\"Id\" = PeopleForBill.\"BillId\" " +
-                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\"", _connection);
+                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
+                                            "ORDER BY Bill.\"Due\" DESC", _connection);
             var reader = command.ExecuteReader();
 
             var bills = new List<BillOverviewV2>();
