@@ -96,6 +96,29 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPost]
+        [Route("Api/v2/Bills")]
+        public GetBillResponseV2 GetBillV2([FromBody]GetBillRequestV2 billRequest)
+        {
+            var response = new GetBillResponseV2();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Bill = _billRepository.GetBasicBillDetails(billRequest.BillId);
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpPost]
         [Route("Api/Bills/Add")]
         public CommunicationResponse AddBill([FromBody]Bill billRequest)
         {

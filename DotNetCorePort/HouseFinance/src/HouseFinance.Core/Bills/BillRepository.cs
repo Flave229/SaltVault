@@ -137,5 +137,48 @@ namespace HouseFinance.Core.Bills
 
             _connection.Close();
         }
+
+        public BillDetailsResponseV2 GetBasicBillDetails(int billId)
+        {
+            _connection.Open();
+
+            var command = new NpgsqlCommand("SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"FirstName\", Person.\"LastName\" " +
+                                            "FROM public.\"Bill\" AS Bill " +
+                                            "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
+                                            "INNER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
+                                            $"WHERE Bill.\"Id\" = {billId}", _connection);
+            var reader = command.ExecuteReader();
+
+            BillDetailsResponseV2 bill = null;
+
+            while (reader.Read())
+            {
+                if (bill == null)
+                {
+                    bill = new BillDetailsResponseV2
+                    {
+                        Id = billId,
+                        Name = (string)reader[0],
+                        TotalAmount = (double)reader[1],
+                        FullDateDue = (DateTime)reader[2]
+                    };
+                }
+
+                var amount = (double) reader[4];
+                bill.Payments.Add(new BillPaymentsV2
+                {
+                    Id = Convert.ToInt32(reader[3]),
+                    Amount = amount,
+                    DatePaid = (DateTime) reader[5],
+                    PersonName = (string) reader[6] + " " + (string) reader[7]
+                });
+
+                bill.AmountPaid += amount;
+            }
+            reader.Close();
+
+            _connection.Close();
+            return bill;
+        }
     }
 }

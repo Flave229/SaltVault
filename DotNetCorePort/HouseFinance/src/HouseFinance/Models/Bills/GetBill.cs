@@ -8,8 +8,18 @@ namespace HouseFinance.Models.Bills
         public string BillId { get; set; }
     }
 
+    public class GetBillRequestV2
+    {
+        public int BillId { get; set; }
+    }
+
     public class GetBillResponse : CommunicationResponse
     {
         public BillDetailsResponse Bill { get; set; }
+    }
+
+    public class GetBillResponseV2 : CommunicationResponse
+    {
+        public BillDetailsResponseV2 Bill { get; set; }
     }
 }
