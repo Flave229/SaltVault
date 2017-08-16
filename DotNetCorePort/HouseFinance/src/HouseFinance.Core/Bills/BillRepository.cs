@@ -30,7 +30,7 @@ namespace HouseFinance.Core.Bills
             {
                 bills.Add(new BillV2
                 {
-                    Id = (int)reader[0],
+                    Id = Convert.ToInt32(reader[0]),
                     Due= (DateTime)reader[1],
                     Amount = (decimal)reader[2],
                     RecurringType = (RecurringType)reader[3],
@@ -58,6 +58,7 @@ namespace HouseFinance.Core.Bills
                 {
                     rowId = (Int64)reader[0];
                 }
+                reader.Close();
 
                 foreach (var paymentId in bill.AmountPaid)
                 {
@@ -74,6 +75,11 @@ namespace HouseFinance.Core.Bills
 
                     var paymentCommand = new NpgsqlCommand("INSERT INTO public.\"Payment\" (\"BillId\", \"PersonId\", \"Amount\", \"Created\") " +
                                                            $"VALUES ({rowId}, {personId}, {payment.Amount}, '{payment.Created}'", _connection);
+                    reader = paymentCommand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                    }
+                    reader.Close();
                 }
             }
 
