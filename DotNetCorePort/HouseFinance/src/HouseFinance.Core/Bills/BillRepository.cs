@@ -65,7 +65,8 @@ namespace HouseFinance.Core.Bills
 
                 billOverview.AmountPaid += paymentAmount;
 
-                bills.Add(billOverview);
+                if (bills.Any(x => x.Id == billId) == false)
+                    bills.Add(billOverview);
             }
             reader.Close();
 
