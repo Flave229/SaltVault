@@ -229,7 +229,7 @@ namespace HouseFinance.Controllers
             return response;
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("Api/v2/Bills/Update")]
         public CommunicationResponse UpdateBillV2([FromBody]UpdateBillRequestV2 billRequest)
         {
