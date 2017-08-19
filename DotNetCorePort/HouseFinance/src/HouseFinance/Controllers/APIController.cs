@@ -379,6 +379,35 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/Bills/Payments")]
+        public CommunicationResponse AddPaymentV2([FromBody]AddPaymentRequestV2 paymentRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                PaymentValidator.CheckIfValidPayment(paymentRequest);
+                _billRepository.AddPayment(paymentRequest);
+
+                response.Notifications = new List<string>
+                {
+                    "The payment has been added"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpPatch]
         [Route("Api/Bills/Payments")]
         public CommunicationResponse UpdatePayment([FromBody]UpdatePaymentRequest paymentRequest)

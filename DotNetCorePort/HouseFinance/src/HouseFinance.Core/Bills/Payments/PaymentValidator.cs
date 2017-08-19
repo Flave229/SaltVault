@@ -42,5 +42,22 @@ namespace HouseFinance.Core.Bills.Payments
             if (!Validation.CheckDateWithinRange(minAmount, maxAmount, date))
                 throw new Exception("The date entered for the payment was out of range. Value must lie between " + minAmount.ToString("d") + " and " + maxAmount.ToString("d") + ".");
         }
+
+        public static void CheckIfValidPayment(AddPaymentRequestV2 payment)
+        {
+            try
+            {
+                if (payment == null) throw new Exception("The payment object given was null.");
+                if (payment.PersonId <= 0) throw new Exception("The person id given was invalid.");
+                if (payment.BillId <= 0) throw new Exception("The bill id given was invalid.");
+
+                CheckAmountValid(payment.Amount);
+                CheckDateValid(payment.Created);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
+            }
+        }
     }
 }

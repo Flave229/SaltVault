@@ -337,6 +337,27 @@ namespace HouseFinance.Core.Bills
                 throw new Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
             }
         }
+
+        public void AddPayment(AddPaymentRequestV2 paymentRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("INSERT INTO public.\"Payment\" (\"BillId\", \"PersonId\", \"Amount\", \"Created\") " +
+                                                $"VALUES ({paymentRequest.BillId}, {paymentRequest.PersonId}, {paymentRequest.Amount}, '{paymentRequest.Created}')", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
+            }
+        }
     }
 
     public class AddBillRequest
@@ -366,5 +387,13 @@ namespace HouseFinance.Core.Bills
         {
             PeopleIds = new List<int>();
         }
+    }
+
+    public class AddPaymentRequestV2
+    {
+        public int BillId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Created { get; set; }
+        public int PersonId { get; set; }
     }
 }
