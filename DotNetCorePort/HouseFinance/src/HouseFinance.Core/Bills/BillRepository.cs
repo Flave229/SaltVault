@@ -306,13 +306,13 @@ namespace HouseFinance.Core.Bills
             try
             {
                 var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" " +
-                                                $"WHERE \"BillId\" = {billId}");
+                                                $"WHERE \"BillId\" = {billId}", _connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
 
                 command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
-                                           $"WHERE \"BillId\" = {billId}");
+                                           $"WHERE \"BillId\" = {billId}", _connection);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
