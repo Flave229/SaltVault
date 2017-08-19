@@ -59,5 +59,24 @@ namespace HouseFinance.Core.Bills.Payments
                 throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
             }
         }
+
+        public static void CheckIfValidPayment(UpdatePaymentRequestV2 payment)
+        {
+            try
+            {
+                if (payment == null) throw new Exception("The payment object given was null.");
+                if (payment.Id <= 0) throw new Exception("The payment id given was invalid.");
+
+                if (payment.Amount != null)
+                    CheckAmountValid((decimal)payment.Amount);
+
+                if (payment.Created != null)
+                    CheckDateValid((DateTime)payment.Created);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
+            }
+        }
     }
 }

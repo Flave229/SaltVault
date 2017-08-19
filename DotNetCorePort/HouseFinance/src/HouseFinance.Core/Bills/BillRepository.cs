@@ -358,6 +358,41 @@ namespace HouseFinance.Core.Bills
                 throw new Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
             }
         }
+
+        public bool UpdatePayment(UpdatePaymentRequestV2 paymentRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var setValues = new List<string>();
+
+                if (paymentRequest.Amount != null)
+                    setValues.Add($"\"Amount\"='{paymentRequest.Amount}'");
+                if (paymentRequest.Created != null)
+                    setValues.Add($"\"Created\"={paymentRequest.Created}");
+
+                var command = new NpgsqlCommand("UPDATE public.\"Payment\" " +
+                                                $"SET {string.Join(", ", setValues)} " +
+                                                $"WHERE \"Id\" = {paymentRequest.Id} " +
+                                                "RETURNING \"Id\"", _connection);
+                
+                var rowUpdated = false;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    rowUpdated = true;
+                }
+                reader.Close();
+
+                return rowUpdated;
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while updating the payment (ID: {paymentRequest.Id})", exception);
+            }
+        }
     }
 
     public class AddBillRequest
@@ -395,5 +430,12 @@ namespace HouseFinance.Core.Bills
         public decimal Amount { get; set; }
         public DateTime Created { get; set; }
         public int PersonId { get; set; }
+    }
+
+    public class UpdatePaymentRequestV2
+    {
+        public int Id { get; set; }
+        public decimal? Amount { get; set; }
+        public DateTime? Created { get; set; }
     }
 }
