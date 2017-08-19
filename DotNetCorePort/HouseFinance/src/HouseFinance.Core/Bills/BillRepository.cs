@@ -310,12 +310,14 @@ namespace HouseFinance.Core.Bills
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
+                reader.Close();
 
                 command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
                                            $"WHERE \"BillId\" = {billId}", _connection);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
+                reader.Close();
 
                 command = new NpgsqlCommand("DELETE FROM public.\"Bill\" " +
                                                 $"WHERE \"Id\" = {billId} " +
