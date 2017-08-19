@@ -527,6 +527,40 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpDelete]
+        [Route("Api/v2/Bills/Payments")]
+        public CommunicationResponse DeletePaymentV2([FromBody]DeletePaymentRequestV2 paymentRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var rowUpdated = _billRepository.DeletePayment(paymentRequest.PaymentId);
+
+                if (rowUpdated == false)
+                {
+                    response.AddError($"Cannot delete the payment (ID: {paymentRequest.PaymentId}) because it does not exist");
+                    return response;
+                }
+
+                response.Notifications = new List<string>
+                {
+                    $"The payment (ID: {paymentRequest.PaymentId}) has been deleted"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpGet]
         [Route("Api/Shopping")]
         public GetShoppingResponse GetShoppingItems()

@@ -395,6 +395,32 @@ namespace HouseFinance.Core.Bills
                 throw new Exception($"An Error occured while updating the payment (ID: {paymentRequest.Id})", exception);
             }
         }
+
+        public bool DeletePayment(int paymentRequestPaymentId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" " +
+                                            $"WHERE \"Id\" = {paymentRequestPaymentId} " +
+                                            "RETURNING \"Id\"", _connection);
+                var paymentDeleted = false;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    paymentDeleted = true;
+                }
+                reader.Close();
+
+                return paymentDeleted;
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while deleting the payment (ID: {paymentRequestPaymentId})", exception);
+            }
+        }
     }
 
     public class AddBillRequest

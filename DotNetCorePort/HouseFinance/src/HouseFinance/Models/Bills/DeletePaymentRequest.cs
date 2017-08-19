@@ -7,4 +7,9 @@ namespace HouseFinance.Models.Bills
         public Guid BillId { get; set; }
         public Guid PaymentId { get; set; }
     }
+
+    public class DeletePaymentRequestV2
+    {
+        public int PaymentId { get; set; }
+    }
 }
