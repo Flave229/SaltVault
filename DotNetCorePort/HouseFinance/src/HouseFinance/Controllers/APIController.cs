@@ -229,6 +229,40 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/Bills/Update")]
+        public CommunicationResponse UpdateBillV2([FromBody]UpdateBillRequestV2 billRequest)
+        {
+            var response = new AddBillResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var rowUpdated = _billRepository.UpdateBill(billRequest);
+
+                if (rowUpdated == false)
+                {
+                    response.AddError("The given Bill Id does not correspond to an existing Bill");
+                    return response;
+                }
+
+                response.Notifications = new List<string>
+                {
+                    $"The bill '{billRequest.Name}' has been updated"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpDelete]
         [Route("Api/Bills/Delete")]
         public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)

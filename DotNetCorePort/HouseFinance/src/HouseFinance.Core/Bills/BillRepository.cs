@@ -237,6 +237,67 @@ namespace HouseFinance.Core.Bills
                 throw new Exception($"An Error occured while adding the bill '{bill.Name}'", exception);
             }
         }
+
+        public bool UpdateBill(UpdateBillRequestV2 billRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var setValues = new List<string>();
+
+                if (billRequest.Name != null)
+                    setValues.Add($"\"Name\"='{billRequest.Name}'");
+                if (billRequest.TotalAmount != null)
+                    setValues.Add($"\"Amount\"={billRequest.TotalAmount}");
+                if (billRequest.Due != null)
+                    setValues.Add($"\"Due\"='{billRequest.Due}'");
+                if (billRequest.RecurringType != null)
+                    setValues.Add($"\"RecurringType\"={(int)billRequest.RecurringType}");
+                
+                var command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
+                                                $"SET {string.Join(", ", setValues)} " +
+                                                $"WHERE \"Id\" = {billRequest.Id} " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 billId = -1;
+                var rowUpdated = false;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    rowUpdated = true;
+                    billId = (Int64)reader[0];
+                }
+                reader.Close();
+
+                if (billRequest.PeopleIds == null || billRequest.PeopleIds.Count == 0)
+                    return rowUpdated;
+
+                command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
+                                            $"WHERE \"BillId\" = {billRequest.Id}", _connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                foreach (var peopleId in billRequest.PeopleIds)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
+                                                $"VALUES ({billId}, {peopleId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    { }
+                    reader.Close();
+                }
+                _connection.Close();
+
+                return rowUpdated;
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while updating the bill '{billRequest.Name}'", exception);
+            }
+        }
     }
 
     public class AddBillRequest
@@ -248,6 +309,21 @@ namespace HouseFinance.Core.Bills
         public RecurringType RecurringType { get; set; }
 
         public AddBillRequest()
+        {
+            PeopleIds = new List<int>();
+        }
+    }
+
+    public class UpdateBillRequestV2
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public DateTime? Due { get; set; }
+        public List<int> PeopleIds { get; set; }
+        public RecurringType? RecurringType { get; set; }
+
+        public UpdateBillRequestV2()
         {
             PeopleIds = new List<int>();
         }
