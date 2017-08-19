@@ -298,6 +298,45 @@ namespace HouseFinance.Core.Bills
                 throw new Exception($"An Error occured while updating the bill '{billRequest.Name}'", exception);
             }
         }
+
+        public bool DeleteBill(int billId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" " +
+                                                $"WHERE \"BillId\" = {billId}");
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+
+                command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
+                                           $"WHERE \"BillId\" = {billId}");
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+
+                command = new NpgsqlCommand("DELETE FROM public.\"Bill\" " +
+                                                $"WHERE \"Id\" = {billId} " +
+                                                "RETURNING \"Id\"", _connection);
+
+                var billDeleted = false;
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    billDeleted = true;
+                }
+                reader.Close();
+
+                return billDeleted;
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
+            }
+        }
     }
 
     public class AddBillRequest
