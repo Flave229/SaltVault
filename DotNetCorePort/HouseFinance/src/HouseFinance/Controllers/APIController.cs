@@ -335,15 +335,8 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPost]
-        [Route("Api/Bills/AddPayment")]
-        public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
-        {
-            return AddPaymentV2(paymentRequest);
-        }
-
-        [HttpPost]
         [Route("Api/Bills/Payments")]
-        public CommunicationResponse AddPaymentV2([FromBody]AddPaymentRequest paymentRequest)
+        public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
