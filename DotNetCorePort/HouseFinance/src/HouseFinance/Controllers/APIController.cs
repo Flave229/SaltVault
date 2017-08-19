@@ -163,6 +163,7 @@ namespace HouseFinance.Controllers
 
             try
             {
+                BillValidator.CheckIfValidBill(billRequest);
                 response.Id = _billRepository.AddBill(billRequest);
 
                 _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);

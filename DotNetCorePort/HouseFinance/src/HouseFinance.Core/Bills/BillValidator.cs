@@ -55,5 +55,22 @@ namespace HouseFinance.Core.Bills
             if (!Validation.CheckDateWithinRange(minAmount, maxAmount, date))
                 throw new Exception("The date entered was out of range. Value must lie between " + minAmount.ToString("d") + " and " + maxAmount.ToString("d") + ".");
         }
+
+        public static void CheckIfValidBill(AddBillRequest billRequest)
+        {
+            try
+            {
+                if (billRequest == null) throw new Exception("The bill object given was null.");
+                if (billRequest.PeopleIds.Count == 0) throw new Exception("No people were assigned to the bill.");
+
+                CheckNameValid(billRequest.Name);
+                CheckAmountValid(billRequest.TotalAmount);
+                CheckDateValid(billRequest.Due);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
+            }
+        }
     }
 }
