@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Npgsql;
 
 namespace HouseFinance.Core.Shopping
@@ -29,8 +30,8 @@ namespace HouseFinance.Core.Shopping
                 else if (shoppingItem.AddedBy == new Guid("f97a50c9-8451-4537-bccb-e89ba5ade95a"))
                     addedBy = 3;
 
-                var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"Purchased\", \"AddedBy\") " +
-                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased.ToString().ToUpper()}, {addedBy}) " +
+                var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"Purchased\", \"AddedBy\", \"AddedOn\") " +
+                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased.ToString().ToUpper()}, {addedBy}, '{shoppingItem.Added}') " +
                                                 "RETURNING \"Id\"", _connection);
                 var reader = command.ExecuteReader();
                 Int64 rowId = -1;
@@ -62,6 +63,59 @@ namespace HouseFinance.Core.Shopping
             }
 
             _connection.Close();
+        }
+
+        public ShoppingListResponseV2 GetAllItems()
+        {
+            _connection.Open();
+
+            try
+            {
+                var shoppingItems = new List<ItemV2>();
+                var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Image\", ShoppingItemFor.\"Image\" " +
+                                                "FROM public.\"ShoppingItem\" AS ShoppingItem " +
+                                                "LEFT OUTER JOIN \"Person\" AS AddedBy ON AddedBy.\"Id\" = ShoppingItem.\"Id\" " +
+                                                "LEFT OUTER JOIN \"ShoppingItemFor\" AS ShoppingItemFor ON ShoppingItemFor.\"ShoppingItemId\" = ShoppingItem.\"Id\" " +
+                                                "ORDER BY Item.\"Purchased\", Item.\"AddedOn\" DESC", _connection);
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var shoppingItemId = Convert.ToInt32(reader[0]);
+                    ItemV2 shoppingItem;
+
+                    if (shoppingItems.Any(x => x.Id == shoppingItemId))
+                        shoppingItem = shoppingItems.First(x => x.Id == shoppingItemId);
+                    else
+                    {
+                        shoppingItem = new ItemV2
+                        {
+                            Id = shoppingItemId,
+                            Name = (string)reader[1],
+                            DateAdded = (DateTime)reader[2],
+                            Purchased = (bool)reader[3],
+                            AddedByImage = (string)reader[4]
+                        };
+                    }
+
+                    shoppingItem.AddedForImages.Add((string)reader[5]);
+
+                    if (shoppingItems.Any(x => x.Id == shoppingItemId) == false)
+                        shoppingItems.Add(shoppingItem);
+                }
+
+                reader.Close();
+                _connection.Close();
+                return new ShoppingListResponseV2
+                {
+                    ShoppingList = shoppingItems
+                };
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception("An Error occured while getting the bills", exception);
+            }
         }
     }
 }

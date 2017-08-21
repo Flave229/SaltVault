@@ -19,11 +19,13 @@ namespace HouseFinance.Controllers
     {
         private readonly DiscordService _discordService;
         private readonly BillRepository _billRepository;
+        private readonly ShoppingRepository _shoppingRepository;
 
         public ApiController()
         {
             _discordService = new DiscordService(new HttpClient());
             _billRepository = new BillRepository();
+            _shoppingRepository = new ShoppingRepository();
         }
 
         [HttpGet]
@@ -575,6 +577,29 @@ namespace HouseFinance.Controllers
             try
             {
                 response.Items = ShoppingListBuilder.BuildShoppingList();
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("Api/v2/Shopping")]
+        public GetShoppingResponseV2 GetShoppingItemsV2()
+        {
+            var response = new GetShoppingResponseV2();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Items = _shoppingRepository.GetAllItems();
             }
             catch (Exception exception)
             {
