@@ -21,8 +21,16 @@ namespace HouseFinance.Core.Shopping
 
             foreach (var shoppingItem in shoppingItems)
             {
+                var addedBy = -1;
+                if (shoppingItem.AddedBy == new Guid("e9636bbb-8b54-49b9-9fa2-9477c303032f"))
+                    addedBy = 1;
+                else if (shoppingItem.AddedBy == new Guid("25c15fb4-b5d5-47d9-917b-c572b1119e65"))
+                    addedBy = 2;
+                else if (shoppingItem.AddedBy == new Guid("f97a50c9-8451-4537-bccb-e89ba5ade95a"))
+                    addedBy = 3;
+
                 var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"Purchased\", \"AddedBy\") " +
-                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased}, {shoppingItem.AddedBy}) " +
+                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased}, {addedBy}) " +
                                                 "RETURNING \"Id\"", _connection);
                 var reader = command.ExecuteReader();
                 Int64 rowId = -1;
