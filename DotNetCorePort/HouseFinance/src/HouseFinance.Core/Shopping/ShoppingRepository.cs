@@ -167,7 +167,7 @@ namespace HouseFinance.Core.Shopping
                 if (shoppingRequest.Purchased != null)
                     setValues.Add($"\"Purchased\"={shoppingRequest.Purchased.ToString().ToUpper()}");
 
-                var command = new NpgsqlCommand("UPDATE public.\"Payment\" " +
+                var command = new NpgsqlCommand("UPDATE public.\"ShoppingItem\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
                                                 $"WHERE \"Id\" = {shoppingRequest.Id}", _connection);
                 
