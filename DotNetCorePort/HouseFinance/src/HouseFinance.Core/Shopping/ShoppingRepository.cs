@@ -30,7 +30,7 @@ namespace HouseFinance.Core.Shopping
                     addedBy = 3;
 
                 var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"Purchased\", \"AddedBy\") " +
-                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased}, {addedBy}) " +
+                                                $"VALUES ('{shoppingItem.Name}', {shoppingItem.Purchased.ToString().ToUpper()}, {addedBy}) " +
                                                 "RETURNING \"Id\"", _connection);
                 var reader = command.ExecuteReader();
                 Int64 rowId = -1;
