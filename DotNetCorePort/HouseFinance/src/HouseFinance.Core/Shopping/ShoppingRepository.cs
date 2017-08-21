@@ -204,7 +204,7 @@ namespace HouseFinance.Core.Shopping
             }
         }
 
-        public bool DeleteItem(int shoppingItemId)
+        public void DeleteItem(int shoppingItemId)
         {
             _connection.Open();
 
@@ -219,16 +219,11 @@ namespace HouseFinance.Core.Shopping
 
                 command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItem\" " +
                                             $"WHERE \"Id\" = {shoppingItemId}", _connection);
-
-                var itemDeleted = false;
+                
                 reader = command.ExecuteReader();
                 while (reader.Read())
-                {
-                    itemDeleted = true;
-                }
+                { }
                 reader.Close();
-
-                return itemDeleted;
             }
             catch (Exception exception)
             {

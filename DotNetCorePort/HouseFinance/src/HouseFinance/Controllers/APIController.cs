@@ -800,13 +800,7 @@ namespace HouseFinance.Controllers
 
             try
             {
-                var billDeleted = _shoppingRepository.DeleteItem(deleteShoppingItemRequest.ShoppingItemId);
-                
-                if (billDeleted == false)
-                {
-                    response.AddError($"Cannot delete the shopping item (ID: {deleteShoppingItemRequest.ShoppingItemId}) because it does not exist");
-                    return response;
-                }
+                _shoppingRepository.DeleteItem(deleteShoppingItemRequest.ShoppingItemId);
 
                 response.Notifications = new List<string>
                 {
