@@ -815,14 +815,6 @@ namespace HouseFinance.Controllers
             return response;
         }
 
-        [Route("Experimental/DatabaseMigration")]
-        public void DatabaseMigrationForBills()
-        {
-            var shoppingItems = new GenericFileHelper(FilePath.Shopping).GetAll<ShoppingItem>();
-            var repository = new ShoppingRepository();
-            repository.EnterAllIntoDatabase(shoppingItems);
-        }
-
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
