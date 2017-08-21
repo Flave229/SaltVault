@@ -203,6 +203,39 @@ namespace HouseFinance.Core.Shopping
                 throw new Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})", exception);
             }
         }
+
+        public bool DeleteItem(int shoppingItemId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItemFor\" " +
+                                                $"WHERE \"ShoppingItemId\" = {shoppingItemId}", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItem\" " +
+                                            $"WHERE \"Id\" = {shoppingItemId}", _connection);
+
+                var itemDeleted = false;
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    itemDeleted = true;
+                }
+                reader.Close();
+
+                return itemDeleted;
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while deleting the shopping item (ID: {shoppingItemId})", exception);
+            }
+        }
     }
 
     public class AddShoppingItemRequest

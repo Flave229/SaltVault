@@ -787,6 +787,40 @@ namespace HouseFinance.Controllers
             return response;
         }
 
+        [HttpDelete]
+        [Route("Api/v2/Shopping")]
+        public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequestV2 deleteShoppingItemRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var billDeleted = _shoppingRepository.DeleteItem(deleteShoppingItemRequest.ShoppingItemId);
+                
+                if (billDeleted == false)
+                {
+                    response.AddError($"Cannot delete the shopping item (ID: {deleteShoppingItemRequest.ShoppingItemId}) because it does not exist");
+                    return response;
+                }
+
+                response.Notifications = new List<string>
+                {
+                    $"The shopping item has been deleted"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [Route("Experimental/DatabaseMigration")]
         public void DatabaseMigrationForBills()
         {

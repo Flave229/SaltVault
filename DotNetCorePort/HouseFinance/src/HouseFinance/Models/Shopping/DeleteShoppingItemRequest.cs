@@ -6,4 +6,9 @@ namespace HouseFinance.Models.Shopping
     {
         public Guid ShoppingItemId { get; set; }
     }
+
+    public class DeleteShoppingItemRequestV2
+    {
+        public int ShoppingItemId { get; set; }
+    }
 }
