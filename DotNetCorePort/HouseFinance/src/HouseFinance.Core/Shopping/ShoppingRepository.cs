@@ -126,7 +126,7 @@ namespace HouseFinance.Core.Shopping
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\") " +
-                                                $"VALUES ('{shoppingRequest.Name}', {shoppingRequest.Added}, '{shoppingRequest.AddedBy}', FALSE) " +
+                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added}', {shoppingRequest.AddedBy}, FALSE) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 itemId = -1;
                 var reader = command.ExecuteReader();
@@ -153,6 +153,56 @@ namespace HouseFinance.Core.Shopping
                 throw new Exception($"An Error occured while adding the shopping item '{shoppingRequest.Name}'", exception);
             }
         }
+
+        public void UpdateItem(UpdateShoppingItemRequestV2 shoppingRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var setValues = new List<string>();
+
+                if (shoppingRequest.Name != null)
+                    setValues.Add($"\"Name\"='{shoppingRequest.Name}'");
+                if (shoppingRequest.Purchased != null)
+                    setValues.Add($"\"Purchased\"={shoppingRequest.Purchased.ToString().ToUpper()}");
+
+                var command = new NpgsqlCommand("UPDATE public.\"Payment\" " +
+                                                $"SET {string.Join(", ", setValues)} " +
+                                                $"WHERE \"Id\" = {shoppingRequest.Id}", _connection);
+                
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                if (shoppingRequest.ItemFor == null || shoppingRequest.ItemFor.Count == 0)
+                    return;
+
+                command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItemFor\" " +
+                                            $"WHERE \"ShoppingItemId\" = {shoppingRequest.Id}", _connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                foreach (var peopleId in shoppingRequest.ItemFor)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItemFor\" (\"ShoppingItemId\", \"PersonId\") " +
+                                                $"VALUES ({shoppingRequest.Id}, {peopleId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    { }
+                    reader.Close();
+                }
+                _connection.Close();
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})", exception);
+            }
+        }
     }
 
     public class AddShoppingItemRequest
@@ -166,5 +216,13 @@ namespace HouseFinance.Core.Shopping
         {
             ItemFor = new List<int>();
         }
+    }
+
+    public class UpdateShoppingItemRequestV2
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool? Purchased { get; set; }
+        public List<int> ItemFor { get; set; }
     }
 }
