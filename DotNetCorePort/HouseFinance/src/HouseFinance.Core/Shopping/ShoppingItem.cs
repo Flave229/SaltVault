@@ -28,7 +28,7 @@ namespace HouseFinance.Core.Shopping
         public string Name { get; set; }
         public bool Purchased { get; set; }
         public DateTime Added { get; set; }
-        public Guid AddedBy { get; set; }
+        public int AddedBy { get; set; }
         public List<int> ItemFor { get; set; }
 
         public ShoppingItemV2()

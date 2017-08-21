@@ -118,5 +118,53 @@ namespace HouseFinance.Core.Shopping
                 throw new Exception("An Error occured while getting the bills", exception);
             }
         }
+
+        public void AddItem(AddShoppingItemRequest shoppingRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\") " +
+                                                $"VALUES ('{shoppingRequest.Name}', {shoppingRequest.Added}, '{shoppingRequest.AddedBy}', FALSE) " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 itemId = -1;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    itemId = (Int64)reader[0];
+                }
+                reader.Close();
+
+                foreach (var peopleId in shoppingRequest.ItemFor)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItemFor\" (\"ShoppingItemId\", \"PersonId\") " +
+                                                $"VALUES ({itemId}, {peopleId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    { }
+                    reader.Close();
+                }
+                _connection.Close();
+            }
+            catch (Exception exception)
+            {
+                _connection.Close();
+                throw new Exception($"An Error occured while adding the shopping item '{shoppingRequest.Name}'", exception);
+            }
+        }
+    }
+
+    public class AddShoppingItemRequest
+    {
+        public string Name { get; set; }
+        public DateTime Added { get; set; }
+        public int AddedBy { get; set; }
+        public List<int> ItemFor { get; set; }
+
+        public AddShoppingItemRequest()
+        {
+            ItemFor = new List<int>();
+        }
     }
 }
