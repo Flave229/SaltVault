@@ -21,4 +21,19 @@ namespace HouseFinance.Core.Shopping
             ItemFor = new List<Guid>();
         }
     }
+
+    public class ShoppingItemV2
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool Purchased { get; set; }
+        public DateTime Added { get; set; }
+        public Guid AddedBy { get; set; }
+        public List<int> ItemFor { get; set; }
+
+        public ShoppingItemV2()
+        {
+            ItemFor = new List<int>();
+        }
+    }
 }

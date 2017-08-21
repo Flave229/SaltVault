@@ -707,9 +707,9 @@ namespace HouseFinance.Controllers
         [Route("Experimental/DatabaseMigration")]
         public void DatabaseMigrationForBills()
         {
-            var bills = new GenericFileHelper(FilePath.Bills).GetAll<Bill>();
-            var repository = new BillRepository();
-            repository.EnterAllIntoDatabase(bills);
+            var shoppingItems = new GenericFileHelper(FilePath.Shopping).GetAll<ShoppingItem>();
+            var repository = new ShoppingRepository();
+            repository.EnterAllIntoDatabase(shoppingItems);
         }
 
         private bool Authenticate(StringValues authorizationHeader)
