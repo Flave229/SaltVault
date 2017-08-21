@@ -75,7 +75,8 @@ namespace HouseFinance.Core.Shopping
                 var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Image\", ShoppingItemFor.\"Image\" " +
                                                 "FROM public.\"ShoppingItem\" AS Item " +
                                                 "LEFT OUTER JOIN \"Person\" AS AddedBy ON AddedBy.\"Id\" = Item.\"Id\" " +
-                                                "LEFT OUTER JOIN \"ShoppingItemFor\" AS ShoppingItemFor ON ShoppingItemFor.\"ShoppingItemId\" = Item.\"Id\" " +
+                                                "LEFT OUTER JOIN \"ShoppingItemFor\" AS ItemPersonLinker ON ItemPersonLinker.\"ShoppingItemId\" = Item.\"Id\" " +
+                                                "LEFT OUTER JOIN \"Person\" AS ShoppingItemFor ON ItemPersonLinker.\"PersonId\" = ShoppingItemFor.\"Id\" " +
                                                 "ORDER BY Item.\"Purchased\", Item.\"AddedOn\" DESC", _connection);
                 var reader = command.ExecuteReader();
 
