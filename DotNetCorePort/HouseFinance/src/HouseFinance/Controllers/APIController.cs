@@ -9,6 +9,7 @@ using HouseFinance.Core.Shopping;
 using HouseFinance.Models.API;
 using HouseFinance.Models.Bills;
 using HouseFinance.Models.Shopping;
+using HouseFinance.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -361,8 +362,31 @@ namespace HouseFinance.Controllers
 
                 response.Notifications = new List<string>
                 {
-                    $"The shopping item has been deleted"
+                    "The shopping item has been deleted"
                 };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("Api/v2/Users")]
+        public GetUsersResponse GetUsers()
+        {
+            var response = new GetUsersResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.People = _billRepository.GetAllPeople();
             }
             catch (Exception exception)
             {
