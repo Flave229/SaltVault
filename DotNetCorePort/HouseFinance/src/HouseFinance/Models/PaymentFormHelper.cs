@@ -7,7 +7,7 @@ namespace HouseFinance.Models
 {
     public class PaymentFormHelper
     {
-        public BillDetails Bill { get; set; }
+        public Bill Bill { get; set; }
         public BillPayment Payment { get; set; }
         public List<Person> People { get; set; }
     }

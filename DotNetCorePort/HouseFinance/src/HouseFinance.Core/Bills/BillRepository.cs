@@ -18,11 +18,11 @@ namespace HouseFinance.Core.Bills
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<BillDetails> GetAllBasicBillDetails()
+        public List<Bill> GetAllBasicBillDetails()
         {
             _connection.Open();
 
-            var bills = new List<BillDetails>();
+            var bills = new List<Bill>();
             try
             {
                 var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
@@ -36,13 +36,13 @@ namespace HouseFinance.Core.Bills
                 while (reader.Read())
                 {
                     var billId = Convert.ToInt32(reader[0]);
-                    BillDetails billOverview;
+                    Bill billOverview;
 
                     if (bills.Any(x => x.Id == billId))
                         billOverview = bills.First(x => x.Id == billId);
                     else
                     {
-                        billOverview = new BillDetails
+                        billOverview = new Bill
                         {
                             Id = billId,
                             Name = (string)reader[1],
@@ -55,7 +55,7 @@ namespace HouseFinance.Core.Bills
                     var paymentAmount = (reader[7] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[7]);
                     if (billOverview.People.Any(x => x.Id == personId) == false)
                     {
-                        billOverview.People.Add(new PersonBillDetailsV2
+                        billOverview.People.Add(new BillPersonDetails
                         {
                             Id = personId,
                             Paid = paymentAmount != 0,
@@ -82,7 +82,7 @@ namespace HouseFinance.Core.Bills
             }
         }
 
-        public BillDetails GetBasicBillDetails(int billId)
+        public Bill GetBasicBillDetails(int billId)
         {
             _connection.Open();
 
@@ -96,12 +96,12 @@ namespace HouseFinance.Core.Bills
                     $"WHERE Bill.\"Id\" = {billId}", _connection);
                 var reader = command.ExecuteReader();
 
-                BillDetails bill = null;
+                Bill bill = null;
                 while (reader.Read())
                 {
                     if (bill == null)
                     {
-                        bill = new BillDetails
+                        bill = new Bill
                         {
                             Id = billId,
                             Name = (string) reader[0],
@@ -137,7 +137,7 @@ namespace HouseFinance.Core.Bills
                 while (reader.Read())
                 {
                     var personId = Convert.ToInt32(reader[0]);
-                    bill.People.Add(new PersonBillDetailsV2
+                    bill.People.Add(new BillPersonDetails
                     {
                         Id = personId,
                         Paid = bill.Payments.Any(x => x.PersonId == personId),

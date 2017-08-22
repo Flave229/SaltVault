@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using HouseFinance.Core.FileManagement;
 
 namespace HouseFinance.Core.Bills
 {
@@ -10,24 +9,28 @@ namespace HouseFinance.Core.Bills
         Monthly
     }
 
-    public class Bill : IPersistedData
+    public class Bill
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public decimal AmountOwed { get; set; }
-        public List<Guid> AmountPaid { get; set; }
-        public DateTime Due { get; set; }
-        public List<Guid> People { get; set; }
+        public DateTime FullDateDue { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal AmountPaid { get; set; }
+        public List<BillPersonDetails> People { get; set; }
+        public List<BillPayment> Payments { get; set; }
         public RecurringType RecurringType { get; set; }
 
         public Bill()
         {
-            Id = Guid.NewGuid();
-            Name = "Unnamed Bill";
-            AmountOwed = 0;
-            AmountPaid = new List<Guid>();
-            Due = new DateTime();
-            People = new List<Guid>();
+            People = new List<BillPersonDetails>();
+            Payments = new List<BillPayment>();
         }
+    }
+
+    public class BillPersonDetails
+    {
+        public int Id { get; set; }
+        public string ImageLink { get; set; }
+        public bool Paid { get; set; }
     }
 }

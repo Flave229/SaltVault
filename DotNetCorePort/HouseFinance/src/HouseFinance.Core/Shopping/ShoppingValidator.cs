@@ -4,7 +4,7 @@ namespace HouseFinance.Core.Shopping
 {
     public class ShoppingValidator
     {
-        public static void CheckIfValidItem(ShoppingItemV2 item)
+        public static void CheckIfValidItem(ShoppingItem item)
         {
             try
             {

@@ -4,7 +4,6 @@ using System.Net.Http;
 using HouseFinance.Core.Authentication;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.Bills.Payments;
-using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.Services.Discord;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models.API;
@@ -29,33 +28,10 @@ namespace HouseFinance.Controllers
         }
 
         [HttpGet]
-        [Route("Api/Bills")]
-        public GetBillListResponse GetBillList()
+        [Route("Api/v2/Bills")]
+        public GetBillListResponse GetBillListV2()
         {
             var response = new GetBillListResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                response.Bills = BillListBuilder.BuildBillList();
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpGet]
-        [Route("Api/v2/Bills")]
-        public GetBillListResponseV2 GetBillListV2()
-        {
-            var response = new GetBillListResponseV2();
             if (Authenticate(Request.Headers["Authorization"]) == false)
             {
                 response.AddError("The API Key was invalid");
@@ -75,8 +51,8 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPost]
-        [Route("Api/Bills")]
-        public GetBillResponse GetBill([FromBody]GetBillRequest billRequest)
+        [Route("Api/v2/Bills")]
+        public GetBillResponse GetBillV2([FromBody]GetBillRequest billRequest)
         {
             var response = new GetBillResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -87,62 +63,7 @@ namespace HouseFinance.Controllers
 
             try
             {
-                response.Bill = BillDetailsBuilder.BuildBillDetails(Guid.Parse(billRequest.BillId));
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPost]
-        [Route("Api/v2/Bills")]
-        public GetBillResponseV2 GetBillV2([FromBody]GetBillRequestV2 billRequest)
-        {
-            var response = new GetBillResponseV2();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
                 response.Bill = _billRepository.GetBasicBillDetails(billRequest.BillId);
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPost]
-        [Route("Api/Bills/Add")]
-        public CommunicationResponse AddBill([FromBody]Bill billRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                BillValidator.CheckIfValidBill(billRequest);
-                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
-                genericFileHelper.AddOrUpdate<Bill>(billRequest);
-
-                _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.AmountOwed);
-
-                response.Notifications = new List<string>
-                {
-                    $"The bill '{billRequest.Name}' has been added"
-                };
             }
             catch (Exception exception)
             {
@@ -169,55 +90,6 @@ namespace HouseFinance.Controllers
                 response.Id = _billRepository.AddBill(billRequest);
 
                 _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);
-                response.Notifications = new List<string>
-                {
-                    $"The bill '{billRequest.Name}' has been added"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPatch]
-        [Route("Api/Bills/Update")]
-        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
-
-                var oldBill = genericFileHelper.Get<Bill>(billRequest.Id);
-                if (oldBill == null)
-                {
-                    response.AddError("The requested bill does not exist");
-                    return response;
-                }
-
-                var newBill = new Bill
-                {
-                    Id = billRequest.Id,
-                    AmountOwed = billRequest.AmountOwed ?? oldBill.AmountOwed,
-                    Due = billRequest.Due ?? oldBill.Due,
-                    People = billRequest.People ?? oldBill.People,
-                    Name = billRequest.Name ?? oldBill.Name,
-                    RecurringType = billRequest.RecurringType ?? oldBill.RecurringType,
-                    AmountPaid = oldBill.AmountPaid
-                };
-
-                BillValidator.CheckIfValidBill(newBill);
-                genericFileHelper.AddOrUpdate<Bill>(newBill);
-
                 response.Notifications = new List<string>
                 {
                     $"The bill '{billRequest.Name}' has been added"
@@ -266,43 +138,6 @@ namespace HouseFinance.Controllers
         }
 
         [HttpDelete]
-        [Route("Api/Bills/Delete")]
-        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var genericFileHelper = new GenericFileHelper(FilePath.Bills);
-                var bill = genericFileHelper.Get<Bill>(deleteBillRequest.BillId);
-
-                if (bill == null)
-                {
-                    response.AddError($"Cannot delete the bill (ID: {deleteBillRequest.BillId}) because it does not exist");
-                    return response;
-                }
-
-                genericFileHelper.Delete<Bill>(deleteBillRequest.BillId);
-
-                response.Notifications = new List<string>
-                {
-                    $"The bill '{bill.Name}' has been deleted"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpDelete]
         [Route("Api/v2/Bills/Delete")]
         public CommunicationResponse DeleteBillV2([FromBody]DeleteBillRequestV2 deleteBillRequest)
         {
@@ -326,51 +161,6 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     $"The bill (ID: {deleteBillRequest.BillId}) has been deleted"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPost]
-        [Route("Api/Bills/Payments")]
-        public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var payment = new Payment
-                {
-                    Id = Guid.NewGuid(),
-                    Amount = paymentRequest.Amount,
-                    Created = paymentRequest.Created,
-                    PersonId = Guid.Parse(paymentRequest.PersonId)
-                };
-
-                PaymentValidator.CheckIfValidPayment(payment);
-                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
-                paymentFileHelper.AddOrUpdate<Payment>(payment);
-
-                var billFileHelper = new GenericFileHelper(FilePath.Bills);
-                var realBill = billFileHelper.Get<Bill>(Guid.Parse(paymentRequest.BillId));
-
-                BillHelper.AddOrUpdatePayment(ref realBill, payment);
-
-                billFileHelper.AddOrUpdate<Bill>(realBill);
-
-                response.Notifications = new List<string>
-                {
-                    "The payment has been added"
                 };
             }
             catch (Exception exception)
@@ -411,51 +201,6 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPatch]
-        [Route("Api/Bills/Payments")]
-        public CommunicationResponse UpdatePayment([FromBody]UpdatePaymentRequest paymentRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
-                var existingPayment = paymentFileHelper.Get<Payment>(paymentRequest.PaymentId);
-
-                if (existingPayment == null)
-                {
-                    response.AddError("The requested payment does not exist");
-                    return response;
-                }
-
-                var newPayment = new Payment
-                {
-                    Id = paymentRequest.PaymentId,
-                    Amount = paymentRequest.Amount,
-                    Created = existingPayment.Created,
-                    PersonId = existingPayment.PersonId
-                };
-                PaymentValidator.CheckIfValidPayment(newPayment);
-                paymentFileHelper.AddOrUpdate<Payment>(newPayment);
-
-                response.Notifications = new List<string>
-                {
-                    $"The shopping item '{newPayment.Id}' has been updated"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPatch]
         [Route("Api/v2/Bills/Payments")]
         public CommunicationResponse UpdatePaymentV2([FromBody]UpdatePaymentRequestV2 paymentRequest)
         {
@@ -474,51 +219,6 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     "The payment has been updated"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpDelete]
-        [Route("Api/Bills/Payments")]
-        public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var billFileHelper = new GenericFileHelper(FilePath.Bills);
-                var bill = billFileHelper.Get<Bill>(paymentRequest.BillId);
-                var paymentFileHelper = new GenericFileHelper(FilePath.Payments);
-                var payment = paymentFileHelper.Get<Payment>(paymentRequest.PaymentId);
-
-                if (bill == null)
-                {
-                    response.AddError($"Cannot delete the payment (ID: {paymentRequest.PaymentId}) because the bill (ID {paymentRequest.BillId}) does not exist");
-                    return response;
-                }
-                if (payment == null)
-                {
-                    response.AddError($"Cannot delete the payment (ID: {paymentRequest.PaymentId}) because it does not exist");
-                    return response;
-                }
-
-                paymentFileHelper.Delete<Payment>(paymentRequest.PaymentId);
-                bill.AmountPaid.Remove(payment.Id);
-                billFileHelper.AddOrUpdate<Bill>(bill);
-                response.Notifications = new List<string>
-                {
-                    $"The shopping item '{payment.Id}' has been deleted"
                 };
             }
             catch (Exception exception)
@@ -564,33 +264,10 @@ namespace HouseFinance.Controllers
         }
 
         [HttpGet]
-        [Route("Api/Shopping")]
-        public GetShoppingResponse GetShoppingItems()
+        [Route("Api/v2/Shopping")]
+        public GetShoppingResponse GetShoppingItemsV2()
         {
             var response = new GetShoppingResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                response.Items = ShoppingListBuilder.BuildShoppingList();
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpGet]
-        [Route("Api/v2/Shopping")]
-        public GetShoppingResponseV2 GetShoppingItemsV2()
-        {
-            var response = new GetShoppingResponseV2();
             if (Authenticate(Request.Headers["Authorization"]) == false)
             {
                 response.AddError("The API Key was invalid");
@@ -668,44 +345,8 @@ namespace HouseFinance.Controllers
         }
 
         [HttpDelete]
-        [Route("Api/Shopping")]
-        public CommunicationResponse DeleteShoppingItem([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var genericFileHelper = new GenericFileHelper(FilePath.Shopping);
-                var shoppingItem = genericFileHelper.Get<ShoppingItem>(deleteShoppingItemRequest.ShoppingItemId);
-
-                if (shoppingItem == null)
-                {
-                    response.AddError($"Cannot delete the shopping item (ID: {deleteShoppingItemRequest.ShoppingItemId}) because it does not exist");
-                    return response;
-                }
-
-                genericFileHelper.Delete<ShoppingItem>(deleteShoppingItemRequest.ShoppingItemId);
-                response.Notifications = new List<string>
-                {
-                    $"The shopping item '{shoppingItem.Name}' has been deleted"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpDelete]
         [Route("Api/v2/Shopping")]
-        public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequestV2 deleteShoppingItemRequest)
+        public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)

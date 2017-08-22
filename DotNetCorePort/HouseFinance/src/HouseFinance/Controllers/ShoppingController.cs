@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using HouseFinance.Core.FileManagement;
+using HouseFinance.Core.Bills;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,22 +10,34 @@ namespace HouseFinance.Controllers
     public class ShoppingController : Controller
     {
         private readonly ShoppingRepository _shoppingRepository;
+        private readonly BillRepository _billRepository;
 
         public ShoppingController()
         {
+            _billRepository = new BillRepository();
             _shoppingRepository = new ShoppingRepository();
         }
 
         public ActionResult Index()
         {
-            var shoppingList = ShoppingListBuilder.BuildShoppingList();
+            var shoppingList = _shoppingRepository.GetAllItems();
 
             return View(shoppingList);
         }
 
         public IActionResult AddItem()
         {
-            return View(new ShoppingItemFormModel());
+            var people = _billRepository.GetAllPeople();
+            var shoppingModel = new ShoppingItemFormModel
+            {
+                Item = new ShoppingItem(),
+                SelectedPeople = people.Select(x => new PersonForItem
+                {
+                    Person = x,
+                    Selected = true
+                }).ToList()
+            };
+            return View(shoppingModel);
         }
 
         [HttpPost]
@@ -43,28 +55,26 @@ namespace HouseFinance.Controllers
                 ItemFor = itemForm.SelectedPeople.Where(x => x.Selected).Select(x => x.Person.Id).ToList(),
                 Name = itemForm.Item.Name,
                 AddedBy = itemForm.Item.AddedBy,
-                Added = itemForm.Item.Added
+                Added = DateTime.Now
             });
 
             return RedirectToActionPermanent("Index", "Shopping");
         }
 
-        public IActionResult CompleteItem(Guid itemId)
+        public IActionResult CompleteItem(int itemId)
         {
-            var fileHelper = new GenericFileHelper(FilePath.Shopping);
-            var shoppingItem = fileHelper.Get<ShoppingItem>(itemId);
-
-            shoppingItem.Purchased = true;
-
-            fileHelper.AddOrUpdate<ShoppingItem>(shoppingItem);
+            _shoppingRepository.UpdateItem(new UpdateShoppingItemRequestV2
+            {
+                Id = itemId,
+                Purchased = true
+            });
 
             return RedirectToActionPermanent("Index", "Shopping");
         }
 
-        public IActionResult DeleteItem(Guid itemId)
+        public IActionResult DeleteItem(int itemId)
         {
-            var fileHelper = new GenericFileHelper(FilePath.Shopping);
-            fileHelper.Delete<ShoppingItem>(itemId);
+            _shoppingRepository.DeleteItem(itemId);
 
             return RedirectToActionPermanent("Index", "Shopping");
         }

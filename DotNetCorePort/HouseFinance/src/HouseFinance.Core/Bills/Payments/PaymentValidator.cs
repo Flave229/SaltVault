@@ -7,24 +7,6 @@ namespace HouseFinance.Core.Bills.Payments
     {
         private static readonly ValidationService Validation = new ValidationService();
 
-        public static void CheckIfValidPayment(Payment payment)
-        {
-            try
-            {
-                if (payment == null) throw new Exception("The payment object given was null.");
-                if (!Validation.CheckGuidValid(payment.PersonId)) throw new Exception("The person object given was invalid.");
-
-                if (!Validation.CheckGuidValid(payment.Id)) throw new Exception("The Id for the payment object was invalid.");
-
-                CheckAmountValid(payment.Amount);
-                CheckDateValid(payment.Created);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
-            }
-        }
-
         public static void CheckAmountValid(decimal amount)
         {
             var minAmount = 0.01m;

@@ -7,9 +7,4 @@ namespace HouseFinance.Models.Shopping
     {
         public ShoppingListResponse Items { get; set; }
     }
-
-    public class GetShoppingResponseV2 : CommunicationResponse
-    {
-        public ShoppingListResponseV2 Items { get; set; }
-    }
 }

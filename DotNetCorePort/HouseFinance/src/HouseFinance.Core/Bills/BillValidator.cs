@@ -7,18 +7,16 @@ namespace HouseFinance.Core.Bills
     {
         private static readonly ValidationService Validation = new ValidationService();
 
-        public static void CheckIfValidBill(Bill bill)
+        public static void CheckIfValidBill(AddBillRequest billRequest)
         {
             try
             {
-                if (bill == null) throw new Exception("The bill object given was null.");
-                if (bill.People.Count == 0) throw new Exception("No people were assigned to the bill.");
+                if (billRequest == null) throw new Exception("The bill object given was null.");
+                if (billRequest.PeopleIds.Count == 0) throw new Exception("No people were assigned to the bill.");
 
-                if (!Validation.CheckGuidValid(bill.Id)) throw new Exception("The Id for the payment object was invalid.");
-
-                CheckNameValid(bill.Name);
-                CheckAmountValid(bill.AmountOwed);
-                CheckDateValid(bill.Due);
+                CheckNameValid(billRequest.Name);
+                CheckAmountValid(billRequest.TotalAmount);
+                CheckDateValid(billRequest.Due);
             }
             catch (Exception ex)
             {
@@ -54,23 +52,6 @@ namespace HouseFinance.Core.Bills
 
             if (!Validation.CheckDateWithinRange(minAmount, maxAmount, date))
                 throw new Exception("The date entered was out of range. Value must lie between " + minAmount.ToString("d") + " and " + maxAmount.ToString("d") + ".");
-        }
-
-        public static void CheckIfValidBill(AddBillRequest billRequest)
-        {
-            try
-            {
-                if (billRequest == null) throw new Exception("The bill object given was null.");
-                if (billRequest.PeopleIds.Count == 0) throw new Exception("No people were assigned to the bill.");
-
-                CheckNameValid(billRequest.Name);
-                CheckAmountValid(billRequest.TotalAmount);
-                CheckDateValid(billRequest.Due);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("The payment object cannot be validated: " + ex.Message, ex);
-            }
         }
     }
 }

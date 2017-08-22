@@ -16,13 +16,13 @@ namespace HouseFinance.Core.Shopping
             _connection = new NpgsqlConnection(connectionString);
         }
         
-        public ShoppingListResponseV2 GetAllItems()
+        public ShoppingListResponse GetAllItems()
         {
             _connection.Open();
 
             try
             {
-                var shoppingItems = new List<ItemV2>();
+                var shoppingItems = new List<Item>();
                 var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Image\", ShoppingItemFor.\"Image\" " +
                                                 "FROM public.\"ShoppingItem\" AS Item " +
                                                 "LEFT OUTER JOIN \"Person\" AS AddedBy ON AddedBy.\"Id\" = Item.\"AddedBy\" " +
@@ -34,13 +34,13 @@ namespace HouseFinance.Core.Shopping
                 while (reader.Read())
                 {
                     var shoppingItemId = Convert.ToInt32(reader[0]);
-                    ItemV2 shoppingItem;
+                    Item shoppingItem;
 
                     if (shoppingItems.Any(x => x.Id == shoppingItemId))
                         shoppingItem = shoppingItems.First(x => x.Id == shoppingItemId);
                     else
                     {
-                        shoppingItem = new ItemV2
+                        shoppingItem = new Item
                         {
                             Id = shoppingItemId,
                             Name = (string)reader[1],
@@ -58,7 +58,7 @@ namespace HouseFinance.Core.Shopping
 
                 reader.Close();
                 _connection.Close();
-                return new ShoppingListResponseV2
+                return new ShoppingListResponse
                 {
                     ShoppingList = shoppingItems
                 };
@@ -77,7 +77,7 @@ namespace HouseFinance.Core.Shopping
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\") " +
-                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added}', {shoppingRequest.AddedBy}, FALSE) " +
+                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added:yyyy-MM-dd}', {shoppingRequest.AddedBy}, FALSE) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 itemId = -1;
                 var reader = command.ExecuteReader();

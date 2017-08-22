@@ -22,11 +22,6 @@ namespace HouseFinance.Core.Validation
             return input >= min && input <= max;
         }
 
-        public bool CheckGuidValid(Guid guid)
-        {
-            return guid != new Guid();
-        }
-
         public bool CheckDateWithinRange(DateTime min, DateTime max, DateTime input)
         {
             return input >= min && input <= max;

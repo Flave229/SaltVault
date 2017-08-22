@@ -6,11 +6,6 @@ namespace HouseFinance.Models.Bills
 {
     public class GetBillListResponse : CommunicationResponse
     {
-        public List<BillOverview> Bills { get; set; }
-    }
-
-    public class GetBillListResponseV2 : CommunicationResponse
-    {
-        public List<BillDetails> Bills { get; set; }
+        public List<Bill> Bills { get; set; }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using HouseFinance.Core.Bills;
-using HouseFinance.Core.Bills.Payments;
-using HouseFinance.Core.FileManagement;
-using HouseFinance.Core.People;
 using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,7 +6,7 @@ namespace HouseFinance.Models
 {
     public class BillModel
     {
-        public BillDetails Bill { get; set; }
+        public Bill Bill { get; set; }
         public List<PersonModel> SelectedPeople { get; set; }
 
         public BillModel()
