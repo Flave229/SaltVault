@@ -25,7 +25,7 @@ namespace HouseFinance.Core.Bills
             var bills = new List<Bill>();
             try
             {
-                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\" " +
+                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\" " +
                                                 "FROM public.\"Bill\" AS Bill " +
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
@@ -64,6 +64,17 @@ namespace HouseFinance.Core.Bills
                     }
                     else
                         billOverview.People.First(x => x.Id == personId).Paid = true;
+
+                    if (reader[6] != DBNull.Value)
+                    {
+                        billOverview.Payments.Add(new BillPayment
+                        {
+                            Id = Convert.ToInt32(reader[6]),
+                            PersonId = personId,
+                            Amount = paymentAmount,
+                            DatePaid = (DateTime) reader[8]
+                        });
+                    }
 
                     billOverview.AmountPaid += paymentAmount;
 
