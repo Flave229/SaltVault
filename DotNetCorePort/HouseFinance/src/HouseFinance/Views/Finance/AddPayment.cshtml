@@ -1,4 +1,5 @@
-﻿@using System.Threading.Tasks
+﻿@using System
+@using System.Threading.Tasks
 @model HouseFinance.Models.PaymentFormHelper
 @{
     ViewBag.Title = "Add Payment";
@@ -13,12 +14,12 @@
         <div class="form-horizontal">
             <input id="billId" type="hidden" value="@Model.Bill.Id"/>
 
-            <h4>Add a payment here to add it to @Model.Bill.Name : @Model.Bill.Due.ToString("MMMM yyyy")</h4>
+            <h4>Add a payment here to add it to @Model.Bill.Name : @Model.Bill.FullDateDue.ToString("MMMM yyyy")</h4>
             <hr />
             <div class="form-group">
                 <label class="col-md-2 control-label">Amount: </label>
                 <div class="col-md-10">
-                    <input class="form-control" id="paymentAmount" value="@((Model.Bill.AmountOwed / Model.Bill.People.Count).ToString("###0.00"))" 
+                    <input class="form-control" id="paymentAmount" value="@((Model.Bill.TotalAmount / Model.Bill.People.Count).ToString("###0.00"))" 
                            data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." />
                 </div>
             </div>
@@ -68,7 +69,7 @@
         console.log(addPaymentRequest);
 
         $.ajax({
-            url: '@Url.Action("AddPayment", "Api")',
+            url: '@Url.Action("AddPaymentV2", "Api")',
             contentType: "application/json",
             type: "POST",
             beforeSend: function(xhr) {

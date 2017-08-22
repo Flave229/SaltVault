@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HouseFinance.Core.Bills;
 using HouseFinance.Core.Bills.Payments;
 using HouseFinance.Core.FileManagement;
@@ -10,14 +11,21 @@ namespace HouseFinance.Controllers
 {
     public class FinanceController : Controller
     {
+        private readonly BillRepository _billRepository;
+
+        public FinanceController()
+        {
+            _billRepository = new BillRepository();
+        }
+
         public IActionResult AddBill()
         {
             var billModel = new BillModel();
-            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
+            var people = _billRepository.GetAllPeople();
 
             foreach (var person in people)
             {
-                billModel.SelectedPeople.Add(new AddBillPerson
+                billModel.SelectedPeople.Add(new PersonModel
                 {
                     Person = person,
                     Selected = true
@@ -32,38 +40,38 @@ namespace HouseFinance.Controllers
             return View();
         }
 
-        public IActionResult EditBill(Guid billId)
+        public IActionResult EditBill(int billId)
         {
-            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
+            var bill = _billRepository.GetBasicBillDetails(billId);
             var billModel = new BillModel
             {
                 Bill = bill
             };
 
-            var people = new GenericFileHelper(FilePath.People).GetAll<Person>();
+            var people = _billRepository.GetAllPeople();
             foreach (var person in people)
             {
-                billModel.SelectedPeople.Add(new AddBillPerson
+                billModel.SelectedPeople.Add(new PersonModel
                 {
                     Person = person,
-                    Selected = bill.People.Contains(person.Id)
+                    Selected = bill.People.Any(x => x.Id == person.Id)
                 });
             }
 
             return View(billModel);
         }
 
-        public IActionResult BillDetails(Guid billId)
+        public IActionResult BillDetails(int billId)
         {
-            var billModel = BillDetailsBuilder.BuildBillDetails(billId);
+            var billDetails = _billRepository.GetBasicBillDetails(billId);
 
-            return View(billModel);
+            return View(billDetails);
         }
 
-        public IActionResult AddPayment(Guid billId)
+        public IActionResult AddPayment(int billId)
         {
-            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
-            var people = new GenericFileHelper(FilePath.People).Get<Person>(bill.People);
+            var bill = _billRepository.GetBasicBillDetails(billId);
+            var people = _billRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
             var payment = new PaymentFormHelper
             {
                 Bill = bill,
@@ -73,40 +81,18 @@ namespace HouseFinance.Controllers
             return View(payment);
         }
 
-        public IActionResult EditPayment(Guid billId, Guid paymentId)
+        public IActionResult EditPayment(int billId, int paymentId)
         {
-            var bill = new GenericFileHelper(FilePath.Bills).Get<Bill>(billId);
-            var people = new GenericFileHelper(FilePath.People).Get<Person>(bill.People);
+            var bill = _billRepository.GetBasicBillDetails(billId);
+            var people = _billRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
             var payment = new PaymentFormHelper
             {
                 Bill = bill,
                 People = people,
-                Payment = new GenericFileHelper(FilePath.Payments).Get<Payment>(paymentId)
+                Payment = _billRepository.GetPayment(paymentId)
             };
 
             return View(payment);
-        }
-
-        public IActionResult AddPerson()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult AddPerson(AddPersonModel personModel)
-        {
-            var person = new Person
-            {
-                Id = Guid.NewGuid(),
-                FirstName = personModel.FirstName,
-                LastName = personModel.LastName,
-                Image = personModel.ImageUrl
-            };
-
-            var fileHelper = new GenericFileHelper(FilePath.People);
-            fileHelper.AddOrUpdate<Person>(person);
-
-            return RedirectToActionPermanent("Index", "Home");
         }
     }
 }

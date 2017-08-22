@@ -610,43 +610,6 @@ namespace HouseFinance.Controllers
         }
 
         [HttpPost]
-        [Route("Api/Shopping")]
-        public CommunicationResponse AddShoppingItem([FromBody]ShoppingItem shoppingRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                ShoppingValidator.CheckIfValidItem(shoppingRequest);
-                var shoppingFileHelper = new GenericFileHelper(FilePath.Shopping);
-
-                if (shoppingFileHelper.Get<ShoppingItem>(shoppingRequest.Id) != null)
-                {
-                    response.AddError("Cannot update a shopping item via POST. Please use a PATCH request");
-                    return response;
-                }
-
-                shoppingFileHelper.AddOrUpdate<ShoppingItem>(shoppingRequest);
-
-                response.Notifications = new List<string>
-                {
-                    $"The shopping item '{shoppingRequest.Name}' has been added"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPost]
         [Route("Api/v2/Shopping")]
         public CommunicationResponse AddShoppingItemV2([FromBody]AddShoppingItemRequest shoppingRequest)
         {
@@ -665,53 +628,6 @@ namespace HouseFinance.Controllers
                 response.Notifications = new List<string>
                 {
                     $"The shopping item '{shoppingRequest.Name}' has been added"
-                };
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPatch]
-        [Route("Api/Shopping")]
-        public CommunicationResponse UpdateShoppingItem([FromBody]UpdateShoppingItemRequest shoppingRequest)
-        {
-            var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                var shoppingFileHelper = new GenericFileHelper(FilePath.Shopping);
-                var existingShoppingItem = shoppingFileHelper.Get<ShoppingItem>(shoppingRequest.Id);
-
-                if (existingShoppingItem == null)
-                {
-                    response.AddError("The requested shopping item does not exist");
-                    return response;
-                }
-
-                var newShoppingItem = new ShoppingItem
-                {
-                    Id = shoppingRequest.Id,
-                    Name = shoppingRequest.Name ?? existingShoppingItem.Name,
-                    Added = existingShoppingItem.Added,
-                    AddedBy = existingShoppingItem.AddedBy,
-                    ItemFor = shoppingRequest.ItemFor ?? existingShoppingItem.ItemFor,
-                    Purchased = shoppingRequest.Purchased ?? existingShoppingItem.Purchased
-                };
-                ShoppingValidator.CheckIfValidItem(newShoppingItem);
-                shoppingFileHelper.AddOrUpdate<ShoppingItem>(newShoppingItem);
-
-                response.Notifications = new List<string>
-                {
-                    $"The shopping item '{shoppingRequest.Name}' has been updated"
                 };
             }
             catch (Exception exception)

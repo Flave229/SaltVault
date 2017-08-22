@@ -6,16 +6,16 @@ namespace HouseFinance.Models
 {
     public class BillModel
     {
-        public Bill Bill { get; set; }
-        public List<AddBillPerson> SelectedPeople { get; set; }
+        public BillDetails Bill { get; set; }
+        public List<PersonModel> SelectedPeople { get; set; }
 
         public BillModel()
         {
-            SelectedPeople = new List<AddBillPerson>();
+            SelectedPeople = new List<PersonModel>();
         }
     }
 
-    public class AddBillPerson
+    public class PersonModel
     {
         public Person Person { get; set; }
         public bool Selected { get; set; }

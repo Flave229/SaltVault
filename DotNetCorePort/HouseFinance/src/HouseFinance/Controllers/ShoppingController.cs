@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HouseFinance.Core.FileManagement;
 using HouseFinance.Core.Shopping;
 using HouseFinance.Models;
@@ -8,6 +9,13 @@ namespace HouseFinance.Controllers
 {
     public class ShoppingController : Controller
     {
+        private readonly ShoppingRepository _shoppingRepository;
+
+        public ShoppingController()
+        {
+            _shoppingRepository = new ShoppingRepository();
+        }
+
         public ActionResult Index()
         {
             var shoppingList = ShoppingListBuilder.BuildShoppingList();
@@ -28,9 +36,15 @@ namespace HouseFinance.Controllers
                 if (person.Selected)
                     itemForm.Item.ItemFor.Add(person.Person.Id);
             }
-
+            
             ShoppingValidator.CheckIfValidItem(itemForm.Item);
-            new GenericFileHelper(FilePath.Shopping).AddOrUpdate<ShoppingItem>(itemForm.Item);
+            _shoppingRepository.AddItem(new AddShoppingItemRequest
+            {
+                ItemFor = itemForm.SelectedPeople.Where(x => x.Selected).Select(x => x.Person.Id).ToList(),
+                Name = itemForm.Item.Name,
+                AddedBy = itemForm.Item.AddedBy,
+                Added = itemForm.Item.Added
+            });
 
             return RedirectToActionPermanent("Index", "Shopping");
         }

@@ -14,7 +14,7 @@
             <input id="billId" type="hidden" value="@Model.Bill.Id"/>
             <input id="paymentId" type="hidden" value="@Model.Payment.Id"/>
 
-            <h4>Edit a payment for @Model.Bill.Name : @Model.Bill.Due.ToString("MMMM yyyy")</h4>
+            <h4>Edit a payment for @Model.Bill.Name : @Model.Bill.FullDateDue.ToString("MMMM yyyy")</h4>
             <hr />
             <div class="form-group">
                 <label class="col-md-2 control-label">Amount: </label>
@@ -26,7 +26,7 @@
             <div class="form-group">
                 <label class="col-md-2 control-label">Paid On: </label>
                 <div class="col-md-10">
-                    <input class="form-control" id="paymentPaidOn" type="date" value="@Model.Payment.Created.ToString("yyyy-MM-dd")" data-val="true" data-val-required="The Paid On field is required."  />
+                    <input class="form-control" id="paymentPaidOn" type="date" value="@Model.Payment.DatePaid.ToString("yyyy-MM-dd")" data-val="true" data-val-required="The Paid On field is required."  />
                 </div>
             </div>
             <p style="color: red">@ViewBag.ExceptionMessage</p>
@@ -46,13 +46,13 @@
         var billId = document.getElementById("billId").value;
         var paymentId = document.getElementById("paymentId").value;
         var editPaymentRequest = {
-            "PaymentId": paymentId,
+            "Id": paymentId,
             "Amount": document.getElementById("paymentAmount").value,
             "Created": document.getElementById("paymentPaidOn").value
         }
 
         $.ajax({
-            url: '@Url.Action("UpdatePayment", "Api")',
+            url: '@Url.Action("UpdatePaymentV2", "Api")',
             contentType: "application/json",
             type: "PATCH",
             beforeSend: function(xhr) {

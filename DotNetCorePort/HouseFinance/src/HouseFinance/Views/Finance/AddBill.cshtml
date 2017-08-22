@@ -1,4 +1,6 @@
-﻿@using System.Threading.Tasks
+﻿@using System
+@using System.Linq
+@using System.Threading.Tasks
 @using HouseFinance.Core.Bills
 @model HouseFinance.Models.BillModel
 @{
@@ -95,14 +97,14 @@
 
         var billRequest = {
             "Name": billName,
-            "AmountOwed": billAmount,
+            "TotalAmount": billAmount,
             "Due": billDue,
-            "People": selectedPeople,
+            "PeopleIds": selectedPeople,
             "RecurringType": billRecurringType
         }
 
         $.ajax({
-            url: '@Url.Action("AddBill", "Api")',
+            url: '@Url.Action("AddBillV2", "Api")',
             contentType: "application/json",
             type: "POST",
             beforeSend: function (xhr) {

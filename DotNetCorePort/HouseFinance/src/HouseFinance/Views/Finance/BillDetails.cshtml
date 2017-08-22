@@ -1,6 +1,7 @@
 ﻿@using System.Globalization
+@using System.Linq
 @using System.Threading.Tasks
-@model HouseFinance.Core.Bills.BillDetailsResponse
+@model HouseFinance.Core.Bills.BillDetails
 @{
     ViewBag.Title = "Details for " + Model.Name + " Bill";
 }
@@ -24,14 +25,14 @@
         <table id="example" class="table" cellspacing="0" width="100%">
             <thead>
             <tr style="color: black">
-                <th>Amount Owed</th>
+                <th>Total Amount</th>
                 <th>Amount Paid</th>
                 <th>Due</th>
             </tr>
             </thead>
             <tfoot>
             <tr>
-                <th>@Model.AmountDue.ToString("C", new CultureInfo("en-GB"))</th>
+                <th>@Model.TotalAmount.ToString("C", new CultureInfo("en-GB"))</th>
                 <th>
                     @Model.AmountPaid.ToString("C", new CultureInfo("en-GB"))
                 </th>
@@ -56,13 +57,13 @@
                 {
                     <tr>
                         <th>@payment.PersonName</th>
-                        <th>@payment.DatePaid</th>
-                        <th>@payment.AmountPaid.ToString("C", new CultureInfo("en-GB"))</th>
+                        <th>@payment.DatePaid.ToString("dd/MM/yyyy")</th>
+                        <th>@payment.Amount.ToString("C", new CultureInfo("en-GB"))</th>
                         <th style="width: 10%; text-align: right">
                             <a href="@Url.Action("EditPayment", "Finance", new {billId = Model.Id, paymentId = payment.Id})">
                                 <img src="http://i.imgur.com/OJvwwyE.png" alt="Edit" height="20" width="20"/>
                             </a>
-                            <a onclick="deletePayment('@Model.Id', '@payment.Id')">
+                            <a onclick="deletePayment('@payment.Id')">
                                 <img src="http://i.imgur.com/ltfOB60.png" alt="Delete" height="20" width="20"/>
                             </a>
                         </th>
@@ -83,7 +84,7 @@
             var deleteBillRequest = { "BillId": billId };
 
             $.ajax({
-                url: '@Url.Action("DeleteBill", "Api")',
+                url: '@Url.Action("DeleteBillV2", "Api")',
                 contentType: "application/json",
                 type: "DELETE",
                 beforeSend: function(xhr) {
@@ -97,15 +98,14 @@
         }
     }
 
-    function deletePayment(billId, paymentId) {
+    function deletePayment(paymentId) {
         if (confirm('Are you sure you wish to delete this payment?')) {
             var deletePaymentRequest = {
-                "BillId": billId,
                 "PaymentId": paymentId
             }
 
             $.ajax({
-                url: '@Url.Action("DeletePayment", "Api")',
+                url: '@Url.Action("DeletePaymentV2", "Api")',
                 contentType: "application/json",
                 type: "DELETE",
                 beforeSend: function(xhr) {
@@ -113,7 +113,7 @@
                 },
                 data: JSON.stringify(deletePaymentRequest),
                 success: function(response) {
-                    window.top.location.href = billDetailsUrl + "?billId=" + billId;
+                    window.top.location.href = billDetailsUrl + "?billId=" + @Model.Id;
                 }
             });
         }

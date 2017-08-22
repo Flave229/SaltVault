@@ -20,6 +20,6 @@ namespace HouseFinance.Models.Bills
 
     public class GetBillResponseV2 : CommunicationResponse
     {
-        public BillDetailsResponseV2 Bill { get; set; }
+        public BillDetails Bill { get; set; }
     }
 }

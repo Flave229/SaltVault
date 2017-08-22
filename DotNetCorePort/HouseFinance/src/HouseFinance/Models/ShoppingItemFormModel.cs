@@ -7,12 +7,12 @@ namespace HouseFinance.Models
 {
     public class ShoppingItemFormModel
     {
-        public ShoppingItem Item { get; set; }
+        public ShoppingItemV2 Item { get; set; }
         public List<PersonForItem> SelectedPeople { get; set; }
 
         public ShoppingItemFormModel()
         {
-            Item = new ShoppingItem();
+            Item = new ShoppingItemV2();
             SelectedPeople = new List<PersonForItem>();
 
             var people = new GenericFileHelper(FilePath.People).GetAll<Person>();

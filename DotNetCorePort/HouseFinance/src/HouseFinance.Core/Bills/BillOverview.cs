@@ -25,18 +25,21 @@ namespace HouseFinance.Core.Bills
         }
     }
 
-    public class BillOverviewV2
+    public class BillDetails
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime FullDateDue { get; set; }
+        public decimal TotalAmount { get; set; }
         public decimal AmountPaid { get; set; }
         public List<PersonBillDetailsV2> People { get; set; }
-        public decimal TotalAmount { get; set; }
+        public List<BillPayment> Payments { get; set; }
+        public RecurringType RecurringType { get; set; }
 
-        public BillOverviewV2()
+        public BillDetails()
         {
             People = new List<PersonBillDetailsV2>();
+            Payments = new List<BillPayment>();
         }
     }
 
@@ -45,6 +48,7 @@ namespace HouseFinance.Core.Bills
         public string ImageLink { get; set; }
         public bool Paid { get; set; }
     }
+
     public class PersonBillDetailsV2
     {
         public int Id { get; set; }

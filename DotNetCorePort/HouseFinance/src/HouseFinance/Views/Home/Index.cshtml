@@ -21,7 +21,7 @@
 
     window.onload = function getBills() {
         $.ajax({
-            url: '@Url.Action("GetBillList", "Api")',
+            url: '@Url.Action("GetBillListV2", "Api")',
             type: "GET",
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', 'D2DB7539-634F-47C4-818D-59AD03C592E3');
@@ -29,23 +29,32 @@
             success: function (billList) {
                 var billContainer = document.getElementById("billContainer");
                 
-                console.log(billList);
                 var bills = billList.bills;
                 for (var i = 0; i < bills.length; i++) {
                     var cardStyle;
 
-                    if (bills[i].overdue) {
-                        cardStyle = "card_Alert";
-                    }
-                    else if (bills[i].paid) {
+                    var nowDate = new Date();
+                    var nowMonth = nowDate.getMonth();
+                    var nowDay = nowDate.getDate();
+                    var nowYear = nowDate.getFullYear();
+
+                    var correctedNowDate = new Date(nowYear, nowMonth, nowDay);
+                    var dateDue = new Date(Date.parse(bills[i].fullDateDue));
+                    
+                    if (bills[i].amountPaid >= bills[i].totalAmount) {
                         cardStyle = "card_Complete";
+                    }
+                    else if (dateDue <= correctedNowDate) {
+                        cardStyle = "card_Alert";
                     }
                     else {
                         cardStyle = "card_Normal";
                     }
-
-                    var dateDue = new Date(Date.parse(bills[i].fullDateDue));
+                    
                     var dateDueString = dateDue.getDate() + " " + monthNames[dateDue.getMonth()] + " " + dateDue.getFullYear();
+                    var amountDue = bills[i].totalAmount - bills[i].amountPaid;
+                    if (amountDue < 0)
+                        amountDue = 0;
 
                     var billCard = "<div class='billCard'>" +
                         "<div class=" + cardStyle + "> " +
@@ -67,7 +76,7 @@
                         "</span>" +
                         "<hr style='margin: 5px' />" +
                         "<span style='font-family: Helvetica; font-size: 20px; color: rgb(51, 51, 51)'>" +
-                        "Balance Left: <b>£" + Number(Math.round(bills[i].amountDue + 'e2') + 'e-2').toFixed(2) + "</b>" +
+                        "Balance Left: <b>£" + Number(Math.round(amountDue + 'e2') + 'e-2').toFixed(2) + "</b>" +
                         "</span>" +
                         "<hr />" +
                         "<span>";
