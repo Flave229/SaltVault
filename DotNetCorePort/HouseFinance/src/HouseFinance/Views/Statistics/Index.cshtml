@@ -1,0 +1,73 @@
+﻿@using System
+@using HouseFinance.Core.Statistics
+@model StatisticsOverview
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>Statistics</h1>
+    <p class="lead">The statistics</p>
+</div>
+
+<div class="row">
+    <div id="mainContentWrapper">
+        <p>@ViewBag.ExceptionMessage</p>
+        @try
+        {
+            foreach (var statistic in Model.Statistics)
+            {
+                <div class="billCard">
+                    <table class="table">
+                        <tr>
+                            <td style="border: none">
+                                <img src="@statistic.Person.Image" width="80" />
+                                <h2>@statistic.Person.FirstName @statistic.Person.LastName</h2>
+                                <p style="margin: 0">Bills</p>
+                                <table class="table" style="font-size: 12px">
+                                    <tr>
+                                        <td style="width: 40%"><b>Amount Of Bills: </b></td>
+                                        <td style="width: 10%">@statistic.BillsForPerson.Count</td>
+                                        <td style="width: 40%"><b>Average Days In Advance Bills Paid: </b></td>
+                                        @if (@statistic.AverageDaysToPayBill != 1)
+                                        {
+                                            <td style="width: 10%">@statistic.AverageDaysToPayBill Days</td>
+                                        }
+                                        else
+                                        {
+                                            <td style="width: 10%">@statistic.AverageDaysToPayBill Day</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 40%"><b>Amount Of Bills Paid: </b></td>
+                                        <td style="width: 10%">@statistic.AmountOfBillsPaid</td>
+                                        <td style="width: 40%"><b>Average Percentage Share of Bill: </b></td>
+                                        <td style="width: 10%">@(statistic.AveragePercentageShareOfBill.ToString("####.##"))%</td>
+                                    </tr>
+                                </table>
+                                <p style="margin: 0">Shopping</p>
+                                <table class="table" style="font-size: 12px">
+                                    <tr>
+                                        <td style="width: 40%"><b>Amount of Shopping Items Added: </b></td>
+                                        <td style="width: 10%">@statistic.ShoppingItemsByPerson.Count</td>
+                                        <td style="width: 40%"><b>Amount of Shopping Items For @statistic.Person.FirstName: </b></td>
+                                        <td style="width: 10%">@statistic.ShoppingItemsForPerson.Count</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+        }
+        catch (Exception exception)
+        {
+            ViewBag.ExceptionMessage = "An Error occured while rendering the Statistics.";
+
+            <div class="billCard">
+                <p>@ViewBag.ExceptionMessage @exception.Message</p>
+            </div>
+        }
+    </div>
+</div>

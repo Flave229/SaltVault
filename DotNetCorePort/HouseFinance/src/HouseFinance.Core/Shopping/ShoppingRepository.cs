@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HouseFinance.Core.People;
 using Npgsql;
 
 namespace HouseFinance.Core.Shopping
@@ -23,7 +24,8 @@ namespace HouseFinance.Core.Shopping
             try
             {
                 var shoppingItems = new List<Item>();
-                var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Image\", ShoppingItemFor.\"Image\" " +
+                var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Id\", AddedBy.\"FirstName\", AddedBy.\"LastName\", AddedBy.\"Image\", " +
+                                                "ShoppingItemFor.\"Id\", ShoppingItemFor.\"FirstName\", ShoppingItemFor.\"LastName\", ShoppingItemFor.\"Image\" " +
                                                 "FROM public.\"ShoppingItem\" AS Item " +
                                                 "LEFT OUTER JOIN \"Person\" AS AddedBy ON AddedBy.\"Id\" = Item.\"AddedBy\" " +
                                                 "LEFT OUTER JOIN \"ShoppingItemFor\" AS ItemPersonLinker ON ItemPersonLinker.\"ShoppingItemId\" = Item.\"Id\" " +
@@ -46,11 +48,25 @@ namespace HouseFinance.Core.Shopping
                             Name = (string)reader[1],
                             DateAdded = (DateTime)reader[2],
                             Purchased = (bool)reader[3],
-                            AddedByImage = (string)reader[4]
+                            AddedBy = new Person
+                            {
+                                Id = Convert.ToInt32(reader[4]),
+                                FirstName = (string)reader[5],
+                                LastName = (string)reader[6],
+                                Image = (string)reader[7]
+                            },
+                            AddedByImage = (string)reader[7]
                         };
                     }
 
-                    shoppingItem.AddedForImages.Add((string)reader[5]);
+                    shoppingItem.AddedForImages.Add((string)reader[11]);
+                    shoppingItem.AddedFor.Add(new Person
+                    {
+                        Id = Convert.ToInt32(reader[8]),
+                        FirstName = (string)reader[9],
+                        LastName = (string)reader[10],
+                        Image = (string)reader[11]
+                    });
 
                     if (shoppingItems.Any(x => x.Id == shoppingItemId) == false)
                         shoppingItems.Add(shoppingItem);
