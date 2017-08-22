@@ -34,7 +34,7 @@
                 @{
                     var people = Model.People;
 
-                    <div class="col-md-10">
+                    <div id="peopleList" class="col-md-10">
                         @foreach (var person in people)
                         {
                             <input id="paymentPersonId" name="paymentPersonId" type="radio" value="@person.Id" data-val="true" data-val-required="The Person field is required."/>
@@ -59,11 +59,21 @@
 
     function addPayment() {
         var billId = document.getElementById("billId").value;
+        var personId = -1;
+        debugger;
+        var peopleList = document.getElementById("peopleList");
+        for (var i = 0; i < peopleList.children.length; i++) {
+            if (peopleList.children[i].checked === true){
+                personId = peopleList.children[i].value;
+                break;
+            }
+        }
+
         var addPaymentRequest = {
             "BillId": billId,
             "Amount": document.getElementById("paymentAmount").value,
             "Created": document.getElementById("paymentPaidOn").value,
-            "PersonId": document.getElementById("paymentPersonId").value
+            "PersonId": personId
         }
 
         console.log(addPaymentRequest);
