@@ -101,14 +101,14 @@
         var editBillRequest = {
             "Id": billId,
             "Name": billName,
-            "AmountOwed": billAmount,
+            "TotalAmount": billAmount,
             "Due": billDue,
-            "People": selectedPeople,
+            "PeopleIds": selectedPeople,
             "RecurringType": billRecurringType
         }
 
         $.ajax({
-            url: '@Url.Action("UpdateBill", "Api")',
+            url: '@Url.Action("UpdateBillV2", "Api")',
             contentType: "application/json",
             type: "PATCH",
             beforeSend: function (xhr) {
