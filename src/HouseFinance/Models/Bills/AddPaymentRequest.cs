@@ -1,6 +1,6 @@
 using System;
 
-namespace HouseFinance.Models.Bills
+namespace SaltVault.WebApp.Models.Bills
 {
     public class AddPaymentRequest
     {

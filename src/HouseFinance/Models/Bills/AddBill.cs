@@ -1,6 +1,4 @@
-﻿using HouseFinance.Models.API;
-
-namespace HouseFinance.Models.Bills
+﻿namespace SaltVault.WebApp.Models.Bills
 {
     public class AddBillResponse : CommunicationResponse
     {

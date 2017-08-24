@@ -1,4 +1,4 @@
-﻿namespace HouseFinance.Models.Shopping
+﻿namespace SaltVault.WebApp.Models.Shopping
 {
     public class DeleteShoppingItemRequest
     {

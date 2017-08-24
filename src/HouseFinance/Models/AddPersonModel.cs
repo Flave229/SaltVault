@@ -1,4 +1,4 @@
-﻿namespace HouseFinance.Models
+﻿namespace SaltVault.WebApp.Models
 {
     public class AddPersonModel
     {

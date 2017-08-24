@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "HouseFinance": {
+    "SaltVault": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "http://localhost:5124",

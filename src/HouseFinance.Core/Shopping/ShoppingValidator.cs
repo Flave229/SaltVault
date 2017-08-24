@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HouseFinance.Core.Shopping
+namespace SaltVault.Core.Shopping
 {
     public class ShoppingValidator
     {

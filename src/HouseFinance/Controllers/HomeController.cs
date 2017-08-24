@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace HouseFinance.Controllers
+namespace SaltVault.WebApp.Controllers
 {
     public class HomeController : Controller
     {

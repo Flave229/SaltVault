@@ -1,4 +1,4 @@
-﻿namespace HouseFinance.Core.Services.Discord.Models
+﻿namespace SaltVault.Core.Services.Discord.Models
 {
     public class DiscordMessage
     {

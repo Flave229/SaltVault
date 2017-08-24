@@ -1,4 +1,4 @@
-﻿namespace HouseFinance.Core.People
+﻿namespace SaltVault.Core.People
 {
     public class Person
     {

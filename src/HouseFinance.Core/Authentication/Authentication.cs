@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HouseFinance.Core.Authentication
+namespace SaltVault.Core.Authentication
 {
     public class Authentication
     {

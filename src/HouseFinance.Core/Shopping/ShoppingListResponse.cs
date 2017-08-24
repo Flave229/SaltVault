@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HouseFinance.Core.People;
+using SaltVault.Core.People;
 
-namespace HouseFinance.Core.Shopping
+namespace SaltVault.Core.Shopping
 {
     public class ShoppingListResponse
     {

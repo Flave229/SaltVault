@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using HouseFinance.Core.People;
 using Npgsql;
+using SaltVault.Core.People;
 
-namespace HouseFinance.Core.Shopping
+namespace SaltVault.Core.Shopping
 {
     public class ShoppingRepository
     {

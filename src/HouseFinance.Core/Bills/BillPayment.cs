@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HouseFinance.Core.Bills
+namespace SaltVault.Core.Bills
 {
     public class BillPayment
     {

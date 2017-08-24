@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using HouseFinance.Core.Bills;
-using HouseFinance.Core.People;
+﻿using System.Collections.Generic;
+using SaltVault.Core.Bills;
+using SaltVault.Core.People;
 
-namespace HouseFinance.Models
+namespace SaltVault.WebApp.Models
 {
     public class PaymentFormHelper
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HouseFinance.Core.Shopping
+namespace SaltVault.Core.Shopping
 {
     public class ShoppingItem
     {

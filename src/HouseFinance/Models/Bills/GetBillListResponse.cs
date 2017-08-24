@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using HouseFinance.Core.Bills;
-using HouseFinance.Models.API;
+using SaltVault.Core.Bills;
 
-namespace HouseFinance.Models.Bills
+namespace SaltVault.WebApp.Models.Bills
 {
     public class GetBillListResponse : CommunicationResponse
     {

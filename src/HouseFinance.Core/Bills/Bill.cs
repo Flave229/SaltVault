@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HouseFinance.Core.Bills
+namespace SaltVault.Core.Bills
 {
     public enum RecurringType
     {

@@ -1,7 +1,6 @@
-using HouseFinance.Core.Shopping;
-using HouseFinance.Models.API;
+using SaltVault.Core.Shopping;
 
-namespace HouseFinance.Models.Shopping
+namespace SaltVault.WebApp.Models.Shopping
 {
     public class GetShoppingResponse : CommunicationResponse
     {

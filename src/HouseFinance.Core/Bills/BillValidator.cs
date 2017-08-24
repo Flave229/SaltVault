@@ -1,7 +1,7 @@
 ﻿using System;
-using HouseFinance.Core.Validation;
+using SaltVault.Core.Validation;
 
-namespace HouseFinance.Core.Bills
+namespace SaltVault.Core.Bills
 {
     public static class BillValidator
     {

@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using HouseFinance.Core.Services.Discord.Models;
 using Newtonsoft.Json;
+using SaltVault.Core.Services.Discord.Models;
 
-namespace HouseFinance.Core.Services.Discord
+namespace SaltVault.Core.Services.Discord
 {
     public class DiscordService
     {

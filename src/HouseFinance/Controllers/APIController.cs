@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using HouseFinance.Core.Authentication;
-using HouseFinance.Core.Bills;
-using HouseFinance.Core.Bills.Payments;
-using HouseFinance.Core.Services.Discord;
-using HouseFinance.Core.Shopping;
-using HouseFinance.Models.API;
-using HouseFinance.Models.Bills;
-using HouseFinance.Models.Shopping;
-using HouseFinance.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using SaltVault.Core.Authentication;
+using SaltVault.Core.Bills;
+using SaltVault.Core.Bills.Payments;
+using SaltVault.Core.Services.Discord;
+using SaltVault.Core.Shopping;
+using SaltVault.WebApp.Models;
+using SaltVault.WebApp.Models.Bills;
+using SaltVault.WebApp.Models.Shopping;
+using SaltVault.WebApp.Models.Users;
 
-namespace HouseFinance.Controllers
+namespace SaltVault.WebApp.Controllers
 {
     public class ApiController : Controller
     {

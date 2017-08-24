@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HouseFinance.Core.Bills;
+using SaltVault.Core.Bills;
 
-namespace HouseFinance.Models.Bills
+namespace SaltVault.WebApp.Models.Bills
 {
     public class UpdateBillRequest
     {

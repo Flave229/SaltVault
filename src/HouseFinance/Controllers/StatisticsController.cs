@@ -1,9 +1,9 @@
-﻿using HouseFinance.Core.Bills;
-using HouseFinance.Core.Shopping;
-using HouseFinance.Core.Statistics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SaltVault.Core.Bills;
+using SaltVault.Core.Shopping;
+using SaltVault.Core.Statistics;
 
-namespace HouseFinance.Controllers
+namespace SaltVault.WebApp.Controllers
 {
     public class StatisticsController : Controller
     {

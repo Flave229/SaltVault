@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using HouseFinance.Core.People;
-using HouseFinance.Models.API;
+using SaltVault.Core.People;
 
-namespace HouseFinance.Models.Users
+namespace SaltVault.WebApp.Models.Users
 {
     public class GetUsersResponse : CommunicationResponse
     {

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using HouseFinance.Core.Bills;
-using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
+using SaltVault.Core.Bills;
+using SaltVault.WebApp.Models;
 
-namespace HouseFinance.Controllers
+namespace SaltVault.WebApp.Controllers
 {
     public class FinanceController : Controller
     {

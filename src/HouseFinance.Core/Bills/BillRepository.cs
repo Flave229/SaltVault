@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using HouseFinance.Core.People;
-using HouseFinance.Core.Shopping;
 using Npgsql;
+using SaltVault.Core.People;
 
-namespace HouseFinance.Core.Bills
+namespace SaltVault.Core.Bills
 {
     public class BillRepository
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using HouseFinance.Core.People;
-using HouseFinance.Core.Shopping;
+using SaltVault.Core.People;
+using SaltVault.Core.Shopping;
 
-namespace HouseFinance.Models
+namespace SaltVault.WebApp.Models
 {
     public class ShoppingItemFormModel
     {

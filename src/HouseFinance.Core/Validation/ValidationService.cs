@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace HouseFinance.Core.Validation
+namespace SaltVault.Core.Validation
 {
     public class ValidationService
     {

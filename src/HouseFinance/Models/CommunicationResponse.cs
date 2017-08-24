@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace HouseFinance.Models.API
+namespace SaltVault.WebApp.Models
 {
     public class CommunicationResponse
     {

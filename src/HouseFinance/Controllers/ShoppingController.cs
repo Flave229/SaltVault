@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using HouseFinance.Core.Bills;
-using HouseFinance.Core.Shopping;
-using HouseFinance.Models;
 using Microsoft.AspNetCore.Mvc;
+using SaltVault.Core.Bills;
+using SaltVault.Core.Shopping;
+using SaltVault.WebApp.Models;
 
-namespace HouseFinance.Controllers
+namespace SaltVault.WebApp.Controllers
 {
     public class ShoppingController : Controller
     {

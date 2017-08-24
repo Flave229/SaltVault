@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HouseFinance.Core.Bills;
-using HouseFinance.Core.People;
-using HouseFinance.Core.Shopping;
+using SaltVault.Core.Bills;
+using SaltVault.Core.People;
+using SaltVault.Core.Shopping;
 
-namespace HouseFinance.Core.Statistics
+namespace SaltVault.Core.Statistics
 {
     public class StatisticService
     {
