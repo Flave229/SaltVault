@@ -1,1 +1,1 @@
-dotnet restore && dotnet build ./src/FlaveSite/project.json
+dotnet restore && dotnet build ./src/HouseFinance/SaltVault.WebApp.csproj

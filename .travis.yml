@@ -2,6 +2,6 @@ language: csharp
 dist: trusty
 sudo: required
 mono: none
-dotnet: 1.0.0-preview2-003131
+dotnet: 2.0.0
 script:
-    - ./src/FlaveSite/build.sh
+    - ./src/HouseFinance/build.sh
