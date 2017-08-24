@@ -1,1 +1,1 @@
-dotnet restore && dotnet build ./src/SaltVault/SaltVault.WebApp.csproj
+dotnet restore && dotnet build ./src/SaltVault.WebApp/SaltVault.WebApp.csproj
