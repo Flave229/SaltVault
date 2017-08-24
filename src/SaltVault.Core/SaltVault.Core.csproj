@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>HouseFinance.Core</AssemblyName>
-    <PackageId>HouseFinance.Core</PackageId>
+    <AssemblyName>SaltVault.Core</AssemblyName>
+    <PackageId>SaltVault.Core</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

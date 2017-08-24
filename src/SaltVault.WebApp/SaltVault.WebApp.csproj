@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>HouseFinance</AssemblyName>
+    <AssemblyName>SaltVault</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>HouseFinance</PackageId>
+    <PackageId>SaltVault</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HouseFinance.Core\SaltVault.Core.csproj" />
+    <ProjectReference Include="..\SaltVault.Core\SaltVault.Core.csproj" />
   </ItemGroup>
 
 </Project>
