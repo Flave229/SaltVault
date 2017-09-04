@@ -142,14 +142,20 @@ namespace SaltVault.Core.Shopping
                 if (shoppingRequest.Purchased != null)
                     setValues.Add($"\"Purchased\"={shoppingRequest.Purchased.ToString().ToUpper()}");
 
-                var command = new NpgsqlCommand("UPDATE public.\"ShoppingItem\" " +
+                NpgsqlCommand command;
+                NpgsqlDataReader reader;
+                if (setValues.Count > 0)
+                {
+                    command = new NpgsqlCommand("UPDATE public.\"ShoppingItem\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
                                                 $"WHERE \"Id\" = {shoppingRequest.Id}", _connection);
-                
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                { }
-                reader.Close();
+
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                    }
+                    reader.Close();
+                }
 
                 if (shoppingRequest.ItemFor == null || shoppingRequest.ItemFor.Count == 0)
                     return;
