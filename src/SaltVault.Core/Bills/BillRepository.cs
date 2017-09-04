@@ -233,20 +233,26 @@ namespace SaltVault.Core.Bills
                     setValues.Add($"\"Due\"='{billRequest.Due}'");
                 if (billRequest.RecurringType != null)
                     setValues.Add($"\"RecurringType\"={(int)billRequest.RecurringType}");
-                
-                var command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
+
+                var rowUpdated = false;
+                NpgsqlCommand command;
+                Int64 billId = -1;
+                NpgsqlDataReader reader;
+
+                if (setValues.Count > 0)
+                {
+                    command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
                                                 $"WHERE \"Id\" = {billRequest.Id} " +
                                                 "RETURNING \"Id\"", _connection);
-                Int64 billId = -1;
-                var rowUpdated = false;
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    rowUpdated = true;
-                    billId = (Int64)reader[0];
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        rowUpdated = true;
+                        billId = (Int64) reader[0];
+                    }
+                    reader.Close();
                 }
-                reader.Close();
 
                 if (billRequest.PeopleIds == null || billRequest.PeopleIds.Count == 0)
                     return rowUpdated;
