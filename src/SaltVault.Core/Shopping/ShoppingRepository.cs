@@ -7,7 +7,15 @@ using SaltVault.Core.People;
 
 namespace SaltVault.Core.Shopping
 {
-    public class ShoppingRepository
+    public interface IShoppingRepository
+    {
+        ShoppingListResponse GetAllItems();
+        void AddItem(AddShoppingItemRequest shoppingRequest);
+        void UpdateItem(UpdateShoppingItemRequestV2 shoppingRequest);
+        void DeleteItem(int shoppingItemId);
+    }
+
+    public class ShoppingRepository : IShoppingRepository
     {
         private readonly NpgsqlConnection _connection;
 

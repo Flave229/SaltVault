@@ -7,7 +7,12 @@ using SaltVault.Core.Services.Discord.Models;
 
 namespace SaltVault.Core.Services.Discord
 {
-    public class DiscordService
+    public interface IDiscordService
+    {
+        void AddBillNotification(string name, DateTime date, decimal amount);
+    }
+
+    public class DiscordService : IDiscordService
     {
         private readonly HttpClient _discordHttpClient;
 
@@ -17,7 +22,7 @@ namespace SaltVault.Core.Services.Discord
             Connect();
         }
 
-        public void Connect()
+        private void Connect()
         {
             var filePath = "Data/Discord/bot_token.txt";
             if (!System.IO.File.Exists(filePath))

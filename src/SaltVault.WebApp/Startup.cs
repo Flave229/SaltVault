@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Net.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SaltVault.Core.Authentication;
+using SaltVault.Core.Bills;
+using SaltVault.Core.Services.Discord;
+using SaltVault.Core.Shopping;
 
 namespace SaltVault.WebApp
 {
@@ -32,6 +37,11 @@ namespace SaltVault.WebApp
         {
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
+
+            services.AddSingleton<IBillRepository, BillRepository>();
+            services.AddSingleton<IShoppingRepository, ShoppingRepository>();
+            services.AddSingleton<IDiscordService, DiscordService>(x => new DiscordService(new HttpClient()));
+            services.AddSingleton<IAuthentication, ApiAuthentication>();
 
             services.AddMvc();
         }

@@ -17,15 +17,17 @@ namespace SaltVault.WebApp.Controllers
 {
     public class ApiController : Controller
     {
-        private readonly DiscordService _discordService;
-        private readonly BillRepository _billRepository;
-        private readonly ShoppingRepository _shoppingRepository;
+        private readonly IDiscordService _discordService;
+        private readonly IBillRepository _billRepository;
+        private readonly IShoppingRepository _shoppingRepository;
+        private readonly IAuthentication _apiAuthentication;
 
-        public ApiController()
+        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IAuthentication apiAuthentication, IDiscordService discordService)
         {
-            _discordService = new DiscordService(new HttpClient());
-            _billRepository = new BillRepository();
-            _shoppingRepository = new ShoppingRepository();
+            _discordService = discordService;
+            _billRepository = billRepository;
+            _shoppingRepository = shoppingRepository;
+            _apiAuthentication = apiAuthentication;
         }
 
         [HttpGet]
@@ -399,7 +401,7 @@ namespace SaltVault.WebApp.Controllers
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
-            return Authentication.CheckKey(apiKey);
+            return _apiAuthentication.CheckKey(apiKey);
         }
     }
 

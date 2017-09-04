@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaltVault.WebApp", "src\Sal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaltVault.Core", "src\SaltVault.Core\SaltVault.Core.csproj", "{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaltVault.Tests", "src\SaltVault.Tests\SaltVault.Tests.csproj", "{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D00CA651-3BCE-4646-99C7-668BF8446C9E} = {D32CE51B-19D8-48BE-9CEF-0DE0BB91573C}
 		{8E969AD4-B9BE-4D97-BAC3-E9657DA1219E} = {D32CE51B-19D8-48BE-9CEF-0DE0BB91573C}
+		{E1BF51FA-BB1F-452E-86C5-7ADFF72E0D87} = {D32CE51B-19D8-48BE-9CEF-0DE0BB91573C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {94A1636B-8217-48B8-9144-12A3EA430454}

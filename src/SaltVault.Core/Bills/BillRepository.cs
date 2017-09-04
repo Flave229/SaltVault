@@ -7,7 +7,22 @@ using SaltVault.Core.People;
 
 namespace SaltVault.Core.Bills
 {
-    public class BillRepository
+    public interface IBillRepository
+    {
+        List<Bill> GetAllBasicBillDetails();
+        Bill GetBasicBillDetails(int billId);
+        int AddBill(AddBillRequest bill);
+        bool UpdateBill(UpdateBillRequestV2 billRequest);
+        bool DeleteBill(int billId);
+        BillPayment GetPayment(int paymentId);
+        void AddPayment(AddPaymentRequestV2 paymentRequest);
+        bool UpdatePayment(UpdatePaymentRequestV2 paymentRequest);
+        bool DeletePayment(int paymentRequestPaymentId);
+        List<Person> GetAllPeople();
+        List<Person> GetPeople(List<int> peopleIds);
+    }
+
+    public class BillRepository : IBillRepository
     {
         private readonly NpgsqlConnection _connection;
 
@@ -295,6 +310,7 @@ namespace SaltVault.Core.Bills
                 }
                 reader.Close();
 
+                _connection.Close();
                 return billDeleted;
             }
             catch (Exception exception)
