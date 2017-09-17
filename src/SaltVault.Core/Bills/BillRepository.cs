@@ -449,7 +449,8 @@ namespace SaltVault.Core.Bills
             {
                 var command = new NpgsqlCommand(
                     "SELECT Person.\"Id\", Person.\"FirstName\", Person.\"LastName\", Person.\"Image\" " +
-                    "FROM public.\"Person\" AS Person", _connection);
+                    "FROM public.\"Person\" AS Person " +
+                    "WHERE Person.\"Active\" = true", _connection);
                 var reader = command.ExecuteReader();
 
                 List<Person> people = new List<Person>();
@@ -471,7 +472,7 @@ namespace SaltVault.Core.Bills
             catch (Exception exception)
             {
                 _connection.Close();
-                throw new Exception($"An Error occured while getting the list of people", exception);
+                throw new Exception("An Error occured while getting the list of people", exception);
             }
         }
 
