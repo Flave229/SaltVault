@@ -81,7 +81,6 @@ namespace SaltVault.Core.Shopping
                 }
 
                 reader.Close();
-                _connection.Close();
                 return new ShoppingListResponse
                 {
                     ShoppingList = shoppingItems
@@ -89,8 +88,11 @@ namespace SaltVault.Core.Shopping
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception("An Error occured while getting the bills", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -120,12 +122,14 @@ namespace SaltVault.Core.Shopping
                     { }
                     reader.Close();
                 }
-                _connection.Close();
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while adding the shopping item '{shoppingRequest.Name}'", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -164,24 +168,30 @@ namespace SaltVault.Core.Shopping
                                             $"WHERE \"ShoppingItemId\" = {shoppingRequest.Id}", _connection);
                 reader = command.ExecuteReader();
                 while (reader.Read())
-                { }
+                {
+                }
                 reader.Close();
 
                 foreach (var peopleId in shoppingRequest.ItemFor)
                 {
-                    command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItemFor\" (\"ShoppingItemId\", \"PersonId\") " +
-                                                $"VALUES ({shoppingRequest.Id}, {peopleId})", _connection);
+                    command = new NpgsqlCommand(
+                        "INSERT INTO public.\"ShoppingItemFor\" (\"ShoppingItemId\", \"PersonId\") " +
+                        $"VALUES ({shoppingRequest.Id}, {peopleId})", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
-                    { }
+                    {
+                    }
                     reader.Close();
                 }
-                _connection.Close();
             }
             catch (Exception exception)
             {
+                throw new Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})",
+                    exception);
+            }
+            finally
+            {
                 _connection.Close();
-                throw new Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})", exception);
             }
         }
 
@@ -208,8 +218,11 @@ namespace SaltVault.Core.Shopping
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while deleting the shopping item (ID: {shoppingItemId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
     }

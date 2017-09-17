@@ -97,13 +97,15 @@ namespace SaltVault.Core.Bills
                 }
 
                 reader.Close();
-                _connection.Close();
                 return bills;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception("An Error occured while getting the bills", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -170,13 +172,15 @@ namespace SaltVault.Core.Bills
                     });
                 }
                 reader.Close();
-                _connection.Close();
                 return bill;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while getting the bill (ID: {billId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -206,14 +210,16 @@ namespace SaltVault.Core.Bills
                     { }
                     reader.Close();
                 }
-                _connection.Close();
 
                 return Convert.ToInt32(billId);
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while adding the bill '{bill.Name}'", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -273,14 +279,16 @@ namespace SaltVault.Core.Bills
                     { }
                     reader.Close();
                 }
-                _connection.Close();
 
                 return rowUpdated;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while updating the bill '{billRequest.Name}'", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -316,13 +324,15 @@ namespace SaltVault.Core.Bills
                 }
                 reader.Close();
 
-                _connection.Close();
                 return billDeleted;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -349,14 +359,16 @@ namespace SaltVault.Core.Bills
                     };
                 }
                 reader.Close();
-                _connection.Close();
 
                 return payment;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while getting the payment (ID: {paymentId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -372,12 +384,14 @@ namespace SaltVault.Core.Bills
                 while (reader.Read())
                 { }
                 reader.Close();
-                _connection.Close();
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -410,8 +424,11 @@ namespace SaltVault.Core.Bills
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while updating the payment (ID: {paymentRequest.Id})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -466,13 +483,15 @@ namespace SaltVault.Core.Bills
                 }
 
                 reader.Close();
-                _connection.Close();
                 return people;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception("An Error occured while getting the list of people", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
@@ -501,13 +520,15 @@ namespace SaltVault.Core.Bills
                 }
 
                 reader.Close();
-                _connection.Close();
                 return people;
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while getting the list of people", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
     }
