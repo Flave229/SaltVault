@@ -39,7 +39,7 @@ namespace SaltVault.Core.Bills
             var bills = new List<Bill>();
             try
             {
-                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\" " +
+                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Bill.\"RecurringType\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\" " +
                                                 "FROM public.\"Bill\" AS Bill " +
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
@@ -61,32 +61,33 @@ namespace SaltVault.Core.Bills
                             Id = billId,
                             Name = (string)reader[1],
                             TotalAmount = Convert.ToDecimal(reader[2]),
-                            FullDateDue = (DateTime)reader[3]
+                            FullDateDue = (DateTime)reader[3],
+                            RecurringType = (RecurringType)reader[4]
                         };
                     }
 
-                    var personId = Convert.ToInt32(reader[4]);
-                    var paymentAmount = (reader[7] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[7]);
+                    var personId = Convert.ToInt32(reader[5]);
+                    var paymentAmount = (reader[8] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[8]);
                     if (billOverview.People.Any(x => x.Id == personId) == false)
                     {
                         billOverview.People.Add(new BillPersonDetails
                         {
                             Id = personId,
                             Paid = paymentAmount != 0,
-                            ImageLink = (string)reader[5]
+                            ImageLink = (string)reader[6]
                         });
                     }
                     else
                         billOverview.People.First(x => x.Id == personId).Paid = true;
 
-                    if (reader[6] != DBNull.Value)
+                    if (reader[7] != DBNull.Value)
                     {
                         billOverview.Payments.Add(new BillPayment
                         {
-                            Id = Convert.ToInt32(reader[6]),
+                            Id = Convert.ToInt32(reader[7]),
                             PersonId = personId,
                             Amount = paymentAmount,
-                            DatePaid = (DateTime) reader[8]
+                            DatePaid = (DateTime) reader[9]
                         });
                     }
 

@@ -1,4 +1,6 @@
 ﻿using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -27,6 +29,11 @@ namespace SaltVault.WebApp
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
+
+            var billWorker = new RecurringBillWorker(new BillRepository());
+            var backgroundWorker = new Task(() => billWorker.StartWorker());
+            backgroundWorker.Start();
+
             Configuration = builder.Build();
         }
 
