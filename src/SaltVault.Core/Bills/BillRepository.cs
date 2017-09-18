@@ -44,7 +44,7 @@ namespace SaltVault.Core.Bills
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
                                                 "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
-                                                "ORDER BY Bill.\"Due\" DESC", _connection);
+                                                "ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC", _connection);
                 var reader = command.ExecuteReader();
                 
                 while (reader.Read())
