@@ -454,8 +454,11 @@ namespace SaltVault.Core.Bills
             }
             catch (Exception exception)
             {
-                _connection.Close();
                 throw new Exception($"An Error occured while deleting the payment (ID: {paymentRequestPaymentId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
             }
         }
 
