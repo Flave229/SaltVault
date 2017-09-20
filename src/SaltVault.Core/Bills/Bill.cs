@@ -17,13 +17,13 @@ namespace SaltVault.Core.Bills
         public decimal TotalAmount { get; set; }
         public decimal AmountPaid { get; set; }
         public List<BillPersonDetails> People { get; set; }
-        public List<BillPayment> Payments { get; set; }
+        public List<Payment> Payments { get; set; }
         public RecurringType RecurringType { get; set; }
 
         public Bill()
         {
             People = new List<BillPersonDetails>();
-            Payments = new List<BillPayment>();
+            Payments = new List<Payment>();
         }
     }
 

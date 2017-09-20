@@ -7,7 +7,7 @@ namespace SaltVault.WebApp.Models
     public class PaymentFormHelper
     {
         public Bill Bill { get; set; }
-        public BillPayment Payment { get; set; }
+        public Payment Payment { get; set; }
         public List<Person> People { get; set; }
     }
 }

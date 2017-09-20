@@ -14,7 +14,7 @@ namespace SaltVault.Core.Bills
         int AddBill(AddBillRequest bill);
         bool UpdateBill(UpdateBillRequestV2 billRequest);
         bool DeleteBill(int billId);
-        BillPayment GetPayment(int paymentId);
+        Payment GetPayment(int paymentId);
         void AddPayment(AddPaymentRequestV2 paymentRequest);
         bool UpdatePayment(UpdatePaymentRequestV2 paymentRequest);
         bool DeletePayment(int paymentRequestPaymentId);
@@ -39,7 +39,7 @@ namespace SaltVault.Core.Bills
             var bills = new List<Bill>();
             try
             {
-                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Bill.\"RecurringType\", Person.\"Id\", Person.\"Image\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\" " +
+                var command = new NpgsqlCommand("SELECT Bill.\"Id\", Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Bill.\"RecurringType\", Person.\"Id\", Person.\"Image\", Person.\"FirstName\", Person.\"LastName\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\" " +
                                                 "FROM public.\"Bill\" AS Bill " +
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
@@ -67,27 +67,35 @@ namespace SaltVault.Core.Bills
                     }
 
                     var personId = Convert.ToInt32(reader[5]);
-                    var paymentAmount = (reader[8] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[8]);
+                    var paymentAmount = (reader[10] == DBNull.Value) ? 0 : Convert.ToDecimal(reader[10]);
+                    var personImage = (string)reader[6];
                     if (billOverview.People.Any(x => x.Id == personId) == false)
                     {
                         billOverview.People.Add(new BillPersonDetails
                         {
                             Id = personId,
                             Paid = paymentAmount != 0,
-                            ImageLink = (string)reader[6]
+                            ImageLink = personImage
                         });
                     }
                     else
                         billOverview.People.First(x => x.Id == personId).Paid = true;
 
-                    if (reader[7] != DBNull.Value)
+                    if (reader[9] != DBNull.Value)
                     {
-                        billOverview.Payments.Add(new BillPayment
+                        billOverview.Payments.Add(new Payment
                         {
-                            Id = Convert.ToInt32(reader[7]),
+                            Id = Convert.ToInt32(reader[9]),
+                            Person = new Person
+                            {
+                                Id = personId,
+                                Image = personImage,
+                                FirstName = (string)reader[7],
+                                LastName = (string)reader[8]
+                            },
                             PersonId = personId,
                             Amount = paymentAmount,
-                            DatePaid = (DateTime) reader[9]
+                            DatePaid = (DateTime) reader[11]
                         });
                     }
 
@@ -117,7 +125,7 @@ namespace SaltVault.Core.Bills
             try
             {
                 var command = new NpgsqlCommand(
-                    "SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Bill.\"RecurringType\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"Id\", Person.\"FirstName\", Person.\"LastName\" " +
+                    "SELECT Bill.\"Name\", Bill.\"Amount\", Bill.\"Due\", Bill.\"RecurringType\", Payment.\"Id\", Payment.\"Amount\", Payment.\"Created\", Person.\"Id\", Person.\"FirstName\", Person.\"LastName\", Person.\"Image\" " +
                     "FROM public.\"Bill\" AS Bill " +
                     "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
                     "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
@@ -143,13 +151,23 @@ namespace SaltVault.Core.Bills
                         continue;
 
                     var amount = Convert.ToDecimal(reader[5]);
-                    bill.Payments.Add(new BillPayment
+                    var personId = Convert.ToInt32(reader[7]);
+                    var firstName = (string) reader[8];
+                    var lastName = (string) reader[9];
+                    bill.Payments.Add(new Payment
                     {
                         Id = Convert.ToInt32(reader[4]),
                         Amount = amount,
                         DatePaid = (DateTime) reader[6],
-                        PersonId = Convert.ToInt32(reader[7]),
-                        PersonName = (string) reader[8] + " " + (string) reader[9]
+                        PersonId = personId,
+                        PersonName = firstName + " " + lastName,
+                        Person = new Person
+                        {
+                            Id = personId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Image = (string)reader[10]
+                        }
                     });
 
                     bill.AmountPaid += amount;
@@ -337,26 +355,35 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public BillPayment GetPayment(int paymentId)
+        public Payment GetPayment(int paymentId)
         {
             _connection.Open();
 
             try
             {
-                var command = new NpgsqlCommand("SELECT Payment.\"Amount\", Payment.\"Created\", Person.\"FirstName\", Person.\"LastName\" " +
+                var command = new NpgsqlCommand("SELECT Payment.\"Amount\", Payment.\"Created\", Person.\"Id\", Person.\"FirstName\", Person.\"LastName\", Person.\"Image\" " +
                                                 "FROM public.\"Payment\" AS Payment " +
                                                 "LEFT OUTER JOIN public.\"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
                                                 $"WHERE Payment.\"Id\" = {paymentId}", _connection);
-                BillPayment payment = null;
+                Payment payment = null;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    payment = new BillPayment
+                    var firstName = (string)reader[3];
+                    var lastName = (string)reader[4];
+                    payment = new Payment
                     {
                         Id = paymentId,
                         Amount = Convert.ToDecimal(reader[0]),
                         DatePaid = (DateTime)reader[1],
-                        PersonName = (string)reader[2] + " " + (string)reader[3]
+                        PersonName = firstName + " " + lastName,
+                        Person = new Person
+                        {
+                            Id = Convert.ToInt32(reader[2]),
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Image = (string)reader[5]
+                        }
                     };
                 }
                 reader.Close();
