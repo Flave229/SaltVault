@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using SaltVault.Core.Authentication;
@@ -32,7 +31,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpGet]
         [Route("Api/v2/Bills")]
-        public GetBillListResponse GetBillListV2()
+        public GetBillListResponse GetBillListV2(int? id)
         {
             var response = new GetBillListResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -43,7 +42,10 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.Bills = _billRepository.GetAllBasicBillDetails();
+                if (id == null)
+                    response.Bills = _billRepository.GetAllBasicBillDetails();
+                else
+                    response.Bills.Add(_billRepository.GetBasicBillDetails((int)id));
             }
             catch (Exception exception)
             {

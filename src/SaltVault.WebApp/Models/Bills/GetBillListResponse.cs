@@ -6,5 +6,10 @@ namespace SaltVault.WebApp.Models.Bills
     public class GetBillListResponse : CommunicationResponse
     {
         public List<Bill> Bills { get; set; }
+
+        public GetBillListResponse()
+        {
+            Bills = new List<Bill>();
+        }
     }
 }
