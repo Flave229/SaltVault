@@ -39,7 +39,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
                 }
             };
             
-            var result = subject.GetBillListV2();
+            var result = subject.GetBillListV2(null);
 
             Assert.AreEqual(result.Bills.Count, 1);
         }
