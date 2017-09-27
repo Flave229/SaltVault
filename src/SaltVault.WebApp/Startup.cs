@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,8 +15,14 @@ namespace SaltVault.WebApp
 {
     public class Startup
     {
+        private readonly BillRepository _billRepository;
+        private readonly DiscordService _discordService;
+
         public Startup(IHostingEnvironment env)
         {
+            _billRepository = new BillRepository();
+            _discordService = new DiscordService(new HttpClient());
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -30,9 +35,13 @@ namespace SaltVault.WebApp
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
-            var billWorker = new RecurringBillWorker(new BillRepository());
-            var backgroundWorker = new Task(() => billWorker.StartWorker());
-            backgroundWorker.Start();
+            var billWorker = new RecurringBillWorker(_billRepository);
+            var backgroundBillWorker = new Task(() => billWorker.StartWorker());
+            backgroundBillWorker.Start();
+
+            var discordWorker = new DiscordMessageListener(_billRepository, _discordService);
+            var backgroundDiscordWorker = new Task(() => discordWorker.StartWorker());
+            backgroundDiscordWorker.Start();
 
             Configuration = builder.Build();
         }
@@ -45,9 +54,9 @@ namespace SaltVault.WebApp
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddSingleton<IBillRepository, BillRepository>();
+            services.AddSingleton<IBillRepository, BillRepository>(x => _billRepository);
             services.AddSingleton<IShoppingRepository, ShoppingRepository>();
-            services.AddSingleton<IDiscordService, DiscordService>(x => new DiscordService(new HttpClient()));
+            services.AddSingleton<IDiscordService, DiscordService>(x => _discordService);
             services.AddSingleton<IAuthentication, ApiAuthentication>();
 
             services.AddMvc();

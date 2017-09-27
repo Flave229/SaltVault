@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -10,6 +11,8 @@ namespace SaltVault.Core.Services.Discord
     public interface IDiscordService
     {
         void AddBillNotification(string name, DateTime date, decimal amount);
+        void SendMessage(string message);
+        List<DiscordMessage> GetRecentDiscordMessages(string afterId);
     }
 
     public class DiscordService : IDiscordService
@@ -37,12 +40,30 @@ namespace SaltVault.Core.Services.Discord
 
         public void AddBillNotification(string name, DateTime date, decimal amount)
         {
+            SendMessage($"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:dd/MM/yyyy}.");
+        }
+
+        public void SendMessage(string message)
+        {
             var discordMessage = new DiscordMessage
             {
-                content = $"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:dd/MM/yyyy}."
+                content = message
             };
             var postContent = new StringContent(JsonConvert.SerializeObject(discordMessage), Encoding.UTF8, "application/json");
             var result = _discordHttpClient.PostAsync("channels/340434832310009856/messages", postContent).Result;
+        }
+
+        public List<DiscordMessage> GetRecentDiscordMessages(string afterId)
+        {
+            var endPoint = "channels/340434832310009856/messages";
+
+            if (afterId != null)
+                endPoint += $"?after={afterId}";
+
+            var result = _discordHttpClient.GetAsync(endPoint).Result;
+            var content = result.Content.ReadAsStringAsync().Result;
+
+            return JsonConvert.DeserializeObject<List<DiscordMessage>>(content);
         }
     }
 }
