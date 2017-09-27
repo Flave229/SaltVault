@@ -1,7 +1,4 @@
-﻿@using System
-@using System.Threading.Tasks
-@using SaltVault.Core.Shopping.Models
-@model SaltVault.Core.Shopping.Models.ShoppingListResponse
+﻿@model SaltVault.Core.Shopping.Models.ShoppingListResponse
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -78,10 +75,8 @@
         {
             ViewBag.ExceptionMessage = "An Error occured while rendering the Shopping list.";
 
-            <div class="fh5co-portfolio-item">
-                <div class="fh5co-portfolio-description">
-                    <p>@ViewBag.ExceptionMessage @exception.Message</p>
-                </div>
+            <div>
+                <p>@ViewBag.ExceptionMessage @exception.Message</p>
             </div>
         }
 

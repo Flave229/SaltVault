@@ -1,5 +1,3 @@
-using System;
-
 namespace SaltVault.WebApp.Models.Bills
 {
     public class DeleteBillRequest

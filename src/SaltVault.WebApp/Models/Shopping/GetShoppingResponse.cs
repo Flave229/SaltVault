@@ -1,4 +1,3 @@
-using SaltVault.Core.Shopping;
 using SaltVault.Core.Shopping.Models;
 
 namespace SaltVault.WebApp.Models.Shopping

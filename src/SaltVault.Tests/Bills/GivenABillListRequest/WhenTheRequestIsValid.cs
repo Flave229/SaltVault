@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

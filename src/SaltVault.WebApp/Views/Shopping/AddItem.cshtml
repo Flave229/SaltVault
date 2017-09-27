@@ -1,6 +1,6 @@
 ﻿@using System.Linq
-@using System.Threading.Tasks
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using SaltVault.WebApp.Models
 @model SaltVault.WebApp.Models.ShoppingItemFormModel
 @{
     ViewBag.Title = "Add Shopping Item";
@@ -27,10 +27,10 @@
             <div class="form-group">
                 @Html.Label("Added By:", "Added By", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
-                    @for (var i = 0; i < Model.SelectedPeople.Count; i++)
+                    @foreach (PersonForItem person in Model.SelectedPeople)
                     {
-                        @Html.RadioButtonFor(m => m.Item.AddedBy, Model.SelectedPeople[i].Person.Id)
-                        var label = Model.SelectedPeople[i].Person.FirstName + " " + Model.SelectedPeople[i].Person.LastName;
+                        @Html.RadioButtonFor(m => m.Item.AddedBy, person.Person.Id)
+                        var label = person.Person.FirstName + " " + person.Person.LastName;
                         @Html.Label(label, label, new { @style = "padding-left: 1em" })
                         <br />
                     }

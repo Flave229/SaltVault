@@ -87,7 +87,7 @@ namespace SaltVault.Core.People
             }
             catch (Exception exception)
             {
-                throw new Exception($"An Error occured while getting the list of people", exception);
+                throw new Exception("An Error occured while getting the list of people", exception);
             }
             finally
             {
