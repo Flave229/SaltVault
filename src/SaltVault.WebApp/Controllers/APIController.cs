@@ -6,6 +6,7 @@ using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Bills.Payments;
+using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
 using SaltVault.WebApp.Models;
@@ -23,13 +24,15 @@ namespace SaltVault.WebApp.Controllers
         private readonly IDiscordService _discordService;
         private readonly IBillRepository _billRepository;
         private readonly IShoppingRepository _shoppingRepository;
+        private readonly IPeopleRepository _peopleRepository;
         private readonly IAuthentication _apiAuthentication;
 
-        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IAuthentication apiAuthentication, IDiscordService discordService)
+        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IAuthentication apiAuthentication, IDiscordService discordService)
         {
             _discordService = discordService;
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
+            _peopleRepository = peopleRepository;
             _apiAuthentication = apiAuthentication;
         }
 
@@ -371,7 +374,7 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.People = _billRepository.GetAllPeople();
+                response.People = _peopleRepository.GetAllPeople();
             }
             catch (Exception exception)
             {

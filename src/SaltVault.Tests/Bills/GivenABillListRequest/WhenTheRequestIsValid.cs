@@ -25,7 +25,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
             var shoppingRepository = new Mock<IShoppingRepository>();
             var authentication = new Mock<IAuthentication>();
             authentication.Setup(x => x.CheckKey(It.IsAny<string>())).Returns(true);
-            var subject = new ApiController(billRepository.Object, shoppingRepository.Object, authentication.Object, null)
+            var subject = new ApiController(billRepository.Object, shoppingRepository.Object, null, authentication.Object, null)
             {
                 ControllerContext = new ControllerContext
                 {

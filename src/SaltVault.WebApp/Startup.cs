@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
+using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
 
@@ -33,7 +34,6 @@ namespace SaltVault.WebApp
 
             if (env.IsDevelopment())
             {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
@@ -58,6 +58,7 @@ namespace SaltVault.WebApp
 
             services.AddSingleton<IBillRepository, BillRepository>(x => _billRepository);
             services.AddSingleton<IShoppingRepository, ShoppingRepository>(x => _shoppingRepository);
+            services.AddSingleton<IPeopleRepository, PeopleRepository>(x => new PeopleRepository());
             services.AddSingleton<IDiscordService, DiscordService>(x => _discordService);
             services.AddSingleton<IAuthentication, ApiAuthentication>();
 

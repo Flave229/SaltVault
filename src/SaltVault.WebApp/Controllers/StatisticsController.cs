@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SaltVault.Core.Bills;
+using SaltVault.Core.People;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.Statistics;
 
@@ -9,9 +10,9 @@ namespace SaltVault.WebApp.Controllers
     {
         private readonly StatisticService _statisticService;
 
-        public StatisticsController()
+        public StatisticsController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository)
         {
-            _statisticService = new StatisticService(new BillRepository(), new ShoppingRepository());
+            _statisticService = new StatisticService(billRepository, shoppingRepository, peopleRepository);
         }
 
         public IActionResult Index()

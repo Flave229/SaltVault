@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using SaltVault.Core.Bills;
+using SaltVault.Core.People;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.Shopping.Models;
 using SaltVault.WebApp.Models;
@@ -10,13 +10,13 @@ namespace SaltVault.WebApp.Controllers
 {
     public class ShoppingController : Controller
     {
-        private readonly ShoppingRepository _shoppingRepository;
-        private readonly BillRepository _billRepository;
+        private readonly IShoppingRepository _shoppingRepository;
+        private readonly IPeopleRepository _peopleRepository;
 
-        public ShoppingController()
+        public ShoppingController(IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository)
         {
-            _billRepository = new BillRepository();
-            _shoppingRepository = new ShoppingRepository();
+            _shoppingRepository = shoppingRepository;
+            _peopleRepository = peopleRepository;
         }
 
         public ActionResult Index()
@@ -28,7 +28,7 @@ namespace SaltVault.WebApp.Controllers
 
         public IActionResult AddItem()
         {
-            var people = _billRepository.GetAllPeople();
+            var people = _peopleRepository.GetAllPeople();
             var shoppingModel = new ShoppingItemFormModel
             {
                 Item = new ShoppingItem(),

@@ -10,20 +10,22 @@ namespace SaltVault.Core.Statistics
 {
     public class StatisticService
     {
-        private readonly BillRepository _billRepository;
-        private readonly ShoppingRepository _shoppingRepository;
+        private readonly IBillRepository _billRepository;
+        private readonly IShoppingRepository _shoppingRepository;
+        private readonly IPeopleRepository _peopleRepository;
 
-        public StatisticService(BillRepository billRepository, ShoppingRepository shoppingRepository)
+        public StatisticService(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository)
         {
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
+            _peopleRepository = peopleRepository;
         }
 
         public StatisticsOverview GetAllStatistics()
         {
             var bills = _billRepository.GetAllBasicBillDetails();
             var shoppingItems = _shoppingRepository.GetAllItems();
-            var people = _billRepository.GetAllPeople();
+            var people = _peopleRepository.GetAllPeople();
             var statisticsOverview = new StatisticsOverview();
 
             foreach (var person in people)

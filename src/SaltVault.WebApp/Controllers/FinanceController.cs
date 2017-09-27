@@ -1,23 +1,26 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SaltVault.Core.Bills;
+using SaltVault.Core.People;
 using SaltVault.WebApp.Models;
 
 namespace SaltVault.WebApp.Controllers
 {
     public class FinanceController : Controller
     {
-        private readonly BillRepository _billRepository;
+        private readonly IBillRepository _billRepository;
+        private readonly IPeopleRepository _peopleRepository;
 
-        public FinanceController()
+        public FinanceController(IBillRepository billRepository, IPeopleRepository peopleRepository)
         {
-            _billRepository = new BillRepository();
+            _billRepository = billRepository;
+            _peopleRepository = peopleRepository;
         }
 
         public IActionResult AddBill()
         {
             var billModel = new BillModel();
-            var people = _billRepository.GetAllPeople();
+            var people = _peopleRepository.GetAllPeople();
 
             foreach (var person in people)
             {
@@ -44,7 +47,7 @@ namespace SaltVault.WebApp.Controllers
                 Bill = bill
             };
 
-            var people = _billRepository.GetAllPeople();
+            var people = _peopleRepository.GetAllPeople();
             foreach (var person in people)
             {
                 billModel.SelectedPeople.Add(new PersonModel
@@ -67,7 +70,7 @@ namespace SaltVault.WebApp.Controllers
         public IActionResult AddPayment(int billId)
         {
             var bill = _billRepository.GetBasicBillDetails(billId);
-            var people = _billRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
+            var people = _peopleRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
             var payment = new PaymentFormHelper
             {
                 Bill = bill,
@@ -80,7 +83,7 @@ namespace SaltVault.WebApp.Controllers
         public IActionResult EditPayment(int billId, int paymentId)
         {
             var bill = _billRepository.GetBasicBillDetails(billId);
-            var people = _billRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
+            var people = _peopleRepository.GetPeople(bill.People.Select(x => x.Id).ToList());
             var payment = new PaymentFormHelper
             {
                 Bill = bill,
