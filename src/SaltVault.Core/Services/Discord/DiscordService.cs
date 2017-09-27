@@ -11,7 +11,7 @@ namespace SaltVault.Core.Services.Discord
     public interface IDiscordService
     {
         void AddBillNotification(string name, DateTime date, decimal amount);
-        void SendMessage(string message);
+        void SendMessage(DiscordMessage message);
         List<DiscordMessage> GetRecentDiscordMessages(string afterId);
     }
 
@@ -40,15 +40,15 @@ namespace SaltVault.Core.Services.Discord
 
         public void AddBillNotification(string name, DateTime date, decimal amount)
         {
-            SendMessage($"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:dd/MM/yyyy}.");
+            var message = new DiscordMessage
+            {
+                content = $"A new bill has been added! The new bill, '{name}', is £{amount:###0.00} and is due on {date:dd/MM/yyyy}."
+            };
+            SendMessage(message);
         }
 
-        public void SendMessage(string message)
+        public void SendMessage(DiscordMessage discordMessage)
         {
-            var discordMessage = new DiscordMessage
-            {
-                content = message
-            };
             var postContent = new StringContent(JsonConvert.SerializeObject(discordMessage), Encoding.UTF8, "application/json");
             var result = _discordHttpClient.PostAsync("channels/340434832310009856/messages", postContent).Result;
         }

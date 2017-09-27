@@ -16,14 +16,16 @@ namespace SaltVault.WebApp
 {
     public class Startup
     {
-        private readonly BillRepository _billRepository;
-        private readonly DiscordService _discordService;
-        private readonly ShoppingRepository _shoppingRepository;
+        private readonly IBillRepository _billRepository;
+        private readonly IDiscordService _discordService;
+        private readonly IPeopleRepository _peopleRepository;
+        private readonly IShoppingRepository _shoppingRepository;
 
         public Startup(IHostingEnvironment env)
         {
             _billRepository = new BillRepository();
             _shoppingRepository = new ShoppingRepository();
+            _peopleRepository = new PeopleRepository();
             _discordService = new DiscordService(new HttpClient());
 
             var builder = new ConfigurationBuilder()
@@ -41,7 +43,7 @@ namespace SaltVault.WebApp
             var backgroundBillWorker = new Task(() => billWorker.StartWorker());
             backgroundBillWorker.Start();
 
-            var discordWorker = new DiscordMessageListener(_billRepository, _shoppingRepository, _discordService);
+            var discordWorker = new DiscordMessageListener(_billRepository, _shoppingRepository, _peopleRepository, _discordService);
             var backgroundDiscordWorker = new Task(() => discordWorker.StartWorker());
             backgroundDiscordWorker.Start();
 
@@ -56,10 +58,10 @@ namespace SaltVault.WebApp
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddSingleton<IBillRepository, BillRepository>(x => _billRepository);
-            services.AddSingleton<IShoppingRepository, ShoppingRepository>(x => _shoppingRepository);
-            services.AddSingleton<IPeopleRepository, PeopleRepository>(x => new PeopleRepository());
-            services.AddSingleton<IDiscordService, DiscordService>(x => _discordService);
+            services.AddSingleton<IBillRepository, IBillRepository>(x => _billRepository);
+            services.AddSingleton<IShoppingRepository, IShoppingRepository>(x => _shoppingRepository);
+            services.AddSingleton<IPeopleRepository, IPeopleRepository>(x => _peopleRepository);
+            services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
             services.AddSingleton<IAuthentication, ApiAuthentication>();
 
             services.AddMvc();

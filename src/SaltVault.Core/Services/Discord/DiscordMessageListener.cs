@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using SaltVault.Core.Bills;
+using SaltVault.Core.People;
+using SaltVault.Core.Services.Discord.Models;
 using SaltVault.Core.Shopping;
 
 namespace SaltVault.Core.Services.Discord
@@ -10,13 +13,15 @@ namespace SaltVault.Core.Services.Discord
     {
         private readonly IBillRepository _billRepository;
         private readonly IShoppingRepository _shoppingRepository;
+        private readonly IPeopleRepository _peopleRepository;
         private readonly IDiscordService _discordService;
         private string _lastMessageId;
 
-        public DiscordMessageListener(IBillRepository billRepository, IShoppingRepository shoppingRepository, IDiscordService discordService)
+        public DiscordMessageListener(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IDiscordService discordService)
         {
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
+            _peopleRepository = peopleRepository;
             _discordService = discordService;
         }
 
@@ -38,17 +43,52 @@ namespace SaltVault.Core.Services.Discord
                 if (messageContent.StartsWith("//") == false)
                     continue;
 
-                var command = messageContent.Substring(2);
+                messageContent = messageContent.Substring(2);
+                var commandWords = messageContent.Split(' ');
 
-                if (command.Trim().StartsWith("bills"))
+                if (commandWords[0].StartsWith("bills"))
                 {
                     var allBills = _billRepository.GetAllBasicBillDetails();
                     var outstandingBills = allBills.Where(x => x.AmountPaid < x.TotalAmount).ToList();
                     outstandingBills.Reverse();
 
+                    if (commandWords.Length > 1)
+                    {
+                        var discordUserId = commandWords[1].Replace("<", "").Replace("@", "").Replace(">", "");
+                        var discordUser = _peopleRepository.GetPersonFromDiscordId(discordUserId);
+                        outstandingBills = outstandingBills.Where(x => x.People.Any(y => y.Id == discordUser.Id)).ToList();
+
+                        if (outstandingBills.Count == 0)
+                        {
+                            _discordService.SendMessage(new DiscordMessage { content = "You have no outstanding bills!" });
+                            continue;
+                        }
+
+                        var discordMessage = new DiscordMessage
+                        {
+                            embed = new DiscordMessageEmbed
+                            {
+                                author = new DiscordMessageAuthor
+                                {
+                                    icon_url = discordUser.Image,
+                                    name = discordUser.FirstName + " " + discordUser.LastName
+                                },
+                                title = "Outstanding Bills For " + discordUser.FirstName + " " + discordUser.LastName,
+                                fields = outstandingBills.Select(x => new DiscordMessageField
+                                {
+                                    name = x.Name,
+                                    value = $"£{x.TotalAmount} `[{x.FullDateDue:MMM dd}]`"
+                                }).ToList()
+                            }
+                        };
+
+                        _discordService.SendMessage(discordMessage);
+                        continue;
+                    }
+
                     if (outstandingBills.Count == 0)
                     {
-                        _discordService.SendMessage("You have no outstanding bills!");
+                        _discordService.SendMessage(new DiscordMessage { content = "You have no outstanding bills!" });
                         continue;
                     }
 
@@ -56,9 +96,9 @@ namespace SaltVault.Core.Services.Discord
                     foreach (var outstandingBill in outstandingBills)
                         outstandingBillMessage += $"`[{outstandingBill.FullDateDue:MMM dd}]` **{outstandingBill.Name}** for £{outstandingBill.TotalAmount}\n";
                     
-                    _discordService.SendMessage(outstandingBillMessage);
+                    _discordService.SendMessage(new DiscordMessage { content = outstandingBillMessage });
                 }
-                else if (command.Trim().StartsWith("shopping"))
+                else if (commandWords[0].StartsWith("shopping"))
                 {
                     var shoppingItems = _shoppingRepository.GetAllItems(true);
 
@@ -66,7 +106,7 @@ namespace SaltVault.Core.Services.Discord
                     foreach (var shoppingItem in shoppingItems.ShoppingList)
                         shoppingItemMessage += $"**{shoppingItem.Name}** for {string.Join(", ", shoppingItem.AddedFor.Select(x => x.FirstName))}\n";
 
-                    _discordService.SendMessage(shoppingItemMessage);
+                    _discordService.SendMessage(new DiscordMessage { content = shoppingItemMessage });
                 }
             }
         }
