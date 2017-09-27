@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -57,8 +58,17 @@ namespace SaltVault.Core.Services.Discord
                         var discordUserId = commandWords[1].Replace("<", "").Replace("@", "").Replace(">", "");
                         var discordUser = _peopleRepository.GetPersonFromDiscordId(discordUserId);
                         outstandingBills = outstandingBills.Where(x => x.People.Any(y => y.Id == discordUser.Id)).ToList();
+                        var billsForDiscordUser = new List<Bill>();
+                        foreach (var bill in outstandingBills)
+                        {
+                            var paymentsForUser = bill.Payments.Where(x => x.Person.Id == discordUser.Id);
+                            var totalPaid = paymentsForUser.Sum(x => x.Amount);
 
-                        if (outstandingBills.Count == 0)
+                            if (totalPaid + 0.01m < bill.TotalAmount / bill.People.Count)
+                                billsForDiscordUser.Add(bill);
+                        }
+
+                        if (billsForDiscordUser.Count == 0)
                         {
                             _discordService.SendMessage(new DiscordMessage { content = "You have no outstanding bills!" });
                             continue;
@@ -74,7 +84,7 @@ namespace SaltVault.Core.Services.Discord
                                     name = discordUser.FirstName + " " + discordUser.LastName
                                 },
                                 title = "Outstanding Bills For " + discordUser.FirstName + " " + discordUser.LastName,
-                                fields = outstandingBills.Select(x => new DiscordMessageField
+                                fields = billsForDiscordUser.Select(x => new DiscordMessageField
                                 {
                                     name = x.Name,
                                     value = $"£{x.TotalAmount} `[{x.FullDateDue:MMM dd}]`"
