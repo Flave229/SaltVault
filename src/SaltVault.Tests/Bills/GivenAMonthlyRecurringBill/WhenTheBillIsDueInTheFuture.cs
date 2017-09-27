@@ -23,7 +23,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
                     FullDateDue = DateTime.Today.AddDays(10)
                 }
             });
-            var subject = new DiscordMessageListener(_billRepository.Object);
+            var subject = new RecurringBillWorker(_billRepository.Object);
             subject.GenerateNextMonthsBills();
         }
 
