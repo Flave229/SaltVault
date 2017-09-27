@@ -1,4 +1,5 @@
 ﻿using System;
+using SaltVault.Core.Shopping.Models;
 
 namespace SaltVault.Core.Shopping
 {
@@ -32,7 +33,7 @@ namespace SaltVault.Core.Shopping
             }
         }
 
-        public static void CheckIfValidItem(UpdateShoppingItemRequestV2 item)
+        public static void CheckIfValidItem(UpdateShoppingItemRequest item)
         {
             try
             {

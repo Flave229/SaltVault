@@ -1,4 +1,5 @@
 ﻿using System;
+using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Validation;
 
 namespace SaltVault.Core.Bills.Payments
@@ -25,7 +26,7 @@ namespace SaltVault.Core.Bills.Payments
                 throw new Exception("The date entered for the payment was out of range. Value must lie between " + minAmount.ToString("d") + " and " + maxAmount.ToString("d") + ".");
         }
 
-        public static void CheckIfValidPayment(AddPaymentRequestV2 payment)
+        public static void CheckIfValidPayment(AddPaymentRequest payment)
         {
             try
             {
@@ -42,7 +43,7 @@ namespace SaltVault.Core.Bills.Payments
             }
         }
 
-        public static void CheckIfValidPayment(UpdatePaymentRequestV2 payment)
+        public static void CheckIfValidPayment(UpdatePaymentRequest payment)
         {
             try
             {

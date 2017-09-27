@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Npgsql;
+using SaltVault.Core.Bills.Models;
 using SaltVault.Core.People;
 
 namespace SaltVault.Core.Bills
@@ -12,11 +13,11 @@ namespace SaltVault.Core.Bills
         List<Bill> GetAllBasicBillDetails();
         Bill GetBasicBillDetails(int billId);
         int AddBill(AddBillRequest bill);
-        bool UpdateBill(UpdateBillRequestV2 billRequest);
+        bool UpdateBill(UpdateBillRequest billRequest);
         bool DeleteBill(int billId);
         Payment GetPayment(int paymentId);
-        void AddPayment(AddPaymentRequestV2 paymentRequest);
-        bool UpdatePayment(UpdatePaymentRequestV2 paymentRequest);
+        void AddPayment(AddPaymentRequest paymentRequest);
+        bool UpdatePayment(UpdatePaymentRequest paymentRequest);
         bool DeletePayment(int paymentRequestPaymentId);
         List<Person> GetAllPeople();
         List<Person> GetPeople(List<int> peopleIds);
@@ -242,7 +243,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public bool UpdateBill(UpdateBillRequestV2 billRequest)
+        public bool UpdateBill(UpdateBillRequest billRequest)
         {
             _connection.Open();
 
@@ -400,7 +401,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public void AddPayment(AddPaymentRequestV2 paymentRequest)
+        public void AddPayment(AddPaymentRequest paymentRequest)
         {
             _connection.Open();
 
@@ -423,7 +424,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public bool UpdatePayment(UpdatePaymentRequestV2 paymentRequest)
+        public bool UpdatePayment(UpdatePaymentRequest paymentRequest)
         {
             _connection.Open();
 
@@ -562,49 +563,5 @@ namespace SaltVault.Core.Bills
                 _connection.Close();
             }
         }
-    }
-
-    public class AddBillRequest
-    {
-        public string Name { get; set; }
-        public decimal TotalAmount { get; set; }
-        public DateTime Due { get; set; }
-        public List<int> PeopleIds { get; set; }
-        public RecurringType RecurringType { get; set; }
-
-        public AddBillRequest()
-        {
-            PeopleIds = new List<int>();
-        }
-    }
-
-    public class UpdateBillRequestV2
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal? TotalAmount { get; set; }
-        public DateTime? Due { get; set; }
-        public List<int> PeopleIds { get; set; }
-        public RecurringType? RecurringType { get; set; }
-
-        public UpdateBillRequestV2()
-        {
-            PeopleIds = new List<int>();
-        }
-    }
-
-    public class AddPaymentRequestV2
-    {
-        public int BillId { get; set; }
-        public decimal Amount { get; set; }
-        public DateTime Created { get; set; }
-        public int PersonId { get; set; }
-    }
-
-    public class UpdatePaymentRequestV2
-    {
-        public int Id { get; set; }
-        public decimal? Amount { get; set; }
-        public DateTime? Created { get; set; }
     }
 }

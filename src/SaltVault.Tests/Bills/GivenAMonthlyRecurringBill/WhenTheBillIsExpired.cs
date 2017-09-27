@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SaltVault.Core.Bills;
+using SaltVault.Core.Bills.Models;
 
 namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
 {
@@ -42,7 +43,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenThePreviousBillIsUpdatedWithNoRecurringType()
         {
-            _billRepository.Verify(x => x.UpdateBill(It.Is<UpdateBillRequestV2>(y => y.RecurringType == RecurringType.None)), Times.Once);
+            _billRepository.Verify(x => x.UpdateBill(It.Is<UpdateBillRequest>(y => y.RecurringType == RecurringType.None)), Times.Once);
         }
     }
 }

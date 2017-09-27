@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Npgsql;
 using SaltVault.Core.People;
+using SaltVault.Core.Shopping.Models;
 
 namespace SaltVault.Core.Shopping
 {
@@ -11,7 +12,7 @@ namespace SaltVault.Core.Shopping
     {
         ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false);
         void AddItem(AddShoppingItemRequest shoppingRequest);
-        void UpdateItem(UpdateShoppingItemRequestV2 shoppingRequest);
+        void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
     }
 
@@ -139,7 +140,7 @@ namespace SaltVault.Core.Shopping
             }
         }
 
-        public void UpdateItem(UpdateShoppingItemRequestV2 shoppingRequest)
+        public void UpdateItem(UpdateShoppingItemRequest shoppingRequest)
         {
             _connection.Open();
 
@@ -244,13 +245,5 @@ namespace SaltVault.Core.Shopping
         {
             ItemFor = new List<int>();
         }
-    }
-
-    public class UpdateShoppingItemRequestV2
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool? Purchased { get; set; }
-        public List<int> ItemFor { get; set; }
     }
 }

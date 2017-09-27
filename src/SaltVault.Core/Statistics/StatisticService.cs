@@ -4,6 +4,7 @@ using System.Linq;
 using SaltVault.Core.Bills;
 using SaltVault.Core.People;
 using SaltVault.Core.Shopping;
+using SaltVault.Core.Shopping.Models;
 
 namespace SaltVault.Core.Statistics
 {

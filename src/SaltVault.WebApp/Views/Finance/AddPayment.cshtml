@@ -79,7 +79,7 @@
         console.log(addPaymentRequest);
 
         $.ajax({
-            url: '@Url.Action("AddPaymentV2", "Api")',
+            url: '@Url.Action("AddPayment", "Api")',
             contentType: "application/json",
             type: "POST",
             beforeSend: function(xhr) {

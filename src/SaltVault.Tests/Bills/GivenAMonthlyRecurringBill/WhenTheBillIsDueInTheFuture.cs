@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SaltVault.Core.Bills;
+using SaltVault.Core.Bills.Models;
 
 namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
 {
@@ -36,7 +37,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenThePreviousBillIsNotUpdated()
         {
-            _billRepository.Verify(x => x.UpdateBill(It.IsAny<UpdateBillRequestV2>()), Times.Never);
+            _billRepository.Verify(x => x.UpdateBill(It.IsAny<UpdateBillRequest>()), Times.Never);
         }
     }
 }

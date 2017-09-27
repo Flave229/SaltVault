@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using SaltVault.Core.Bills.Models;
 
 namespace SaltVault.Core.Bills
 {
@@ -24,7 +25,7 @@ namespace SaltVault.Core.Bills
                 if (recurringBill.FullDateDue > DateTime.Today)
                     continue;
 
-                var billUpdateRequest = new UpdateBillRequestV2
+                var billUpdateRequest = new UpdateBillRequest
                 {
                     Id = recurringBill.Id,
                     RecurringType = RecurringType.None

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
+using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Bills.Payments;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
@@ -11,6 +12,9 @@ using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
 using SaltVault.WebApp.Models.Users;
+using AddPaymentRequest = SaltVault.Core.Bills.Models.AddPaymentRequest;
+using UpdateBillRequest = SaltVault.Core.Bills.Models.UpdateBillRequest;
+using UpdateShoppingItemRequest = SaltVault.Core.Shopping.Models.UpdateShoppingItemRequest;
 
 namespace SaltVault.WebApp.Controllers
 {
@@ -31,7 +35,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpGet]
         [Route("Api/v2/Bills")]
-        public GetBillListResponse GetBillListV2(int? id)
+        public GetBillListResponse GetBillList(int? id)
         {
             var response = new GetBillListResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -87,7 +91,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPatch]
         [Route("Api/v2/Bills")]
-        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequestV2 billRequest)
+        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
         {
             var response = new AddBillResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -121,7 +125,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpDelete]
         [Route("Api/v2/Bills")]
-        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequestV2 deleteBillRequest)
+        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -155,7 +159,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/Bills/Payments")]
-        public CommunicationResponse AddPaymentV2([FromBody]AddPaymentRequestV2 paymentRequest)
+        public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -184,7 +188,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPatch]
         [Route("Api/v2/Bills/Payments")]
-        public CommunicationResponse UpdatePaymentV2([FromBody]UpdatePaymentRequestV2 paymentRequest)
+        public CommunicationResponse UpdatePayment([FromBody]Core.Bills.Models.UpdatePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -213,7 +217,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpDelete]
         [Route("Api/v2/Bills/Payments")]
-        public CommunicationResponse DeletePaymentV2([FromBody]DeletePaymentRequestV2 paymentRequest)
+        public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -299,7 +303,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPatch]
         [Route("Api/v2/Shopping")]
-        public CommunicationResponse UpdateShoppingItemV2([FromBody]UpdateShoppingItemRequestV2 shoppingRequest)
+        public CommunicationResponse UpdateShoppingItemV2([FromBody]UpdateShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)

@@ -1,4 +1,5 @@
 ﻿using System;
+using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Validation;
 
 namespace SaltVault.Core.Bills

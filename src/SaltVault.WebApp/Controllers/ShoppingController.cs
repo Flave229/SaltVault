@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Shopping;
+using SaltVault.Core.Shopping.Models;
 using SaltVault.WebApp.Models;
 
 namespace SaltVault.WebApp.Controllers
@@ -63,7 +64,7 @@ namespace SaltVault.WebApp.Controllers
 
         public IActionResult CompleteItem(int itemId)
         {
-            _shoppingRepository.UpdateItem(new UpdateShoppingItemRequestV2
+            _shoppingRepository.UpdateItem(new UpdateShoppingItemRequest
             {
                 Id = itemId,
                 Purchased = true

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SaltVault.Core.People;
 
-namespace SaltVault.Core.Shopping
+namespace SaltVault.Core.Shopping.Models
 {
     public class ShoppingListResponse
     {

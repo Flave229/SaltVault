@@ -19,7 +19,7 @@
 
     window.onload = function getBills() {
         $.ajax({
-            url: '@Url.Action("GetBillListV2", "Api")',
+            url: '@Url.Action("GetBillList", "Api")',
             type: "GET",
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', 'D2DB7539-634F-47C4-818D-59AD03C592E3');
