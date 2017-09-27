@@ -83,7 +83,7 @@
             var deleteBillRequest = { "BillId": billId };
 
             $.ajax({
-                url: '@Url.Action("DeleteBillV2", "Api")',
+                url: '@Url.Action("DeleteBill", "Api")',
                 contentType: "application/json",
                 type: "DELETE",
                 beforeSend: function(xhr) {
