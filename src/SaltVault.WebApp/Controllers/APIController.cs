@@ -108,6 +108,13 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/Bills")]
+        public AddBillResponse AddBill([FromBody]AddBillRequest billRequest)
+        {
+            return AddBillV2(billRequest);
+        }
+
         [HttpPatch]
         [Route("Api/v2/Bills/Update")]
         public CommunicationResponse UpdateBillV2([FromBody]UpdateBillRequestV2 billRequest)
