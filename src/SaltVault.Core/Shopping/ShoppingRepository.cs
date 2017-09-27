@@ -9,7 +9,7 @@ namespace SaltVault.Core.Shopping
 {
     public interface IShoppingRepository
     {
-        ShoppingListResponse GetAllItems();
+        ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false);
         void AddItem(AddShoppingItemRequest shoppingRequest);
         void UpdateItem(UpdateShoppingItemRequestV2 shoppingRequest);
         void DeleteItem(int shoppingItemId);
@@ -25,19 +25,25 @@ namespace SaltVault.Core.Shopping
             _connection = new NpgsqlConnection(connectionString);
         }
         
-        public ShoppingListResponse GetAllItems()
+        public ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false)
         {
             _connection.Open();
 
             try
             {
                 var shoppingItems = new List<Item>();
+                var whereClause = "";
+
+                if (onlyUnpurchasedItems)
+                    whereClause = "WHERE Item.\"Purchased\" = false ";
+
                 var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Id\", AddedBy.\"FirstName\", AddedBy.\"LastName\", AddedBy.\"Image\", " +
                                                 "ShoppingItemFor.\"Id\", ShoppingItemFor.\"FirstName\", ShoppingItemFor.\"LastName\", ShoppingItemFor.\"Image\" " +
                                                 "FROM public.\"ShoppingItem\" AS Item " +
                                                 "LEFT OUTER JOIN \"Person\" AS AddedBy ON AddedBy.\"Id\" = Item.\"AddedBy\" " +
                                                 "LEFT OUTER JOIN \"ShoppingItemFor\" AS ItemPersonLinker ON ItemPersonLinker.\"ShoppingItemId\" = Item.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS ShoppingItemFor ON ItemPersonLinker.\"PersonId\" = ShoppingItemFor.\"Id\" " +
+                                                whereClause +
                                                 "ORDER BY Item.\"Purchased\", Item.\"AddedOn\" DESC", _connection);
                 var reader = command.ExecuteReader();
 

@@ -2,18 +2,21 @@
 using System.Linq;
 using System.Threading;
 using SaltVault.Core.Bills;
+using SaltVault.Core.Shopping;
 
 namespace SaltVault.Core.Services.Discord
 {
     public class DiscordMessageListener
     {
         private readonly IBillRepository _billRepository;
+        private readonly IShoppingRepository _shoppingRepository;
         private readonly IDiscordService _discordService;
         private string _lastMessageId;
 
-        public DiscordMessageListener(IBillRepository billRepository, IDiscordService discordService)
+        public DiscordMessageListener(IBillRepository billRepository, IShoppingRepository shoppingRepository, IDiscordService discordService)
         {
             _billRepository = billRepository;
+            _shoppingRepository = shoppingRepository;
             _discordService = discordService;
         }
 
@@ -54,6 +57,16 @@ namespace SaltVault.Core.Services.Discord
                         outstandingBillMessage += $"`[{outstandingBill.FullDateDue:MMM dd}]` **{outstandingBill.Name}** for £{outstandingBill.TotalAmount}\n";
                     
                     _discordService.SendMessage(outstandingBillMessage);
+                }
+                else if (command.Trim().StartsWith("shopping"))
+                {
+                    var shoppingItems = _shoppingRepository.GetAllItems(true);
+
+                    var shoppingItemMessage = "__**Shopping List:**__\n\n";
+                    foreach (var shoppingItem in shoppingItems.ShoppingList)
+                        shoppingItemMessage += $"**{shoppingItem.Name}** for {string.Join(", ", shoppingItem.AddedFor.Select(x => x.FirstName))}\n";
+
+                    _discordService.SendMessage(shoppingItemMessage);
                 }
             }
         }
