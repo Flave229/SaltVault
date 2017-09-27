@@ -57,30 +57,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/Bills")]
-        public GetBillResponse GetBillV2([FromBody]GetBillRequest billRequest)
-        {
-            var response = new GetBillResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
-            {
-                response.AddError("The API Key was invalid");
-                return response;
-            }
-
-            try
-            {
-                response.Bill = _billRepository.GetBasicBillDetails(billRequest.BillId);
-            }
-            catch (Exception exception)
-            {
-                response.AddError($"An unexpected exception occured: {exception}");
-            }
-
-            return response;
-        }
-
-        [HttpPost]
-        [Route("Api/v2/Bills/Add")]
-        public AddBillResponse AddBillV2([FromBody]AddBillRequest billRequest)
+        public AddBillResponse AddBill([FromBody]AddBillRequest billRequest)
         {
             var response = new AddBillResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -108,16 +85,9 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("Api/v2/Bills")]
-        public AddBillResponse AddBill([FromBody]AddBillRequest billRequest)
-        {
-            return AddBillV2(billRequest);
-        }
-
         [HttpPatch]
-        [Route("Api/v2/Bills/Update")]
-        public CommunicationResponse UpdateBillV2([FromBody]UpdateBillRequestV2 billRequest)
+        [Route("Api/v2/Bills")]
+        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequestV2 billRequest)
         {
             var response = new AddBillResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -149,16 +119,9 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
-        [HttpPatch]
-        [Route("Api/v2/Bills")]
-        public CommunicationResponse UpdateBill([FromBody]UpdateBillRequestV2 billRequest)
-        {
-            return UpdateBillV2(billRequest);
-        }
-
         [HttpDelete]
-        [Route("Api/v2/Bills/Delete")]
-        public CommunicationResponse DeleteBillV2([FromBody]DeleteBillRequestV2 deleteBillRequest)
+        [Route("Api/v2/Bills")]
+        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequestV2 deleteBillRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -188,13 +151,6 @@ namespace SaltVault.WebApp.Controllers
             }
 
             return response;
-        }
-
-        [HttpDelete]
-        [Route("Api/v2/Bills")]
-        public CommunicationResponse DeleteBill([FromBody]DeleteBillRequestV2 deleteBillRequest)
-        {
-            return DeleteBillV2(deleteBillRequest);
         }
 
         [HttpPost]
