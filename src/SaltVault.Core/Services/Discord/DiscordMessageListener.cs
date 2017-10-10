@@ -13,19 +13,17 @@ namespace SaltVault.Core.Services.Discord
 {
     public class DiscordMessageListener
     {
-        private readonly IShoppingRepository _shoppingRepository;
         private readonly IDiscordService _discordService;
         private string _lastMessageId;
         private readonly Dictionary<string, IDiscordCommand> _discordCommands;
 
         public DiscordMessageListener(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IDiscordService discordService)
         {
-            _shoppingRepository = shoppingRepository;
             _discordService = discordService;
             _discordCommands = new Dictionary<string, IDiscordCommand>
             {
                 { "bills", new ListBillCommand(discordService, billRepository, peopleRepository) },
-                { "shopping", new ListShoppingCommand(discordService, shoppingRepository) }
+                { "shopping", new ListShoppingCommand(discordService, shoppingRepository, peopleRepository) }
             };
         }
 
