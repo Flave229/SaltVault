@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SaltVault.Core.Bills;
 using SaltVault.Core.People;
@@ -27,7 +28,7 @@ namespace SaltVault.Core.Services.Discord.Commands
 
             if (subCommands.Count > 0)
             {
-                var discordUserId = subCommands[1].Replace("<", "").Replace("@", "").Replace(">", "");
+                var discordUserId = subCommands[0].Replace("<", "").Replace("@", "").Replace(">", "");
                 var discordUser = _peopleRepository.GetPersonFromDiscordId(discordUserId);
                 outstandingBills = outstandingBills.Where(x => x.People.Any(y => y.Id == discordUser.Id)).ToList();
                 var billsForDiscordUser = new List<Bill>();
@@ -59,7 +60,7 @@ namespace SaltVault.Core.Services.Discord.Commands
                         fields = billsForDiscordUser.Select(x => new DiscordMessageField
                         {
                             name = x.Name,
-                            value = $"£{x.TotalAmount} `[{x.FullDateDue:MMM dd}]`"
+                            value = $"`[{x.FullDateDue:MMM dd}]` £{x.TotalAmount}"
                         }).ToList()
                     }
                 };
@@ -73,12 +74,26 @@ namespace SaltVault.Core.Services.Discord.Commands
                 _discordService.SendMessage(new DiscordMessage { content = "You have no outstanding bills!" });
                 return;
             }
+            
+            var discordMessage2 = new DiscordMessage
+            {
+                embed = new DiscordMessageEmbed
+                {
+                    author = new DiscordMessageAuthor
+                    {
+                        icon_url = "https://127xwr2qcfsvmn8a91nbd428-wpengine.netdna-ssl.com/wp-content/uploads/2013/01/Pile-of-salt.jpg",
+                        name = "Salt Automaton"
+                    },
+                    title = "Outstanding Bills For All Users",
+                    fields = outstandingBills.Select(x => new DiscordMessageField
+                    {
+                        name = $"{x.Name} - {x.FullDateDue:dd MMMM}",
+                        value = $"£{x.TotalAmount}"
+                    }).ToList()
+                }
+            };
 
-            var outstandingBillMessage = "__**Outstanding Bills:**__\n\n";
-            foreach (var outstandingBill in outstandingBills)
-                outstandingBillMessage += $"`[{outstandingBill.FullDateDue:MMM dd}]` **{outstandingBill.Name}** for £{outstandingBill.TotalAmount}\n";
-
-            _discordService.SendMessage(new DiscordMessage { content = outstandingBillMessage });
+            _discordService.SendMessage(discordMessage2);
         }
     }
 }
