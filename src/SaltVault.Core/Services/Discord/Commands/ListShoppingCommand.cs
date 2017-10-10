@@ -22,11 +22,23 @@ namespace SaltVault.Core.Services.Discord.Commands
         {
             var shoppingItems = _shoppingRepository.GetAllItems(true);
 
-            var shoppingItemMessage = "__**Shopping List:**__\n\n";
-            foreach (var shoppingItem in shoppingItems.ShoppingList)
-                shoppingItemMessage += $"**{shoppingItem.Name}** for {string.Join(", ", shoppingItem.AddedFor.Select(x => x.FirstName))}\n";
-
-            _discordService.SendMessage(new DiscordMessage { content = shoppingItemMessage });
+            var discordMessage = new DiscordMessage
+            {
+                embed = new DiscordMessageEmbed
+                {
+                    author = new DiscordMessageAuthor
+                    {
+                        icon_url = "https://127xwr2qcfsvmn8a91nbd428-wpengine.netdna-ssl.com/wp-content/uploads/2013/01/Pile-of-salt.jpg",
+                        name = "Shopping List For All Users"
+                    },
+                    fields = shoppingItems.ShoppingList.Select(shoppingItem => new DiscordMessageField
+                    {
+                        name = $"{shoppingItem.Name}",
+                        value = $"For {string.Join(", ", shoppingItem.AddedFor.Select(x => x.FirstName))}"
+                    }).ToList()
+                }
+            };
+            _discordService.SendMessage(discordMessage);
         }
     }
 }
