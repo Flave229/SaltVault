@@ -12,6 +12,7 @@ using SaltVault.Core.Shopping;
 using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
+using SaltVault.WebApp.Models.ToDo;
 using SaltVault.WebApp.Models.Users;
 using AddPaymentRequest = SaltVault.Core.Bills.Models.AddPaymentRequest;
 using UpdateBillRequest = SaltVault.Core.Bills.Models.UpdateBillRequest;
@@ -382,6 +383,13 @@ namespace SaltVault.WebApp.Controllers
             }
 
             return response;
+        }
+
+        [HttpGet]
+        [Route("Api/v2/ToDo")]
+        public GetToDoResponse GetToDoList()
+        {
+            return new GetToDoResponse();
         }
 
         private bool Authenticate(StringValues authorizationHeader)
