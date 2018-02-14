@@ -11,6 +11,7 @@ using SaltVault.Core.Bills;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
+using SaltVault.Core.ToDo;
 
 namespace SaltVault.WebApp
 {
@@ -20,12 +21,14 @@ namespace SaltVault.WebApp
         private readonly IDiscordService _discordService;
         private readonly IPeopleRepository _peopleRepository;
         private readonly IShoppingRepository _shoppingRepository;
+        private readonly ToDoRepository _toDoRepository;
 
         public Startup(IHostingEnvironment env)
         {
             _billRepository = new BillRepository();
             _shoppingRepository = new ShoppingRepository();
             _peopleRepository = new PeopleRepository();
+            _toDoRepository = new ToDoRepository();
             _discordService = new DiscordService(new HttpClient());
 
             var builder = new ConfigurationBuilder()
@@ -61,6 +64,7 @@ namespace SaltVault.WebApp
             services.AddSingleton<IBillRepository, IBillRepository>(x => _billRepository);
             services.AddSingleton<IShoppingRepository, IShoppingRepository>(x => _shoppingRepository);
             services.AddSingleton<IPeopleRepository, IPeopleRepository>(x => _peopleRepository);
+            services.AddSingleton<IToDoRepository, IToDoRepository>(x => _toDoRepository);
             services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
             services.AddSingleton<IAuthentication, ApiAuthentication>();
 

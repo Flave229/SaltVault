@@ -9,6 +9,7 @@ using SaltVault.Core.Bills.Payments;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
+using SaltVault.Core.ToDo;
 using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
@@ -27,13 +28,15 @@ namespace SaltVault.WebApp.Controllers
         private readonly IShoppingRepository _shoppingRepository;
         private readonly IPeopleRepository _peopleRepository;
         private readonly IAuthentication _apiAuthentication;
+        private readonly IToDoRepository _toDoRepository;
 
-        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IAuthentication apiAuthentication, IDiscordService discordService)
+        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository, IAuthentication apiAuthentication, IDiscordService discordService)
         {
             _discordService = discordService;
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
             _peopleRepository = peopleRepository;
+            _toDoRepository = toDoRepository;
             _apiAuthentication = apiAuthentication;
         }
 
@@ -389,7 +392,23 @@ namespace SaltVault.WebApp.Controllers
         [Route("Api/v2/ToDo")]
         public GetToDoResponse GetToDoList()
         {
-            return new GetToDoResponse();
+            var response = new GetToDoResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.ToDoTasks = _toDoRepository.GetToDoList();
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
         }
 
         private bool Authenticate(StringValues authorizationHeader)
