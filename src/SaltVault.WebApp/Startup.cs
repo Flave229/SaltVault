@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.People;
@@ -25,10 +27,13 @@ namespace SaltVault.WebApp
 
         public Startup(IHostingEnvironment env)
         {
-            _billRepository = new BillRepository();
-            _shoppingRepository = new ShoppingRepository();
-            _peopleRepository = new PeopleRepository();
-            _toDoRepository = new ToDoRepository();
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+
+            _billRepository = new BillRepository(connection);
+            _shoppingRepository = new ShoppingRepository(connection);
+            _peopleRepository = new PeopleRepository(connection);
+            _toDoRepository = new ToDoRepository(connection);
             _discordService = new DiscordService(new HttpClient());
 
             var builder = new ConfigurationBuilder()
