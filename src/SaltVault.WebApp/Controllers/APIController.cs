@@ -414,9 +414,9 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/ToDo")]
-        public AddBillResponse AddToDoItem([FromBody]AddToDoTaskRequest toDoTaskRequest)
+        public AddToDoResponse AddToDoItem([FromBody]AddToDoTaskRequest toDoTaskRequest)
         {
-            var response = new AddBillResponse();
+            var response = new AddToDoResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
             {
                 response.AddError("The API Key was invalid");
