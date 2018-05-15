@@ -10,6 +10,7 @@ using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.ToDo;
+using SaltVault.Core.ToDo.Models;
 using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
@@ -402,6 +403,34 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 response.ToDoTasks = _toDoRepository.GetToDoList();
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("Api/v2/ToDo")]
+        public AddBillResponse AddToDoItem([FromBody]AddToDoTaskRequest toDoTaskRequest)
+        {
+            var response = new AddBillResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                response.Id = _toDoRepository.AddToDoTask(toDoTaskRequest);
+
+                response.Notifications = new List<string>
+                {
+                    $"The task '{toDoTaskRequest.Title}' has been added"
+                };
             }
             catch (Exception exception)
             {

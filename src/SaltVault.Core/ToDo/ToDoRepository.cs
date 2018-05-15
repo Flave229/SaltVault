@@ -10,6 +10,7 @@ namespace SaltVault.Core.ToDo
     public interface IToDoRepository
     {
         List<ToDoTask> GetToDoList();
+        int AddToDoTask(AddToDoTaskRequest toDoTask);
     }
 
     public class ToDoRepository : IToDoRepository
@@ -76,6 +77,45 @@ namespace SaltVault.Core.ToDo
             catch (Exception exception)
             {
                 throw new Exception("An Error occured while getting the to do items", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public int AddToDoTask(AddToDoTaskRequest toDoTask)
+        {
+            _connection.Open();
+
+            try
+            {
+                var dueValue = toDoTask.Due == null ? "NULL" : $"'{toDoTask.Due:yyyy-MM-dd}'";
+                var command = new NpgsqlCommand($"INSERT INTO public.\"ToDo\" (\"Title\", \"Due\") " +
+                                                $"VALUES ('{toDoTask.Title}', {dueValue}) " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 toDoTaskId = -1;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                    toDoTaskId = Convert.ToInt64(reader[0]);
+
+                reader.Close();
+
+                foreach (var peopleId in toDoTask.PeopleIds)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\") " +
+                                                $"VALUES ({toDoTaskId}, {peopleId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    { }
+                    reader.Close();
+                }
+
+                return Convert.ToInt32(toDoTaskId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An Error occured while adding the To Do Task '{toDoTask.Title}'", exception);
             }
             finally
             {
