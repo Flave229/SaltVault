@@ -440,6 +440,40 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpPatch]
+        [Route("Api/v2/ToDo")]
+        public CommunicationResponse UpdateToDoItem([FromBody]UpdateToDoRequest toDoRequest)
+        {
+            var response = new AddBillResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var rowUpdated = _toDoRepository.UpdateToDoTask(toDoRequest);
+
+                if (rowUpdated == false)
+                {
+                    response.AddError("The given To Do Task Id does not correspond to an existing Task");
+                    return response;
+                }
+
+                response.Notifications = new List<string>
+                {
+                    $"The Task '{toDoRequest.Title}' has been updated"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");

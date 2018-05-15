@@ -11,6 +11,7 @@ namespace SaltVault.Core.ToDo
     {
         List<ToDoTask> GetToDoList();
         int AddToDoTask(AddToDoTaskRequest toDoTask);
+        bool UpdateToDoTask(UpdateToDoRequest toDoRequest);
     }
 
     public class ToDoRepository : IToDoRepository
@@ -116,6 +117,73 @@ namespace SaltVault.Core.ToDo
             catch (Exception exception)
             {
                 throw new Exception($"An Error occured while adding the To Do Task '{toDoTask.Title}'", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public bool UpdateToDoTask(UpdateToDoRequest toDoRequest)
+        {
+            _connection.Open();
+
+            try
+            {
+                var setValues = new List<string>();
+
+                if (toDoRequest.Title != null)
+                    setValues.Add($"\"Title\"='{toDoRequest.Title}'");
+                if (toDoRequest.Due != null)
+                    setValues.Add($"\"Due\"='{toDoRequest.Due}'");
+                if (toDoRequest.Complete != null)
+                    setValues.Add($"\"Complete\"={toDoRequest.Complete}");
+
+                var rowUpdated = false;
+                NpgsqlCommand command;
+                Int64 toDoTaskId = -1;
+                NpgsqlDataReader reader;
+
+                if (setValues.Count > 0)
+                {
+                    command = new NpgsqlCommand("UPDATE public.\"ToDo\" " +
+                                                $"SET {string.Join(", ", setValues)} " +
+                                                $"WHERE \"Id\" = {toDoRequest.Id} " +
+                                                "RETURNING \"Id\"", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        rowUpdated = true;
+                        toDoTaskId = (Int64) reader[0];
+                    }
+                    reader.Close();
+                }
+
+                if (toDoRequest.PeopleIds == null || toDoRequest.PeopleIds.Count == 0)
+                    return rowUpdated;
+
+                command = new NpgsqlCommand("DELETE FROM public.\"PeopleForToDo\" " +
+                                            $"WHERE \"ToDoId\" = {toDoRequest.Id}", _connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {}
+                reader.Close();
+
+                foreach (var personId in toDoRequest.PeopleIds)
+                {
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\") " +
+                                                $"VALUES ({toDoTaskId}, {personId})", _connection);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {}
+                    reader.Close();
+                }
+
+                return rowUpdated;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An Error occured while updating the To Do Task '{toDoRequest.Title}'", exception);
             }
             finally
             {
