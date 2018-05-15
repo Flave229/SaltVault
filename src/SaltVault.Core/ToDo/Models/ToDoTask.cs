@@ -11,5 +11,10 @@ namespace SaltVault.Core.ToDo.Models
         public DateTime? Due { get; set; }
         public bool Complete { get; set; }
         public List<Person> PeopleForTask { get; set; }
+
+        public ToDoTask()
+        {
+            PeopleForTask = new List<Person>();
+        }
     }
 }
