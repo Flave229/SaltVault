@@ -476,7 +476,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpDelete]
         [Route("Api/v2/ToDo")]
-        public CommunicationResponse DeleteToDoItem([FromBody]DeleteToDoRequest deleteBillRequest)
+        public CommunicationResponse DeleteToDoItem([FromBody]DeleteToDoRequest deleteToDoRequest)
         {
             var response = new CommunicationResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -487,17 +487,17 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                var rowUpdated = _toDoRepository.DeleteToDoTask(deleteBillRequest.ToDoId);
+                var rowUpdated = _toDoRepository.DeleteToDoTask(deleteToDoRequest.ToDoId);
 
                 if (rowUpdated == false)
                 {
-                    response.AddError($"Cannot delete the To Do Task (ID: {deleteBillRequest.ToDoId}) because it does not exist");
+                    response.AddError($"Cannot delete the To Do Task (ID: {deleteToDoRequest.ToDoId}) because it does not exist");
                     return response;
                 }
 
                 response.Notifications = new List<string>
                 {
-                    $"The To Do Task (ID: {deleteBillRequest.ToDoId}) has been deleted"
+                    $"The To Do Task (ID: {deleteToDoRequest.ToDoId}) has been deleted"
                 };
             }
             catch (Exception exception)
