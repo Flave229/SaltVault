@@ -12,6 +12,7 @@ namespace SaltVault.Core.ToDo
         List<ToDoTask> GetToDoList();
         int AddToDoTask(AddToDoTaskRequest toDoTask);
         bool UpdateToDoTask(UpdateToDoRequest toDoRequest);
+        bool DeleteToDoTask(int toDoId);
     }
 
     public class ToDoRepository : IToDoRepository
@@ -184,6 +185,43 @@ namespace SaltVault.Core.ToDo
             catch (Exception exception)
             {
                 throw new Exception($"An Error occured while updating the To Do Task '{toDoRequest.Title}'", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public bool DeleteToDoTask(int toDoId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"PeopleForToDo\" " +
+                                            $"WHERE \"ToDoId\" = {toDoId}", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"ToDo\" " +
+                                            $"WHERE \"Id\" = {toDoId} " +
+                                            "RETURNING \"Id\"", _connection);
+
+                var deleted = false;
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    deleted = true;
+                }
+                reader.Close();
+
+                return deleted;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An Error occured while deleting the To Do Task (ID: {toDoId})", exception);
             }
             finally
             {

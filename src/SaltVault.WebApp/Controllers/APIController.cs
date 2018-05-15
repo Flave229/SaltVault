@@ -474,6 +474,40 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpDelete]
+        [Route("Api/v2/ToDo")]
+        public CommunicationResponse DeleteToDoItem([FromBody]DeleteToDoRequest deleteBillRequest)
+        {
+            var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+
+            try
+            {
+                var rowUpdated = _toDoRepository.DeleteToDoTask(deleteBillRequest.ToDoId);
+
+                if (rowUpdated == false)
+                {
+                    response.AddError($"Cannot delete the To Do Task (ID: {deleteBillRequest.ToDoId}) because it does not exist");
+                    return response;
+                }
+
+                response.Notifications = new List<string>
+                {
+                    $"The To Do Task (ID: {deleteBillRequest.ToDoId}) has been deleted"
+                };
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         private bool Authenticate(StringValues authorizationHeader)
         {
             var apiKey = authorizationHeader.ToString().Replace("Token ", "");
