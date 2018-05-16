@@ -20,9 +20,10 @@ namespace SaltVault.Core.Shopping
     {
         private readonly NpgsqlConnection _connection;
 
-        public ShoppingRepository(NpgsqlConnection connection)
+        public ShoppingRepository()
         {
-            _connection = connection;
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            _connection = new NpgsqlConnection(connectionString);
         }
 
         public ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false)

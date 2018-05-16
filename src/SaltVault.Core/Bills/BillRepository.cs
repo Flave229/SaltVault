@@ -25,9 +25,10 @@ namespace SaltVault.Core.Bills
     {
         private readonly NpgsqlConnection _connection;
 
-        public BillRepository(NpgsqlConnection connection)
+        public BillRepository()
         {
-            _connection = connection;
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            _connection = new NpgsqlConnection(connectionString);
         }
 
         public List<Bill> GetAllBasicBillDetails()

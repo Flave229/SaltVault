@@ -27,13 +27,10 @@ namespace SaltVault.WebApp
 
         public Startup(IHostingEnvironment env)
         {
-            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-
-            _billRepository = new BillRepository(connection);
-            _shoppingRepository = new ShoppingRepository(connection);
-            _peopleRepository = new PeopleRepository(connection);
-            _toDoRepository = new ToDoRepository(connection);
+            _billRepository = new BillRepository();
+            _shoppingRepository = new ShoppingRepository();
+            _peopleRepository = new PeopleRepository();
+            _toDoRepository = new ToDoRepository();
             _discordService = new DiscordService(new HttpClient());
 
             var builder = new ConfigurationBuilder()

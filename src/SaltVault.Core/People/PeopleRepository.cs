@@ -16,9 +16,10 @@ namespace SaltVault.Core.People
     {
         private readonly NpgsqlConnection _connection;
 
-        public PeopleRepository(NpgsqlConnection connection)
+        public PeopleRepository()
         {
-            _connection = connection;
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            _connection = new NpgsqlConnection(connectionString);
         }
 
         public List<Person> GetAllPeople()

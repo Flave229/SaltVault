@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Npgsql;
 using System.Linq;
 using SaltVault.Core.People;
@@ -19,9 +20,10 @@ namespace SaltVault.Core.ToDo
     {
         private readonly NpgsqlConnection _connection;
 
-        public ToDoRepository(NpgsqlConnection connection)
+        public ToDoRepository()
         {
-            _connection = connection;
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            _connection = new NpgsqlConnection(connectionString);
         }
 
         public List<ToDoTask> GetToDoList()
