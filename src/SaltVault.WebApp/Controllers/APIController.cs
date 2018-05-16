@@ -389,6 +389,15 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/LogIn")]
+        public CommunicationResponse AuthenticateAndLogIn()
+        {
+            var response = new CommunicationResponse();
+            response.AddError($"Endpoint not implemented");
+            return response;
+        }
+
         [HttpGet]
         [Route("Api/v2/ToDo")]
         public GetToDoResponse GetToDoList()
