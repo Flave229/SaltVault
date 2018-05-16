@@ -109,8 +109,8 @@ namespace SaltVault.Core.Shopping
 
             try
             {
-                var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\") " +
-                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added:yyyy-MM-dd}', {shoppingRequest.AddedBy}, FALSE) " +
+                var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\", \"HouseId\") " +
+                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added:yyyy-MM-dd}', {shoppingRequest.AddedBy}, FALSE, 1) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 itemId = -1;
                 var reader = command.ExecuteReader();
