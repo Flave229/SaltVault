@@ -95,8 +95,8 @@ namespace SaltVault.Core.ToDo
             try
             {
                 var dueValue = toDoTask.Due == null ? "NULL" : $"'{toDoTask.Due:yyyy-MM-dd}'";
-                var command = new NpgsqlCommand($"INSERT INTO public.\"ToDo\" (\"Title\", \"Due\") " +
-                                                $"VALUES ('{toDoTask.Title}', {dueValue}) " +
+                var command = new NpgsqlCommand($"INSERT INTO public.\"ToDo\" (\"Title\", \"Due\", \"Complete\") " +
+                                                $"VALUES ('{toDoTask.Title}', {dueValue}, false) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 toDoTaskId = -1;
                 var reader = command.ExecuteReader();
@@ -107,8 +107,8 @@ namespace SaltVault.Core.ToDo
 
                 foreach (var peopleId in toDoTask.PeopleIds)
                 {
-                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\", \"Complete\") " +
-                                                $"VALUES ({toDoTaskId}, {peopleId}, false)", _connection);
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\") " +
+                                                $"VALUES ({toDoTaskId}, {peopleId})", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     { }
