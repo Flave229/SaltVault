@@ -107,8 +107,8 @@ namespace SaltVault.Core.ToDo
 
                 foreach (var peopleId in toDoTask.PeopleIds)
                 {
-                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\") " +
-                                                $"VALUES ({toDoTaskId}, {peopleId})", _connection);
+                    command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\", \"Complete\") " +
+                                                $"VALUES ({toDoTaskId}, {peopleId}, false)", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     { }
