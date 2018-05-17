@@ -144,21 +144,16 @@ namespace SaltVault.Core.ToDo
 
                 var rowUpdated = false;
                 NpgsqlCommand command;
-                Int64 toDoTaskId = -1;
                 NpgsqlDataReader reader;
 
                 if (setValues.Count > 0)
                 {
                     command = new NpgsqlCommand("UPDATE public.\"ToDo\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
-                                                $"WHERE \"Id\" = {toDoRequest.Id} " +
-                                                "RETURNING \"Id\"", _connection);
+                                                $"WHERE \"Id\" = {toDoRequest.Id}", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
-                    {
                         rowUpdated = true;
-                        toDoTaskId = (Int64) reader[0];
-                    }
                     reader.Close();
                 }
 
@@ -175,7 +170,7 @@ namespace SaltVault.Core.ToDo
                 foreach (var personId in toDoRequest.PeopleIds)
                 {
                     command = new NpgsqlCommand("INSERT INTO public.\"PeopleForToDo\" (\"ToDoId\", \"PersonId\") " +
-                                                $"VALUES ({toDoTaskId}, {personId})", _connection);
+                                                $"VALUES ({toDoRequest.Id}, {personId})", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     {}
