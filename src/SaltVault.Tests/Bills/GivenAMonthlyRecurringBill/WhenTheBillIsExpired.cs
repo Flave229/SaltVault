@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using SaltVault.Core;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
 
@@ -16,7 +17,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         public void Setup()
         {
             _billRepository = new Mock<IBillRepository>();
-            _billRepository.Setup(x => x.GetAllBasicBillDetails()).Returns(new List<Bill>
+            _billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>())).Returns(new List<Bill>
             {
                 new Bill
                 {

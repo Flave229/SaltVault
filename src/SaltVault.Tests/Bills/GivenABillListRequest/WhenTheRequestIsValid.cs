@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using SaltVault.Core;
 using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Shopping;
@@ -17,7 +18,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
         public void ThenTheBillListIsReturned()
         {
             var billRepository = new Mock<IBillRepository>();
-            billRepository.Setup(x => x.GetAllBasicBillDetails()).Returns(new List<Bill>
+            billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>())).Returns(new List<Bill>
             {
                 new Bill()
             });
@@ -38,7 +39,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
                 }
             };
             
-            var result = subject.GetBillList(null);
+            var result = subject.GetBillList(null, null, null);
 
             Assert.AreEqual(result.Bills.Count, 1);
         }
