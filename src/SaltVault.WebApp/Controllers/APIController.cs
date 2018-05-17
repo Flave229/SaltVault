@@ -271,6 +271,7 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 response.Items = _shoppingRepository.GetAllItems();
+                response.ShoppingList = response.Items.ShoppingList;
             }
             catch (Exception exception)
             {

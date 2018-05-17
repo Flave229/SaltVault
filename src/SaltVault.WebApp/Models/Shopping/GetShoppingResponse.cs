@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SaltVault.Core.Shopping.Models;
 
 namespace SaltVault.WebApp.Models.Shopping
@@ -5,5 +6,6 @@ namespace SaltVault.WebApp.Models.Shopping
     public class GetShoppingResponse : CommunicationResponse
     {
         public ShoppingListResponse Items { get; set; }
+        public List<Item> ShoppingList { get; set; }
     }
 }
