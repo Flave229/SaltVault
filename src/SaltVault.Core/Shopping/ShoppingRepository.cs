@@ -69,12 +69,10 @@ namespace SaltVault.Core.Shopping
                                 FirstName = (string)reader[5],
                                 LastName = (string)reader[6],
                                 Image = (string)reader[7]
-                            },
-                            AddedByImage = (string)reader[7]
+                            }
                         };
                     }
-
-                    shoppingItem.AddedForImages.Add((string)reader[11]);
+                    
                     shoppingItem.AddedFor.Add(new Person
                     {
                         Id = Convert.ToInt32(reader[8]),
