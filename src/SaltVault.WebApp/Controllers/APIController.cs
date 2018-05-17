@@ -463,13 +463,7 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                var rowUpdated = _toDoRepository.UpdateToDoTask(toDoRequest);
-
-                if (rowUpdated == false)
-                {
-                    response.AddError("The given To Do Task Id does not correspond to an existing Task");
-                    return response;
-                }
+                _toDoRepository.UpdateToDoTask(toDoRequest);
 
                 response.Notifications = new List<string>
                 {

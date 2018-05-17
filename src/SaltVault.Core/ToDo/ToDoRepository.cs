@@ -12,7 +12,7 @@ namespace SaltVault.Core.ToDo
     {
         List<ToDoTask> GetToDoList();
         int AddToDoTask(AddToDoTaskRequest toDoTask);
-        bool UpdateToDoTask(UpdateToDoRequest toDoRequest);
+        void UpdateToDoTask(UpdateToDoRequest toDoRequest);
         bool DeleteToDoTask(int toDoId);
     }
 
@@ -127,7 +127,7 @@ namespace SaltVault.Core.ToDo
             }
         }
 
-        public bool UpdateToDoTask(UpdateToDoRequest toDoRequest)
+        public void UpdateToDoTask(UpdateToDoRequest toDoRequest)
         {
             _connection.Open();
 
@@ -142,7 +142,6 @@ namespace SaltVault.Core.ToDo
                 if (toDoRequest.Complete != null)
                     setValues.Add($"\"Complete\"={toDoRequest.Complete}");
 
-                var rowUpdated = false;
                 NpgsqlCommand command;
                 NpgsqlDataReader reader;
 
@@ -153,12 +152,12 @@ namespace SaltVault.Core.ToDo
                                                 $"WHERE \"Id\" = {toDoRequest.Id}", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
-                        rowUpdated = true;
+                    { }
                     reader.Close();
                 }
 
                 if (toDoRequest.PeopleIds == null || toDoRequest.PeopleIds.Count == 0)
-                    return rowUpdated;
+                    return;
 
                 command = new NpgsqlCommand("DELETE FROM public.\"PeopleForToDo\" " +
                                             $"WHERE \"ToDoId\" = {toDoRequest.Id}", _connection);
@@ -176,8 +175,6 @@ namespace SaltVault.Core.ToDo
                     {}
                     reader.Close();
                 }
-
-                return rowUpdated;
             }
             catch (Exception exception)
             {
