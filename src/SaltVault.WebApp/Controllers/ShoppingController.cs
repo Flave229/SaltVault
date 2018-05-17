@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using SaltVault.Core;
 using SaltVault.Core.People;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.Shopping.Models;
@@ -21,7 +22,11 @@ namespace SaltVault.WebApp.Controllers
 
         public ActionResult Index()
         {
-            var shoppingList = _shoppingRepository.GetAllItems();
+            var shoppingList = _shoppingRepository.GetAllItems(new Pagination
+            {
+                Page = 0,
+                ResultsPerPage = int.MaxValue
+            });
 
             return View(shoppingList);
         }

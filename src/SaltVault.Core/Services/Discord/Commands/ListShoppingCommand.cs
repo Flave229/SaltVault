@@ -23,7 +23,11 @@ namespace SaltVault.Core.Services.Discord.Commands
 
         public void ExecuteCommand(List<string> subCommands)
         {
-            var shoppingItems = _shoppingRepository.GetAllItems(true);
+            var shoppingItems = _shoppingRepository.GetAllItems(new Pagination
+            {
+                Page = 0,
+                ResultsPerPage = int.MaxValue
+            }, true);
             string title;
 
             if (subCommands.Count > 0)

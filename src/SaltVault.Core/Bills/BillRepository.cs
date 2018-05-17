@@ -10,7 +10,7 @@ namespace SaltVault.Core.Bills
 {
     public interface IBillRepository
     {
-        List<Bill> GetAllBasicBillDetails();
+        List<Bill> GetAllBasicBillDetails(Pagination pagination);
         Bill GetBasicBillDetails(int billId);
         int AddBill(AddBillRequest bill);
         bool UpdateBill(UpdateBillRequest billRequest);
@@ -31,7 +31,7 @@ namespace SaltVault.Core.Bills
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<Bill> GetAllBasicBillDetails()
+        public List<Bill> GetAllBasicBillDetails(Pagination pagination)
         {
             _connection.Open();
 
@@ -43,7 +43,7 @@ namespace SaltVault.Core.Bills
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
                                                 "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
-                                                "ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC", _connection);
+                                                $"ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC OFFSET {pagination.Page * pagination.ResultsPerPage} FETCH NEXT {pagination.ResultsPerPage} ROWS ONLY", _connection);
                 var reader = command.ExecuteReader();
                 
                 while (reader.Read())

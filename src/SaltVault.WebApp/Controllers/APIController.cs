@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using SaltVault.Core;
 using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
@@ -43,7 +44,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpGet]
         [Route("Api/v2/Bills")]
-        public GetBillListResponse GetBillList(int? id)
+        public GetBillListResponse GetBillList(int? id, int? page, int? resultsPerPage)
         {
             var response = new GetBillListResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -55,7 +56,14 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 if (id == null)
-                    response.Bills = _billRepository.GetAllBasicBillDetails();
+                {
+                    Pagination pagination = new Pagination
+                    {
+                        Page = page ?? 0,
+                        ResultsPerPage = resultsPerPage ?? int.MaxValue
+                    };
+                    response.Bills = _billRepository.GetAllBasicBillDetails(pagination);
+                }
                 else
                     response.Bills.Add(_billRepository.GetBasicBillDetails((int)id));
             }
@@ -259,7 +267,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpGet]
         [Route("Api/v2/Shopping")]
-        public GetShoppingResponse GetShoppingItemsV2()
+        public GetShoppingResponse GetShoppingItemsV2(int? page, int? resultsPerPage)
         {
             var response = new GetShoppingResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
@@ -270,7 +278,12 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.Items = _shoppingRepository.GetAllItems();
+                Pagination pagination = new Pagination
+                {
+                    Page = page ?? 0,
+                    ResultsPerPage = resultsPerPage ?? int.MaxValue
+                };
+                response.Items = _shoppingRepository.GetAllItems(pagination);
                 response.ShoppingList = response.Items.ShoppingList;
             }
             catch (Exception exception)

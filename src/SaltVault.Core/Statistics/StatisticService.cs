@@ -23,8 +23,13 @@ namespace SaltVault.Core.Statistics
 
         public StatisticsOverview GetAllStatistics()
         {
-            var bills = _billRepository.GetAllBasicBillDetails();
-            var shoppingItems = _shoppingRepository.GetAllItems();
+            var pagination = new Pagination
+            {
+                Page = 0,
+                ResultsPerPage = int.MaxValue
+            };
+            var bills = _billRepository.GetAllBasicBillDetails(pagination);
+            var shoppingItems = _shoppingRepository.GetAllItems(pagination);
             var people = _peopleRepository.GetAllPeople();
             var statisticsOverview = new StatisticsOverview();
 

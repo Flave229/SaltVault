@@ -10,7 +10,7 @@ namespace SaltVault.Core.Shopping
 {
     public interface IShoppingRepository
     {
-        ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false);
+        ShoppingListResponse GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false);
         void AddItem(AddShoppingItemRequest shoppingRequest);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
@@ -26,7 +26,7 @@ namespace SaltVault.Core.Shopping
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public ShoppingListResponse GetAllItems(bool onlyUnpurchasedItems = false)
+        public ShoppingListResponse GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false)
         {
             _connection.Open();
 
@@ -45,7 +45,7 @@ namespace SaltVault.Core.Shopping
                                                 "LEFT OUTER JOIN \"ShoppingItemFor\" AS ItemPersonLinker ON ItemPersonLinker.\"ShoppingItemId\" = Item.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS ShoppingItemFor ON ItemPersonLinker.\"PersonId\" = ShoppingItemFor.\"Id\" " +
                                                 whereClause +
-                                                "ORDER BY Item.\"Purchased\", Item.\"AddedOn\" DESC", _connection);
+                                                $"ORDER BY Item.\"Purchased\", Item.\"AddedOn\" DESC OFFSET {pagination.Page * pagination.ResultsPerPage} FETCH NEXT {pagination.ResultsPerPage} ROWS ONLY", _connection);
                 var reader = command.ExecuteReader();
 
                 while (reader.Read())
