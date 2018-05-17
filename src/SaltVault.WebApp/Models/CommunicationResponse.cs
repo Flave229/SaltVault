@@ -13,10 +13,21 @@ namespace SaltVault.WebApp.Models
             Error = new Error { Message = message };
             HasError = true;
         }
+
+        public void AddError(string message, object originalRequest)
+        {
+            Error = new Error
+            {
+                Message = message,
+                OriginalRequest = originalRequest
+            };
+            HasError = true;
+        }
     }
 
     public class Error
     {
         public string Message { get; set; }
+        public object OriginalRequest { get; set; }
     }
 }

@@ -61,7 +61,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", id);
             }
 
             return response;
@@ -91,7 +91,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", billRequest);
             }
 
             return response;
@@ -125,7 +125,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", billRequest);
             }
 
             return response;
@@ -159,7 +159,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", deleteBillRequest);
             }
 
             return response;
@@ -188,7 +188,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest);
             }
 
             return response;
@@ -217,7 +217,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest);
             }
 
             return response;
@@ -251,7 +251,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest);
             }
 
             return response;
@@ -304,7 +304,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", shoppingRequest);
             }
 
             return response;
@@ -333,7 +333,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", shoppingRequest);
             }
 
             return response;
@@ -361,7 +361,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", deleteShoppingItemRequest);
             }
 
             return response;
@@ -444,7 +444,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", toDoTaskRequest);
             }
 
             return response;
@@ -472,7 +472,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", toDoRequest);
             }
 
             return response;
@@ -506,7 +506,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", deleteToDoRequest);
             }
 
             return response;
