@@ -4,16 +4,6 @@ using SaltVault.Core.People;
 
 namespace SaltVault.Core.Shopping.Models
 {
-    public class ShoppingListResponse
-    {
-        public List<Item> ShoppingList { get; set; }
-
-        public ShoppingListResponse()
-        {
-            ShoppingList = new List<Item>();
-        }
-    }
-
     public class Item
     {
         public int Id { get; set; }

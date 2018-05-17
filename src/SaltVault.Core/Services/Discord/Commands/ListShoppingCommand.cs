@@ -34,9 +34,9 @@ namespace SaltVault.Core.Services.Discord.Commands
             {
                 var discordUserId = subCommands[0].Replace("<", "").Replace("@", "").Replace(">", "");
                 var discordUser = _peopleRepository.GetPersonFromDiscordId(discordUserId);
-                shoppingItems.ShoppingList = shoppingItems.ShoppingList.Where(x => x.AddedFor.Any(y => y.Id == discordUser.Id)).ToList();
+                shoppingItems = shoppingItems.Where(x => x.AddedFor.Any(y => y.Id == discordUser.Id)).ToList();
 
-                if (shoppingItems.ShoppingList.Count == 0)
+                if (shoppingItems.Count == 0)
                 {
                     _discordService.SendMessage(new DiscordMessage { content = "You have no shopping items!" });
                     return;
@@ -57,7 +57,7 @@ namespace SaltVault.Core.Services.Discord.Commands
                         icon_url = "https://127xwr2qcfsvmn8a91nbd428-wpengine.netdna-ssl.com/wp-content/uploads/2013/01/Pile-of-salt.jpg",
                         name = title
                     },
-                    fields = shoppingItems.ShoppingList.Select(shoppingItem => new DiscordMessageField
+                    fields = shoppingItems.Select(shoppingItem => new DiscordMessageField
                     {
                         name = $"{shoppingItem.Name}",
                         value = $"For {string.Join(", ", shoppingItem.AddedFor.Select(x => x.FirstName))}"

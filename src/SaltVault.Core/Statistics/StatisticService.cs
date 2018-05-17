@@ -36,8 +36,8 @@ namespace SaltVault.Core.Statistics
             foreach (var person in people)
             {
                 var billsForPerson = bills.Where(x => x.People.Any(y => y.Id == person.Id)).ToList();
-                var shoppingItemsForPerson = shoppingItems.ShoppingList.Where(x => x.AddedFor.Any(y => y.Id == person.Id)).ToList();
-                var shoppingItemsByPerson = shoppingItems.ShoppingList.Where(x => x.AddedBy.Id == person.Id).ToList();
+                var shoppingItemsForPerson = shoppingItems.Where(x => x.AddedFor.Any(y => y.Id == person.Id)).ToList();
+                var shoppingItemsByPerson = shoppingItems.Where(x => x.AddedBy.Id == person.Id).ToList();
                 var statistics = new Statistics
                 {
                     Person = person,

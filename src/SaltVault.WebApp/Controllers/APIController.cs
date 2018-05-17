@@ -283,8 +283,7 @@ namespace SaltVault.WebApp.Controllers
                     Page = page ?? 0,
                     ResultsPerPage = resultsPerPage ?? int.MaxValue
                 };
-                response.Items = _shoppingRepository.GetAllItems(pagination);
-                response.ShoppingList = response.Items.ShoppingList;
+                response.ShoppingList = _shoppingRepository.GetAllItems(pagination);
             }
             catch (Exception exception)
             {

@@ -5,7 +5,6 @@ namespace SaltVault.WebApp.Models.Shopping
 {
     public class GetShoppingResponse : CommunicationResponse
     {
-        public ShoppingListResponse Items { get; set; }
         public List<Item> ShoppingList { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace SaltVault.Core.Shopping
 {
     public interface IShoppingRepository
     {
-        ShoppingListResponse GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false);
+        List<Item> GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false);
         void AddItem(AddShoppingItemRequest shoppingRequest);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
@@ -26,7 +26,7 @@ namespace SaltVault.Core.Shopping
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public ShoppingListResponse GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false)
+        public List<Item> GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false)
         {
             _connection.Open();
 
@@ -86,10 +86,7 @@ namespace SaltVault.Core.Shopping
                 }
 
                 reader.Close();
-                return new ShoppingListResponse
-                {
-                    ShoppingList = shoppingItems
-                };
+                return shoppingItems;
             }
             catch (Exception exception)
             {
