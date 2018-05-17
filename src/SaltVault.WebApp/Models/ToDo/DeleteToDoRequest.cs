@@ -2,6 +2,6 @@
 {
     public class DeleteToDoRequest
     {
-        public int ToDoId { get; set; }
+        public int Id { get; set; }
     }
 }

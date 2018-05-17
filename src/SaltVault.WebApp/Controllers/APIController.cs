@@ -496,17 +496,17 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                var rowUpdated = _toDoRepository.DeleteToDoTask(deleteToDoRequest.ToDoId);
+                var rowUpdated = _toDoRepository.DeleteToDoTask(deleteToDoRequest.Id);
 
                 if (rowUpdated == false)
                 {
-                    response.AddError($"Cannot delete the To Do Task (ID: {deleteToDoRequest.ToDoId}) because it does not exist");
+                    response.AddError($"Cannot delete the To Do Task (ID: {deleteToDoRequest.Id}) because it does not exist");
                     return response;
                 }
 
                 response.Notifications = new List<string>
                 {
-                    $"The To Do Task (ID: {deleteToDoRequest.ToDoId}) has been deleted"
+                    $"The To Do Task (ID: {deleteToDoRequest.Id}) has been deleted"
                 };
             }
             catch (Exception exception)
