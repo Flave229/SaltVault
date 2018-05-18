@@ -93,10 +93,15 @@ namespace SaltVault.WebApp.Controllers
         public AddBillResponse AddBill([FromBody]AddBillRequest billRequest)
         {
             var response = new AddBillResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -131,10 +136,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
         {
             var response = new AddBillResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -165,10 +175,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -199,10 +214,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -228,10 +248,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdatePayment([FromBody]Core.Bills.Models.UpdatePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -257,10 +282,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -291,10 +321,15 @@ namespace SaltVault.WebApp.Controllers
         public GetShoppingResponse GetShoppingItemsV2(int? page, int? resultsPerPage)
         {
             var response = new GetShoppingResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -319,10 +354,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse AddShoppingItemV2([FromBody]AddShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -348,10 +388,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateShoppingItemV2([FromBody]UpdateShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -377,10 +422,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -405,10 +455,15 @@ namespace SaltVault.WebApp.Controllers
         public GetUsersResponse GetUsers()
         {
             var response = new GetUsersResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -428,10 +483,15 @@ namespace SaltVault.WebApp.Controllers
         public LoginResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
         {
             var response = new LoginResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
             try
             {
@@ -459,10 +519,15 @@ namespace SaltVault.WebApp.Controllers
         public GetToDoResponse GetToDoList()
         {
             var response = new GetToDoResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -482,10 +547,15 @@ namespace SaltVault.WebApp.Controllers
         public AddToDoResponse AddToDoItem([FromBody]AddToDoTaskRequest toDoTaskRequest)
         {
             var response = new AddToDoResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -510,10 +580,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateToDoItem([FromBody]UpdateToDoRequest toDoRequest)
         {
             var response = new AddBillResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
@@ -538,12 +613,16 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteToDoItem([FromBody]DeleteToDoRequest deleteToDoRequest)
         {
             var response = new CommunicationResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
-
             try
             {
                 var rowUpdated = _toDoRepository.DeleteToDoTask(deleteToDoRequest.Id);
