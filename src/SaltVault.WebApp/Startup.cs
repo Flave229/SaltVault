@@ -14,6 +14,7 @@ using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.ToDo;
+using SaltVault.Core.Users;
 
 namespace SaltVault.WebApp
 {
@@ -24,6 +25,7 @@ namespace SaltVault.WebApp
         private readonly IPeopleRepository _peopleRepository;
         private readonly IShoppingRepository _shoppingRepository;
         private readonly ToDoRepository _toDoRepository;
+        private readonly IUserService _userService;
 
         public Startup(IHostingEnvironment env)
         {
@@ -32,6 +34,7 @@ namespace SaltVault.WebApp
             _peopleRepository = new PeopleRepository();
             _toDoRepository = new ToDoRepository();
             _discordService = new DiscordService(new HttpClient());
+            _userService = new UserService(new UserCache(), _peopleRepository);
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -68,6 +71,7 @@ namespace SaltVault.WebApp
             services.AddSingleton<IPeopleRepository, IPeopleRepository>(x => _peopleRepository);
             services.AddSingleton<IToDoRepository, IToDoRepository>(x => _toDoRepository);
             services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
+            services.AddSingleton<IUserService, IUserService>(x => _userService);
             services.AddSingleton<IAuthentication, ApiAuthentication>();
 
             services.AddMvc();

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Npgsql;
+using SaltVault.Core.Google;
+using SaltVault.Core.Users;
 
 namespace SaltVault.Core.People
 {
@@ -10,6 +12,8 @@ namespace SaltVault.Core.People
         List<Person> GetAllPeople();
         List<Person> GetPeople(List<int> peopleIds);
         Person GetPersonFromDiscordId(string discordId);
+        ActiveUser GetPersonFromGoogleClientId(string googleClientId);
+        ActiveUser AddPersonUsingGoogleInformation(GoogleTokenInformation tokenInformation);
     }
 
     public class PeopleRepository : IPeopleRepository
@@ -126,6 +130,73 @@ namespace SaltVault.Core.People
             catch (Exception exception)
             {
                 throw new Exception("An Error occured while getting the person from the discord Id", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public ActiveUser GetPersonFromGoogleClientId(string googleClientId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand(
+                    "SELECT Person.\"Id\", PeopleForHouse.\"HouseId\" " +
+                    "FROM public.\"Person\" AS Person " +
+                    "LEFT OUTER JOIN \"PeopleForHouse\" As PeopleForHouse ON PeopleForHouse.\"PersonId\" = Person.\"Id\" " +
+                    $"WHERE Person.\"GoogleClientId\" = '{googleClientId}'", _connection);
+                var reader = command.ExecuteReader();
+
+                ActiveUser person = null;
+                while (reader.Read())
+                {
+                    person = new ActiveUser
+                    {
+                        PersonId = Convert.ToInt32(reader[0]),
+                        HouseId = (reader[1] == DBNull.Value) ? 0 : Convert.ToInt32(reader[1])
+                    };
+                }
+
+                reader.Close();
+                return person;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("An Error occured while getting the person from the google client Id", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public ActiveUser AddPersonUsingGoogleInformation(GoogleTokenInformation tokenInformation)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand($"INSERT INTO public.\"Person\" (\"FirstName\", \"LastName\", \"Image\", \"Active\", \"GoogleClientId\") " +
+                                                $"VALUES ('{tokenInformation.given_name}', '{tokenInformation.family_name}', '{tokenInformation.picture}', true, '{tokenInformation.sub}') " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 userId = -1;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                    userId = Convert.ToInt64(reader[0]);
+
+                reader.Close();
+
+                return new ActiveUser
+                {
+                    PersonId = Convert.ToInt32(userId)
+                };
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An Error occured while adding the user after first sign in", exception);
             }
             finally
             {

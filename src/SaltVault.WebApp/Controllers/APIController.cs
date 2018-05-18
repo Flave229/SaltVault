@@ -14,6 +14,7 @@ using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.ToDo;
 using SaltVault.Core.ToDo.Models;
+using SaltVault.Core.Users;
 using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
@@ -28,15 +29,17 @@ namespace SaltVault.WebApp.Controllers
     public class ApiController : Controller
     {
         private readonly IDiscordService _discordService;
+        private readonly IUserService _userService;
         private readonly IBillRepository _billRepository;
         private readonly IShoppingRepository _shoppingRepository;
         private readonly IPeopleRepository _peopleRepository;
         private readonly IAuthentication _apiAuthentication;
         private readonly IToDoRepository _toDoRepository;
 
-        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository, IAuthentication apiAuthentication, IDiscordService discordService)
+        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository, IAuthentication apiAuthentication, IDiscordService discordService, IUserService userService)
         {
             _discordService = discordService;
+            _userService = userService;
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
             _peopleRepository = peopleRepository;
@@ -406,9 +409,9 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/LogIn")]
-        public CommunicationResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
+        public LoginResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
         {
-            var response = new CommunicationResponse();
+            var response = new LoginResponse();
             if (Authenticate(Request.Headers["Authorization"]) == false)
             {
                 response.AddError("The API Key was invalid");
@@ -417,20 +420,22 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 GoogleTokenAuthentication authenticator = new GoogleTokenAuthentication(new HttpClient());
-                GoogleTokenInformation tokenInfo = authenticator.VerifyToken(request.Token);
-
-                if (tokenInfo.Valid == false)
+                GoogleTokenInformation tokenInformation = authenticator.VerifyToken(request.Token);
+                
+                if (tokenInformation.Valid == false)
                 {
                     response.AddError($"Server failed to verify google credentials. Please try again.");
                     return response;
                 }
+
+                UserSession sessionInformation = _userService.LogInUser(tokenInformation);
+                response.NewUser = sessionInformation.NewUser;
+                response.SessionId = sessionInformation.SessionId;
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
-                throw;
+                response.AddError($"An unexpected exception occured: {exception}");
             }
-            response.AddError($"Endpoint not implemented");
             return response;
         }
 
