@@ -12,7 +12,7 @@ namespace SaltVault.Core.Bills
     {
         List<Bill> GetAllBasicBillDetails(Pagination pagination);
         Bill GetBasicBillDetails(int billId);
-        int AddBill(AddBillRequest bill);
+        int AddBill(AddBill bill);
         bool UpdateBill(UpdateBillRequest billRequest);
         bool DeleteBill(int billId);
         Payment GetPayment(int paymentId);
@@ -202,7 +202,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public int AddBill(AddBillRequest bill)
+        public int AddBill(AddBill bill)
         {
             _connection.Open();
 

@@ -8,9 +8,9 @@ using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Bills.Payments;
-using SaltVault.Core.Google;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
+using SaltVault.Core.Services.Google;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.ToDo;
 using SaltVault.Core.ToDo.Models;
@@ -30,16 +30,19 @@ namespace SaltVault.WebApp.Controllers
     {
         private readonly IDiscordService _discordService;
         private readonly IUserService _userService;
+        private readonly IGoogleTokenAuthentication _googleTokenAuthentication;
         private readonly IBillRepository _billRepository;
         private readonly IShoppingRepository _shoppingRepository;
         private readonly IPeopleRepository _peopleRepository;
         private readonly IAuthentication _apiAuthentication;
         private readonly IToDoRepository _toDoRepository;
 
-        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository, IAuthentication apiAuthentication, IDiscordService discordService, IUserService userService)
+        public ApiController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository, 
+                                IAuthentication apiAuthentication, IDiscordService discordService, IUserService userService, IGoogleTokenAuthentication googleTokenAuthentication)
         {
             _discordService = discordService;
             _userService = userService;
+            _googleTokenAuthentication = googleTokenAuthentication;
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
             _peopleRepository = peopleRepository;
@@ -93,8 +96,16 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                BillValidator.CheckIfValidBill(billRequest);
-                response.Id = _billRepository.AddBill(billRequest);
+                AddBill bill = new AddBill
+                {
+                    Name = billRequest.Name,
+                    Due = billRequest.Due,
+                    PeopleIds = billRequest.PeopleIds,
+                    RecurringType = billRequest.RecurringType,
+                    TotalAmount = billRequest.TotalAmount
+                };
+                BillValidator.CheckIfValidBill(bill);
+                response.Id = _billRepository.AddBill(bill);
 
                 _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);
                 response.Notifications = new List<string>
@@ -419,12 +430,11 @@ namespace SaltVault.WebApp.Controllers
             }
             try
             {
-                GoogleTokenAuthentication authenticator = new GoogleTokenAuthentication(new HttpClient());
-                GoogleTokenInformation tokenInformation = authenticator.VerifyToken(request.Token);
+                GoogleTokenInformation tokenInformation = _googleTokenAuthentication.VerifyToken(request.Token);
                 
                 if (tokenInformation.Valid == false)
                 {
-                    response.AddError($"Server failed to verify google credentials. Please try again.");
+                    response.AddError($"Server failed to verify Google credentials. Please try again.");
                     return response;
                 }
 

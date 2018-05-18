@@ -32,7 +32,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenNoNewBillIsAdded()
         {
-            _billRepository.Verify(x => x.AddBill(It.IsAny<AddBillRequest>()), Times.Never);
+            _billRepository.Verify(x => x.AddBill(It.IsAny<AddBill>()), Times.Never);
         }
 
         [TestMethod]

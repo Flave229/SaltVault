@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Npgsql;
-using SaltVault.Core.Google;
+using SaltVault.Core.Services.Google;
 using SaltVault.Core.Users;
 
 namespace SaltVault.Core.People

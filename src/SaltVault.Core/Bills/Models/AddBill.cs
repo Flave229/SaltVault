@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SaltVault.Core.Bills.Models
 {
-    public class AddBillRequest
+    public class AddBill
     {
         public string Name { get; set; }
         public decimal TotalAmount { get; set; }
@@ -11,7 +11,7 @@ namespace SaltVault.Core.Bills.Models
         public List<int> PeopleIds { get; set; }
         public RecurringType RecurringType { get; set; }
 
-        public AddBillRequest()
+        public AddBill()
         {
             PeopleIds = new List<int>();
         }

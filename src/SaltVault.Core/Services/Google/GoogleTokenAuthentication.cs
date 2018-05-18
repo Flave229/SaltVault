@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace SaltVault.Core.Google
+namespace SaltVault.Core.Services.Google
 {
-    public class GoogleTokenAuthentication
+    public interface IGoogleTokenAuthentication
+    {
+        GoogleTokenInformation VerifyToken(string token);
+    }
+
+    public class GoogleTokenAuthentication : IGoogleTokenAuthentication
     {
         private readonly HttpClient _googleTokenClient;
-        private readonly string _googleTokenInfoEndpoint;
 
         public GoogleTokenAuthentication(HttpClient httpClient)
         {
             _googleTokenClient = httpClient;
             _googleTokenClient.BaseAddress = new Uri("https://www.googleapis.com/oauth2/v3/");
-            _googleTokenInfoEndpoint = "tokeninfo?id_token=";
         }
 
         public GoogleTokenInformation VerifyToken(string token)

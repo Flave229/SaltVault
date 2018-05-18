@@ -36,7 +36,7 @@ namespace SaltVault.Core.Bills
                 };
                 _billRepository.UpdateBill(billUpdateRequest);
 
-                var addBillRequest = new AddBillRequest
+                var addBillRequest = new AddBill
                 {
                     Due = recurringBill.FullDateDue.AddMonths(1),
                     RecurringType = RecurringType.Monthly,

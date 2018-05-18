@@ -8,16 +8,16 @@ namespace SaltVault.Core.Bills
     {
         private static readonly ValidationService Validation = new ValidationService();
 
-        public static void CheckIfValidBill(AddBillRequest billRequest)
+        public static void CheckIfValidBill(AddBill bill)
         {
             try
             {
-                if (billRequest == null) throw new System.Exception("The bill object given was null.");
-                if (billRequest.PeopleIds.Count == 0) throw new System.Exception("No people were assigned to the bill.");
+                if (bill == null) throw new System.Exception("The bill object given was null.");
+                if (bill.PeopleIds.Count == 0) throw new System.Exception("No people were assigned to the bill.");
 
-                CheckNameValid(billRequest.Name);
-                CheckAmountValid(billRequest.TotalAmount);
-                CheckDateValid(billRequest.Due);
+                CheckNameValid(bill.Name);
+                CheckAmountValid(bill.TotalAmount);
+                CheckDateValid(bill.Due);
             }
             catch (System.Exception ex)
             {

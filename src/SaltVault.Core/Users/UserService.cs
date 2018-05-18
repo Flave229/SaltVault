@@ -1,6 +1,6 @@
 ﻿using System;
-using SaltVault.Core.Google;
 using SaltVault.Core.People;
+using SaltVault.Core.Services.Google;
 
 namespace SaltVault.Core.Users
 {

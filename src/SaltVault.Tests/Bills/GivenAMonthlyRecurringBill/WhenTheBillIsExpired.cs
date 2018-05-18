@@ -32,13 +32,13 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenTheBillForNextMonthIsAMonthlyRecurringBill()
         {
-            _billRepository.Verify(x => x.AddBill(It.Is<AddBillRequest>(y => y.RecurringType == RecurringType.Monthly)), Times.Once);
+            _billRepository.Verify(x => x.AddBill(It.Is<AddBill>(y => y.RecurringType == RecurringType.Monthly)), Times.Once);
         }
 
         [TestMethod]
         public void ThenTheBillForNextMonthIsForNextMonth()
         {
-            _billRepository.Verify(x => x.AddBill(It.Is<AddBillRequest>(y => y.Due == DateTime.Today.AddDays(-1).AddMonths(1))), Times.Once);
+            _billRepository.Verify(x => x.AddBill(It.Is<AddBill>(y => y.Due == DateTime.Today.AddDays(-1).AddMonths(1))), Times.Once);
         }
 
         [TestMethod]
