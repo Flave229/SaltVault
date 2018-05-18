@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using SaltVault.Core;
@@ -7,6 +8,7 @@ using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Bills.Payments;
+using SaltVault.Core.Google;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Shopping;
@@ -404,9 +406,30 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/LogIn")]
-        public CommunicationResponse AuthenticateAndLogIn()
+        public CommunicationResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
         {
             var response = new CommunicationResponse();
+            if (Authenticate(Request.Headers["Authorization"]) == false)
+            {
+                response.AddError("The API Key was invalid");
+                return response;
+            }
+            try
+            {
+                GoogleTokenAuthentication authenticator = new GoogleTokenAuthentication(new HttpClient());
+                GoogleTokenInformation tokenInfo = authenticator.VerifyToken(request.Token);
+
+                if (tokenInfo.Valid == false)
+                {
+                    response.AddError($"Server failed to verify google credentials. Please try again.");
+                    return response;
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
             response.AddError($"Endpoint not implemented");
             return response;
         }
