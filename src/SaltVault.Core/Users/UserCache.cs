@@ -33,5 +33,10 @@ namespace SaltVault.Core.Users
 
             return user;
         }
+
+        public bool CheckSessionExists(Guid sessionId)
+        {
+            return _activeUserSessions.ContainsKey(sessionId);
+        }
     }
 }

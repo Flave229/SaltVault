@@ -55,10 +55,15 @@ namespace SaltVault.WebApp.Controllers
         public GetBillListResponse GetBillList(int? id, int? page, int? resultsPerPage)
         {
             var response = new GetBillListResponse();
-            if (Authenticate(Request.Headers["Authorization"]) == false)
+            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The API Key was invalid");
-                return response;
+                // Fallback 
+                response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
+                if (Authenticate(Request.Headers["Authorization"]) == false)
+                {
+                    response.AddError("The authorization credentails were invalid");
+                    return response;
+                }
             }
 
             try
