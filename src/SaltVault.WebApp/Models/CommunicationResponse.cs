@@ -8,6 +8,11 @@ namespace SaltVault.WebApp.Models
         public bool HasError { get; set; }
         public List<string> Notifications { get; set; }
 
+        public CommunicationResponse()
+        {
+            Notifications = new List<string>();
+        }
+
         public void AddError(string message)
         {
             Error = new Error { Message = message };
