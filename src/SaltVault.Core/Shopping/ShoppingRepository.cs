@@ -88,9 +88,9 @@ namespace SaltVault.Core.Shopping
                 reader.Close();
                 return shoppingItems;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the bills", exception);
+                throw new System.Exception("An Error occured while getting the bills", exception);
             }
             finally
             {
@@ -125,9 +125,9 @@ namespace SaltVault.Core.Shopping
                     reader.Close();
                 }
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while adding the shopping item '{shoppingRequest.Name}'", exception);
+                throw new System.Exception($"An Error occured while adding the shopping item '{shoppingRequest.Name}'", exception);
             }
             finally
             {
@@ -186,9 +186,9 @@ namespace SaltVault.Core.Shopping
                     reader.Close();
                 }
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})",
+                throw new System.Exception($"An Error occured while updating the payment (ID: {shoppingRequest.Id})",
                     exception);
             }
             finally
@@ -218,9 +218,9 @@ namespace SaltVault.Core.Shopping
                 { }
                 reader.Close();
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while deleting the shopping item (ID: {shoppingItemId})", exception);
+                throw new System.Exception($"An Error occured while deleting the shopping item (ID: {shoppingItemId})", exception);
             }
             finally
             {

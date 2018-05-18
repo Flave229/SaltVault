@@ -107,9 +107,9 @@ namespace SaltVault.Core.Bills
                 reader.Close();
                 return bills;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the bills", exception);
+                throw new System.Exception("An Error occured while getting the bills", exception);
             }
             finally
             {
@@ -192,9 +192,9 @@ namespace SaltVault.Core.Bills
                 reader.Close();
                 return bill;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while getting the bill (ID: {billId})", exception);
+                throw new System.Exception($"An Error occured while getting the bill (ID: {billId})", exception);
             }
             finally
             {
@@ -231,9 +231,9 @@ namespace SaltVault.Core.Bills
 
                 return Convert.ToInt32(billId);
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while adding the bill '{bill.Name}'", exception);
+                throw new System.Exception($"An Error occured while adding the bill '{bill.Name}'", exception);
             }
             finally
             {
@@ -300,9 +300,9 @@ namespace SaltVault.Core.Bills
 
                 return rowUpdated;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while updating the bill '{billRequest.Name}'", exception);
+                throw new System.Exception($"An Error occured while updating the bill '{billRequest.Name}'", exception);
             }
             finally
             {
@@ -344,9 +344,9 @@ namespace SaltVault.Core.Bills
 
                 return billDeleted;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
+                throw new System.Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
             }
             finally
             {
@@ -389,9 +389,9 @@ namespace SaltVault.Core.Bills
 
                 return payment;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while getting the payment (ID: {paymentId})", exception);
+                throw new System.Exception($"An Error occured while getting the payment (ID: {paymentId})", exception);
             }
             finally
             {
@@ -412,9 +412,9 @@ namespace SaltVault.Core.Bills
                 { }
                 reader.Close();
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
+                throw new System.Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
             }
             finally
             {
@@ -449,9 +449,9 @@ namespace SaltVault.Core.Bills
 
                 return rowUpdated;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while updating the payment (ID: {paymentRequest.Id})", exception);
+                throw new System.Exception($"An Error occured while updating the payment (ID: {paymentRequest.Id})", exception);
             }
             finally
             {
@@ -478,9 +478,9 @@ namespace SaltVault.Core.Bills
 
                 return paymentDeleted;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while deleting the payment (ID: {paymentRequestPaymentId})", exception);
+                throw new System.Exception($"An Error occured while deleting the payment (ID: {paymentRequestPaymentId})", exception);
             }
             finally
             {

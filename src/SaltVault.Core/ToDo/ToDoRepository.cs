@@ -78,9 +78,9 @@ namespace SaltVault.Core.ToDo
                 reader.Close();
                 return toDoTasks;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the to do items", exception);
+                throw new System.Exception("An Error occured while getting the to do items", exception);
             }
             finally
             {
@@ -117,9 +117,9 @@ namespace SaltVault.Core.ToDo
 
                 return Convert.ToInt32(toDoTaskId);
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while adding the To Do Task '{toDoTask.Title}'", exception);
+                throw new System.Exception($"An Error occured while adding the To Do Task '{toDoTask.Title}'", exception);
             }
             finally
             {
@@ -176,9 +176,9 @@ namespace SaltVault.Core.ToDo
                     reader.Close();
                 }
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while updating the To Do Task '{toDoRequest.Title}'", exception);
+                throw new System.Exception($"An Error occured while updating the To Do Task '{toDoRequest.Title}'", exception);
             }
             finally
             {
@@ -213,9 +213,9 @@ namespace SaltVault.Core.ToDo
 
                 return deleted;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while deleting the To Do Task (ID: {toDoId})", exception);
+                throw new System.Exception($"An Error occured while deleting the To Do Task (ID: {toDoId})", exception);
             }
             finally
             {

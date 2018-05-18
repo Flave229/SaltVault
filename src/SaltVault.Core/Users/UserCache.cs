@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SaltVault.Core.Exception;
 
 namespace SaltVault.Core.Users
 {
@@ -21,6 +22,16 @@ namespace SaltVault.Core.Users
             
             _activeUserSessions[sessionKey] = user;
             return sessionKey;
+        }
+
+        public ActiveUser GetUserDataForSession(Guid sessionId)
+        {
+            ActiveUser user = _activeUserSessions[sessionId];
+
+            if (user.GetCreationTime().AddDays(7) < DateTime.Now)
+                throw new ErrorCodeException("User Session has expired", ErrorCode.USER_SESSION_EXPIRED);
+
+            return user;
         }
     }
 }

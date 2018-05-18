@@ -62,7 +62,7 @@ namespace SaltVault.Core.Services.Discord
                     ProcessNewMessages();
                     Thread.Sleep(2000);
                 }
-                catch (Exception exception)
+                catch (System.Exception exception)
                 {
                     Console.WriteLine("The DiscordMessageListener Worker encountered a problem and restarted: " + exception);
                     Thread.Sleep(2000);

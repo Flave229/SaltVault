@@ -53,9 +53,9 @@ namespace SaltVault.Core.People
                 reader.Close();
                 return people;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the list of people", exception);
+                throw new System.Exception("An Error occured while getting the list of people", exception);
             }
             finally
             {
@@ -90,9 +90,9 @@ namespace SaltVault.Core.People
                 reader.Close();
                 return people;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the list of people", exception);
+                throw new System.Exception("An Error occured while getting the list of people", exception);
             }
             finally
             {
@@ -127,9 +127,9 @@ namespace SaltVault.Core.People
                 reader.Close();
                 return person;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the person from the discord Id", exception);
+                throw new System.Exception("An Error occured while getting the person from the discord Id", exception);
             }
             finally
             {
@@ -163,9 +163,9 @@ namespace SaltVault.Core.People
                 reader.Close();
                 return person;
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception("An Error occured while getting the person from the google client Id", exception);
+                throw new System.Exception("An Error occured while getting the person from the google client Id", exception);
             }
             finally
             {
@@ -194,9 +194,9 @@ namespace SaltVault.Core.People
                     PersonId = Convert.ToInt32(userId)
                 };
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
-                throw new Exception($"An Error occured while adding the user after first sign in", exception);
+                throw new System.Exception($"An Error occured while adding the user after first sign in", exception);
             }
             finally
             {

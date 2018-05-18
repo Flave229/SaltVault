@@ -58,7 +58,7 @@ namespace SaltVault.Core.Bills
                     Thread.Sleep(3600000);
                 }
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
                 throw exception;
             }
