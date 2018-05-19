@@ -489,7 +489,7 @@ namespace SaltVault.WebApp.Controllers
                 response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
                 if (Authenticate(Request.Headers["Authorization"]) == false)
                 {
-                    response.AddError("The authorization credentails were invalid");
+                    response.AddError("The authorization credentails were invalid", request);
                     return response;
                 }
             }
@@ -499,7 +499,7 @@ namespace SaltVault.WebApp.Controllers
                 
                 if (tokenInformation.Valid == false)
                 {
-                    response.AddError($"Server failed to verify Google credentials. Please try again.");
+                    response.AddError($"Server failed to verify Google credentials. Please try again.", request);
                     return response;
                 }
 
@@ -509,7 +509,7 @@ namespace SaltVault.WebApp.Controllers
             }
             catch (Exception exception)
             {
-                response.AddError($"An unexpected exception occured: {exception}");
+                response.AddError($"An unexpected exception occured: {exception}", request);
             }
             return response;
         }
