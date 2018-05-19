@@ -35,7 +35,7 @@ namespace SaltVault.Core.Bills
                     Id = recurringBill.Id,
                     RecurringType = RecurringType.None
                 };
-                _billRepository.UpdateBill(billUpdateRequest);
+                _billRepository.UpdateBill(billUpdateRequest, 1); // Only First Household
 
                 var addBillRequest = new AddBill
                 {

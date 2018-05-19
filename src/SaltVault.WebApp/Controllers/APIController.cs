@@ -151,7 +151,14 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                var rowUpdated = _billRepository.UpdateBill(billRequest);
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add bills");
+                    return response;
+                }
+
+                var rowUpdated = _billRepository.UpdateBill(billRequest, user.HouseId);
 
                 if (rowUpdated == false)
                 {

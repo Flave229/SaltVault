@@ -13,7 +13,7 @@ namespace SaltVault.Core.Bills
         List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId);
         Bill GetBasicBillDetails(int billId, int userHouseId);
         int AddBill(AddBill bill);
-        bool UpdateBill(UpdateBillRequest billRequest);
+        bool UpdateBill(UpdateBillRequest billRequest, int userHouseId);
         bool DeleteBill(int billId);
         Payment GetPayment(int paymentId);
         void AddPayment(AddPaymentRequest paymentRequest);
@@ -242,7 +242,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public bool UpdateBill(UpdateBillRequest billRequest)
+        public bool UpdateBill(UpdateBillRequest billRequest, int userHouseId)
         {
             _connection.Open();
 
@@ -268,7 +268,7 @@ namespace SaltVault.Core.Bills
                 {
                     command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
-                                                $"WHERE \"Id\" = {billRequest.Id} " +
+                                                $"WHERE \"Id\" = {billRequest.Id} AND \"HouseId\" = {userHouseId} " +
                                                 "RETURNING \"Id\"", _connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
