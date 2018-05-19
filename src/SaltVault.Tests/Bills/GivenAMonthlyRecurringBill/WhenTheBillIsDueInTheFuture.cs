@@ -38,7 +38,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenThePreviousBillIsNotUpdated()
         {
-            _billRepository.Verify(x => x.UpdateBill(It.IsAny<UpdateBillRequest>(), It.IsAny<int>()), Times.Never);
+            _billRepository.Verify(x => x.UpdateBill(It.IsAny<UpdateBillRequest>()), Times.Never);
         }
     }
 }
