@@ -9,6 +9,7 @@ namespace SaltVault.Core.Users
     {
         UserSession LogInUser(GoogleTokenInformation tokenInformation);
         bool AuthenticateSession(string requestHeader);
+        bool AuthenticateClientId(string clientId);
     }
 
     public class UserService : IUserService
@@ -48,6 +49,19 @@ namespace SaltVault.Core.Users
             {
                 string[] sanitisedTokens = requestHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
                 return _appClientId.Contains(sanitisedTokens[0]) && _userCache.CheckSessionExists(new Guid(sanitisedTokens[1]));
+            }
+            catch (System.Exception exception)
+            {
+                return false;
+            }
+        }
+
+        public bool AuthenticateClientId(string clientId)
+        {
+            try
+            {
+                string sanitisedToken = clientId.Replace("ClientID ", "");
+                return _appClientId.Contains(sanitisedToken);
             }
             catch (System.Exception exception)
             {

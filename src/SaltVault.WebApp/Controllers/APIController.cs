@@ -483,7 +483,7 @@ namespace SaltVault.WebApp.Controllers
         public LoginResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
         {
             var response = new LoginResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+            if (_userService.AuthenticateClientId(Request.Headers["Authorization"].ToString()) == false)
             {
                 // Fallback 
                 response.Notifications.Add("Using the old API Key Authorization. This is soon to be removed and needs to be migrated immediately.");
