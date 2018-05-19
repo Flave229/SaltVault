@@ -8,6 +8,7 @@ using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Bills.Models;
 using SaltVault.Core.Bills.Payments;
+using SaltVault.Core.Exception;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Services.Google;
@@ -80,6 +81,10 @@ namespace SaltVault.WebApp.Controllers
                 else
                     response.Bills.Add(_billRepository.GetBasicBillDetails((int)id));
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", id);
@@ -123,6 +128,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The bill '{billRequest.Name}' has been added"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", billRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", billRequest);
@@ -161,6 +170,10 @@ namespace SaltVault.WebApp.Controllers
                 {
                     $"The bill '{billRequest.Name}' has been updated"
                 };
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", billRequest, exception.Code);
             }
             catch (Exception exception)
             {
@@ -201,6 +214,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The bill (ID: {deleteBillRequest.BillId}) has been deleted"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", deleteBillRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", deleteBillRequest);
@@ -235,6 +252,10 @@ namespace SaltVault.WebApp.Controllers
                     "The payment has been added"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", paymentRequest);
@@ -268,6 +289,10 @@ namespace SaltVault.WebApp.Controllers
                 {
                     "The payment has been updated"
                 };
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest, exception.Code);
             }
             catch (Exception exception)
             {
@@ -308,6 +333,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The payment (ID: {paymentRequest.PaymentId}) has been deleted"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", paymentRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", paymentRequest);
@@ -340,6 +369,10 @@ namespace SaltVault.WebApp.Controllers
                     ResultsPerPage = resultsPerPage ?? int.MaxValue
                 };
                 response.ShoppingList = _shoppingRepository.GetAllItems(pagination);
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
             }
             catch (Exception exception)
             {
@@ -375,6 +408,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The shopping item '{shoppingRequest.Name}' has been added"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", shoppingRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", shoppingRequest);
@@ -409,6 +446,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The shopping item '{shoppingRequest.Name}' has been updated"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", shoppingRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", shoppingRequest);
@@ -442,6 +483,10 @@ namespace SaltVault.WebApp.Controllers
                     "The shopping item has been deleted"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", deleteShoppingItemRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", deleteShoppingItemRequest);
@@ -470,6 +515,10 @@ namespace SaltVault.WebApp.Controllers
             {
                 response.People = _peopleRepository.GetAllPeople();
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}");
@@ -496,7 +545,7 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 GoogleTokenInformation tokenInformation = _googleTokenAuthentication.VerifyToken(request.Token);
-                
+
                 if (tokenInformation.Valid == false)
                 {
                     response.AddError($"Server failed to verify Google credentials. Please try again.", request);
@@ -506,6 +555,10 @@ namespace SaltVault.WebApp.Controllers
                 UserSession sessionInformation = _userService.LogInUser(tokenInformation);
                 response.NewUser = sessionInformation.NewUser;
                 response.SessionId = sessionInformation.SessionId;
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", request, exception.Code);
             }
             catch (Exception exception)
             {
@@ -533,6 +586,10 @@ namespace SaltVault.WebApp.Controllers
             try
             {
                 response.ToDoTasks = _toDoRepository.GetToDoList();
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
             }
             catch (Exception exception)
             {
@@ -567,6 +624,10 @@ namespace SaltVault.WebApp.Controllers
                     $"The task '{toDoTaskRequest.Title}' has been added"
                 };
             }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", toDoTaskRequest, exception.Code);
+            }
             catch (Exception exception)
             {
                 response.AddError($"An unexpected exception occured: {exception}", toDoTaskRequest);
@@ -599,6 +660,10 @@ namespace SaltVault.WebApp.Controllers
                 {
                     $"The Task '{toDoRequest.Title}' has been updated"
                 };
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", toDoRequest, exception.Code);
             }
             catch (Exception exception)
             {
@@ -637,6 +702,10 @@ namespace SaltVault.WebApp.Controllers
                 {
                     $"The To Do Task (ID: {deleteToDoRequest.Id}) has been deleted"
                 };
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", deleteToDoRequest, exception.Code);
             }
             catch (Exception exception)
             {

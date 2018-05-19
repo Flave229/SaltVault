@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SaltVault.Core.Exception;
 
 namespace SaltVault.WebApp.Models
 {
@@ -19,6 +20,16 @@ namespace SaltVault.WebApp.Models
             HasError = true;
         }
 
+        public void AddError(string message, ErrorCode code)
+        {
+            Error = new Error
+            {
+                Message = message,
+                ErrorCode = code
+            };
+            HasError = true;
+        }
+
         public void AddError(string message, object originalRequest)
         {
             Error = new Error
@@ -28,11 +39,23 @@ namespace SaltVault.WebApp.Models
             };
             HasError = true;
         }
+
+        public void AddError(string message, object originalRequest, ErrorCode code)
+        {
+            Error = new Error
+            {
+                Message = message,
+                OriginalRequest = originalRequest,
+                ErrorCode = code
+            };
+            HasError = true;
+        }
     }
 
     public class Error
     {
         public string Message { get; set; }
         public object OriginalRequest { get; set; }
+        public ErrorCode ErrorCode { get; set; }
     }
 }
