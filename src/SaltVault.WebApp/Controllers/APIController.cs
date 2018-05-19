@@ -53,7 +53,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new GetBillListResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -90,7 +90,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new AddBillResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -132,7 +132,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new AddBillResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -170,7 +170,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -208,7 +208,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -241,7 +241,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -274,7 +274,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -312,7 +312,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new GetShoppingResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -344,7 +344,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -377,7 +377,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -410,7 +410,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -442,7 +442,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new GetUsersResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -505,7 +505,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new GetToDoResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -532,7 +532,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new AddToDoResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -564,7 +564,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new AddBillResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 
@@ -596,7 +596,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new CommunicationResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid");
+                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
             try
