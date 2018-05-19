@@ -59,17 +59,22 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                if (id == null)
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to retrieve bills");
+                }
+                else if (id == null)
                 {
                     Pagination pagination = new Pagination
                     {
                         Page = page ?? 0,
                         ResultsPerPage = resultsPerPage ?? int.MaxValue
                     };
-                    response.Bills = _billRepository.GetAllBasicBillDetails(pagination);
+                    response.Bills = _billRepository.GetAllBasicBillDetails(pagination, user.HouseId);
                 }
                 else
-                    response.Bills.Add(_billRepository.GetBasicBillDetails((int)id));
+                    response.Bills.Add(_billRepository.GetBasicBillDetails((int)id, user.HouseId));
             }
             catch (ErrorCodeException exception)
             {

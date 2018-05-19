@@ -10,8 +10,8 @@ namespace SaltVault.Core.Bills
 {
     public interface IBillRepository
     {
-        List<Bill> GetAllBasicBillDetails(Pagination pagination);
-        Bill GetBasicBillDetails(int billId);
+        List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId);
+        Bill GetBasicBillDetails(int billId, int userHouseId);
         int AddBill(AddBill bill);
         bool UpdateBill(UpdateBillRequest billRequest);
         bool DeleteBill(int billId);
@@ -31,7 +31,7 @@ namespace SaltVault.Core.Bills
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<Bill> GetAllBasicBillDetails(Pagination pagination)
+        public List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId)
         {
             _connection.Open();
 
@@ -43,6 +43,7 @@ namespace SaltVault.Core.Bills
                                                 "LEFT OUTER JOIN \"PeopleForBill\" AS PeopleForBill ON PeopleForBill.\"BillId\" = Bill.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
                                                 "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
+                                                $"WHERE Bill.\"HouseId\" = {userHouseId} " +
                                                 $"ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC OFFSET {pagination.Page * pagination.ResultsPerPage} FETCH NEXT {pagination.ResultsPerPage} ROWS ONLY", _connection);
                 var reader = command.ExecuteReader();
                 
@@ -117,7 +118,7 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public Bill GetBasicBillDetails(int billId)
+        public Bill GetBasicBillDetails(int billId, int userHouseId)
         {
             _connection.Open();
 
@@ -128,7 +129,7 @@ namespace SaltVault.Core.Bills
                     "FROM public.\"Bill\" AS Bill " +
                     "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
                     "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
-                    $"WHERE Bill.\"Id\" = {billId}", _connection);
+                    $"WHERE Bill.\"Id\" = {billId} AND Bill.\"HouseId\" = {userHouseId}", _connection);
                 var reader = command.ExecuteReader();
 
                 Bill bill = null;

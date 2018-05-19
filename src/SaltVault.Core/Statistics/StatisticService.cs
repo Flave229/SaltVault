@@ -23,90 +23,91 @@ namespace SaltVault.Core.Statistics
 
         public StatisticsOverview GetAllStatistics()
         {
-            var pagination = new Pagination
-            {
-                Page = 0,
-                ResultsPerPage = int.MaxValue
-            };
-            var bills = _billRepository.GetAllBasicBillDetails(pagination);
-            var shoppingItems = _shoppingRepository.GetAllItems(pagination);
-            var people = _peopleRepository.GetAllPeople();
-            var statisticsOverview = new StatisticsOverview();
+            return null;
+            //var pagination = new Pagination
+            //{
+            //    Page = 0,
+            //    ResultsPerPage = int.MaxValue
+            //};
+            //var bills = _billRepository.GetAllBasicBillDetails(pagination);
+            //var shoppingItems = _shoppingRepository.GetAllItems(pagination);
+            //var people = _peopleRepository.GetAllPeople();
+            //var statisticsOverview = new StatisticsOverview();
 
-            foreach (var person in people)
-            {
-                var billsForPerson = bills.Where(x => x.People.Any(y => y.Id == person.Id)).ToList();
-                var shoppingItemsForPerson = shoppingItems.Where(x => x.AddedFor.Any(y => y.Id == person.Id)).ToList();
-                var shoppingItemsByPerson = shoppingItems.Where(x => x.AddedBy.Id == person.Id).ToList();
-                var statistics = new Statistics
-                {
-                    Person = person,
-                    BillsForPerson = billsForPerson,
-                    ShoppingItemsForPerson = shoppingItemsForPerson,
-                    ShoppingItemsByPerson = shoppingItemsByPerson
-                };
-                
-                var sumOfDaysToPayBill = 0;
-                var sumOfPercentageShare = 0.0;
-                var billsPaidFor = 0;
+            //foreach (var person in people)
+            //{
+            //    var billsForPerson = bills.Where(x => x.People.Any(y => y.Id == person.Id)).ToList();
+            //    var shoppingItemsForPerson = shoppingItems.Where(x => x.AddedFor.Any(y => y.Id == person.Id)).ToList();
+            //    var shoppingItemsByPerson = shoppingItems.Where(x => x.AddedBy.Id == person.Id).ToList();
+            //    var statistics = new Statistics
+            //    {
+            //        Person = person,
+            //        BillsForPerson = billsForPerson,
+            //        ShoppingItemsForPerson = shoppingItemsForPerson,
+            //        ShoppingItemsByPerson = shoppingItemsByPerson
+            //    };
 
-                foreach (var bill in billsForPerson)
-                {
-                    var latestPayment = new DateTime();
-                    var percentageOfBill = 0.0;
-                    var billPaidFor = false;
+            //    var sumOfDaysToPayBill = 0;
+            //    var sumOfPercentageShare = 0.0;
+            //    var billsPaidFor = 0;
 
-                    foreach (var payment in bill.Payments)
-                    {
-                        if (payment.PersonId != person.Id)
-                            continue;
+            //    foreach (var bill in billsForPerson)
+            //    {
+            //        var latestPayment = new DateTime();
+            //        var percentageOfBill = 0.0;
+            //        var billPaidFor = false;
 
-                        billPaidFor = true;
+            //        foreach (var payment in bill.Payments)
+            //        {
+            //            if (payment.PersonId != person.Id)
+            //                continue;
 
-                        percentageOfBill += (double)(payment.Amount / bill.TotalAmount);
+            //            billPaidFor = true;
 
-                        if (payment.DatePaid > latestPayment)
-                        {
-                            latestPayment = payment.DatePaid;
-                        }
-                    }
+            //            percentageOfBill += (double)(payment.Amount / bill.TotalAmount);
 
-                    sumOfPercentageShare += percentageOfBill;
+            //            if (payment.DatePaid > latestPayment)
+            //            {
+            //                latestPayment = payment.DatePaid;
+            //            }
+            //        }
 
-                    if (billPaidFor)
-                        billsPaidFor += 1;
+            //        sumOfPercentageShare += percentageOfBill;
 
-                    if (latestPayment != new DateTime())
-                    {
-                        var datediff = bill.FullDateDue - latestPayment;
+            //        if (billPaidFor)
+            //            billsPaidFor += 1;
 
-                        sumOfDaysToPayBill += datediff.Days;
-                    }
-                    else if (bill.FullDateDue <= DateTime.Now)
-                    {
-                        var datediff = bill.FullDateDue - DateTime.Now;
+            //        if (latestPayment != new DateTime())
+            //        {
+            //            var datediff = bill.FullDateDue - latestPayment;
 
-                        sumOfDaysToPayBill += datediff.Days;
-                    }
-                }
+            //            sumOfDaysToPayBill += datediff.Days;
+            //        }
+            //        else if (bill.FullDateDue <= DateTime.Now)
+            //        {
+            //            var datediff = bill.FullDateDue - DateTime.Now;
 
-                if (billsForPerson.Count != 0)
-                {
-                    statistics.AverageDaysToPayBill = sumOfDaysToPayBill / billsForPerson.Count;
-                    statistics.AveragePercentageShareOfBill = (sumOfPercentageShare / billsForPerson.Count) * 100;
-                }
-                else
-                {
-                    statistics.AverageDaysToPayBill = 0;
-                    statistics.AveragePercentageShareOfBill = 0;
-                }
+            //            sumOfDaysToPayBill += datediff.Days;
+            //        }
+            //    }
 
-                statistics.AmountOfBillsPaid = billsPaidFor;
+            //    if (billsForPerson.Count != 0)
+            //    {
+            //        statistics.AverageDaysToPayBill = sumOfDaysToPayBill / billsForPerson.Count;
+            //        statistics.AveragePercentageShareOfBill = (sumOfPercentageShare / billsForPerson.Count) * 100;
+            //    }
+            //    else
+            //    {
+            //        statistics.AverageDaysToPayBill = 0;
+            //        statistics.AveragePercentageShareOfBill = 0;
+            //    }
 
-                statisticsOverview.Statistics.Add(statistics);
-            }
+            //    statistics.AmountOfBillsPaid = billsPaidFor;
 
-            return statisticsOverview;
+            //    statisticsOverview.Statistics.Add(statistics);
+            //}
+
+            //return statisticsOverview;
         }
     }
 

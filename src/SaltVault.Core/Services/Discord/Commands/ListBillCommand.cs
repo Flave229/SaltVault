@@ -22,11 +22,12 @@ namespace SaltVault.Core.Services.Discord.Commands
 
         public void ExecuteCommand(List<string> subCommands)
         {
+            // Only works for first household
             var allBills = _billRepository.GetAllBasicBillDetails(new Pagination
             {
                 Page = 0,
                 ResultsPerPage = int.MaxValue
-            });
+            }, 1);
             var outstandingBills = allBills.Where(x => x.AmountPaid < x.TotalAmount).ToList();
             outstandingBills.Reverse();
 

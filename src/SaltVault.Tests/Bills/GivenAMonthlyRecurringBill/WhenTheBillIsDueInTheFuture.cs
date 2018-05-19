@@ -17,7 +17,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         public void Setup()
         {
             _billRepository = new Mock<IBillRepository>();
-            _billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>())).Returns(new List<Bill>
+            _billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>(), It.IsAny<int>())).Returns(new List<Bill>
             {
                 new Bill
                 {

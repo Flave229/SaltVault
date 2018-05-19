@@ -8,8 +8,9 @@ namespace SaltVault.Core.Users
     public interface IUserService
     {
         UserSession LogInUser(GoogleTokenInformation tokenInformation);
-        bool AuthenticateSession(string requestHeader);
+        bool AuthenticateSession(string authHeader);
         bool AuthenticateClientId(string clientId);
+        ActiveUser GetUserInformationFromAuthHeader(string authHeader);
     }
 
     public class UserService : IUserService
@@ -43,11 +44,11 @@ namespace SaltVault.Core.Users
             };
         }
 
-        public bool AuthenticateSession(string requestHeader)
+        public bool AuthenticateSession(string authHeader)
         {
             try
             {
-                string[] sanitisedTokens = requestHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
+                string[] sanitisedTokens = authHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
                 return _appClientId.Contains(sanitisedTokens[0]) && _userCache.CheckSessionExists(new Guid(sanitisedTokens[1]));
             }
             catch (System.Exception exception)
@@ -67,6 +68,12 @@ namespace SaltVault.Core.Users
             {
                 return false;
             }
+        }
+
+        public ActiveUser GetUserInformationFromAuthHeader(string authHeader)
+        {
+            string[] sanitisedTokens = authHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
+            return _userCache.GetUserDataForSession(new Guid(sanitisedTokens[1]));
         }
     }
 

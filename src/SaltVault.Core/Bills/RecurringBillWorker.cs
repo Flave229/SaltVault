@@ -16,11 +16,12 @@ namespace SaltVault.Core.Bills
 
         public void GenerateNextMonthsBills()
         {
+            // Only works for first household
             var bills = _billRepository.GetAllBasicBillDetails(new Pagination
             {
                 Page = 0,
                 ResultsPerPage = int.MaxValue
-            });
+            }, 1);
 
             var recurringBills = bills.Where(bill => bill.RecurringType == RecurringType.Monthly);
 

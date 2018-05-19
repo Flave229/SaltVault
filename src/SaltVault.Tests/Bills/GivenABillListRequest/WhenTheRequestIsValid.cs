@@ -18,7 +18,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
         public void ThenTheBillListIsReturned()
         {
             var billRepository = new Mock<IBillRepository>();
-            billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>())).Returns(new List<Bill>
+            billRepository.Setup(x => x.GetAllBasicBillDetails(It.IsAny<Pagination>(), It.IsAny<int>())).Returns(new List<Bill>
             {
                 new Bill()
             });
