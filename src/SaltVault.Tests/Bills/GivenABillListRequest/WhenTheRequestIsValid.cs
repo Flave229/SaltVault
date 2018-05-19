@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SaltVault.Core;
-using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.Users;
@@ -24,11 +23,9 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
                 new Bill()
             });
             var shoppingRepository = new Mock<IShoppingRepository>();
-            var authentication = new Mock<IAuthentication>();
             var userClient = new Mock<IUserService>();
-            authentication.Setup(x => x.CheckKey(It.IsAny<string>())).Returns(true);
             userClient.Setup(x => x.AuthenticateSession(It.IsAny<string>())).Returns(true);
-            var subject = new ApiController(billRepository.Object, shoppingRepository.Object, null, null, authentication.Object, null, userClient.Object, null)
+            var subject = new ApiController(billRepository.Object, shoppingRepository.Object, null, null, null, userClient.Object, null)
             {
                 ControllerContext = new ControllerContext
                 {

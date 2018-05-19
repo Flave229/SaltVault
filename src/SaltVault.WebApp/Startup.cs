@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Npgsql;
-using SaltVault.Core.Authentication;
 using SaltVault.Core.Bills;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
@@ -76,7 +73,6 @@ namespace SaltVault.WebApp
             services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
             services.AddSingleton<IUserService, IUserService>(x => _userService);
             services.AddSingleton<IGoogleTokenAuthentication, IGoogleTokenAuthentication>(x => _googleTokenAuthentication);
-            services.AddSingleton<IAuthentication, ApiAuthentication>();
 
             services.AddMvc();
         }
