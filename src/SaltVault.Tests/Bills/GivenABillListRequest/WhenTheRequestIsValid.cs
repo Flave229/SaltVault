@@ -25,6 +25,10 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
             var shoppingRepository = new Mock<IShoppingRepository>();
             var userClient = new Mock<IUserService>();
             userClient.Setup(x => x.AuthenticateSession(It.IsAny<string>())).Returns(true);
+            userClient.Setup(x => x.GetUserInformationFromAuthHeader(It.IsAny<string>())).Returns(new ActiveUser
+            {
+                HouseId = 1
+            });
             var subject = new ApiController(billRepository.Object, shoppingRepository.Object, null, null, null, userClient.Object, null)
             {
                 ControllerContext = new ControllerContext
