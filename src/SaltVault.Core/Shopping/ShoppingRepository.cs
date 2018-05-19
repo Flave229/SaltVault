@@ -10,7 +10,7 @@ namespace SaltVault.Core.Shopping
 {
     public interface IShoppingRepository
     {
-        List<Item> GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false);
+        List<Item> GetAllItems(Pagination pagination, int userHouseId, bool onlyUnpurchasedItems = false);
         void AddItem(AddShoppingItemRequest shoppingRequest);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
@@ -26,17 +26,17 @@ namespace SaltVault.Core.Shopping
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<Item> GetAllItems(Pagination pagination, bool onlyUnpurchasedItems = false)
+        public List<Item> GetAllItems(Pagination pagination, int userHouseId, bool onlyUnpurchasedItems = false)
         {
             _connection.Open();
 
             try
             {
                 var shoppingItems = new List<Item>();
-                var whereClause = "";
+                var whereClause = $"WHERE Item.\"HouseId\" = {userHouseId} ";
 
                 if (onlyUnpurchasedItems)
-                    whereClause = "WHERE Item.\"Purchased\" = false ";
+                    whereClause += "AND Item.\"Purchased\" = false ";
 
                 var command = new NpgsqlCommand("SELECT Item.\"Id\", Item.\"Name\", Item.\"AddedOn\", Item.\"Purchased\", AddedBy.\"Id\", AddedBy.\"FirstName\", AddedBy.\"LastName\", AddedBy.\"Image\", " +
                                                 "ShoppingItemFor.\"Id\", ShoppingItemFor.\"FirstName\", ShoppingItemFor.\"LastName\", ShoppingItemFor.\"Image\" " +

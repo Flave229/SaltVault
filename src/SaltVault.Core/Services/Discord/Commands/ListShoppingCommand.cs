@@ -27,7 +27,7 @@ namespace SaltVault.Core.Services.Discord.Commands
             {
                 Page = 0,
                 ResultsPerPage = int.MaxValue
-            }, true);
+            }, 1, true);
             string title;
 
             if (subCommands.Count > 0)

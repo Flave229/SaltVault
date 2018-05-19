@@ -13,8 +13,8 @@ namespace SaltVault.Core.Bills
         List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId);
         Bill GetBasicBillDetails(int billId, int userHouseId);
         int AddBill(AddBill bill);
-        bool UpdateBill(UpdateBillRequest billRequest, int userHouseId);
-        bool DeleteBill(int billId, int houseId);
+        bool UpdateBill(UpdateBillRequest billRequest);
+        bool DeleteBill(int billId);
         Payment GetPayment(int paymentId);
         void AddPayment(AddPaymentRequest paymentRequest);
         bool UpdatePayment(UpdatePaymentRequest paymentRequest);

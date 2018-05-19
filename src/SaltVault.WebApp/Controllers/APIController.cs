@@ -158,7 +158,7 @@ namespace SaltVault.WebApp.Controllers
                     return response;
                 }
 
-                var rowUpdated = _billRepository.UpdateBill(billRequest, user.HouseId);
+                var rowUpdated = _billRepository.UpdateBill(billRequest);
 
                 if (rowUpdated == false)
                 {
@@ -202,7 +202,7 @@ namespace SaltVault.WebApp.Controllers
                     response.Notifications.Add("You must belong to a household to add bills");
                     return response;
                 }
-                var rowUpdated = _billRepository.DeleteBill(deleteBillRequest.BillId, user.HouseId);
+                var rowUpdated = _billRepository.DeleteBill(deleteBillRequest.BillId);
 
                 if (rowUpdated == false)
                 {
@@ -344,12 +344,18 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add shopping items");
+                    return response;
+                }
                 Pagination pagination = new Pagination
                 {
                     Page = page ?? 0,
                     ResultsPerPage = resultsPerPage ?? int.MaxValue
                 };
-                response.ShoppingList = _shoppingRepository.GetAllItems(pagination);
+                response.ShoppingList = _shoppingRepository.GetAllItems(pagination, user.HouseId);
             }
             catch (ErrorCodeException exception)
             {
