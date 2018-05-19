@@ -10,7 +10,7 @@ namespace SaltVault.Core.ToDo
 {
     public interface IToDoRepository
     {
-        List<ToDoTask> GetToDoList();
+        List<ToDoTask> GetToDoList(int userHouseId);
         int AddToDoTask(AddToDoTaskRequest toDoTask);
         void UpdateToDoTask(UpdateToDoRequest toDoRequest);
         bool DeleteToDoTask(int toDoId);
@@ -26,7 +26,7 @@ namespace SaltVault.Core.ToDo
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<ToDoTask> GetToDoList()
+        public List<ToDoTask> GetToDoList(int userHouseId)
         {
             _connection.Open();
 
@@ -37,6 +37,7 @@ namespace SaltVault.Core.ToDo
                                                 "FROM public.\"ToDo\" AS ToDo " +
                                                 "LEFT OUTER JOIN \"PeopleForToDo\" AS PeopleForToDo ON PeopleForToDo.\"ToDoId\" = ToDo.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForToDo.\"PersonId\" " +
+                                                $"WHERE ToDo.\"HouseId\" = {userHouseId} " +
                                                 "ORDER BY ToDo.\"Due\" DESC, Person.\"Id\" ASC", _connection);
                 var reader = command.ExecuteReader();
 

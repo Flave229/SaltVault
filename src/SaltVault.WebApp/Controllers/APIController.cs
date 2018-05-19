@@ -543,7 +543,13 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.ToDoTasks = _toDoRepository.GetToDoList();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add shopping items");
+                    return response;
+                }
+                response.ToDoTasks = _toDoRepository.GetToDoList(user.HouseId);
             }
             catch (ErrorCodeException exception)
             {
