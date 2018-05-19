@@ -36,7 +36,14 @@ namespace SaltVault.Core.Users
 
         public bool CheckSessionExists(Guid sessionId)
         {
-            return _activeUserSessions.ContainsKey(sessionId);
+            bool existingSession = _activeUserSessions.ContainsKey(sessionId);
+            if (existingSession == false)
+                return false;
+
+            if (_activeUserSessions[sessionId].GetCreationTime().AddDays(7) < DateTime.Now)
+                return false;
+
+            return true;
         }
     }
 }
