@@ -101,13 +101,21 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add bills");
+                    return response;
+                }
+
                 AddBill bill = new AddBill
                 {
                     Name = billRequest.Name,
                     Due = billRequest.Due,
                     PeopleIds = billRequest.PeopleIds,
                     RecurringType = billRequest.RecurringType,
-                    TotalAmount = billRequest.TotalAmount
+                    TotalAmount = billRequest.TotalAmount,
+                    HouseId = user.HouseId
                 };
                 BillValidator.CheckIfValidBill(bill);
                 response.Id = _billRepository.AddBill(bill);

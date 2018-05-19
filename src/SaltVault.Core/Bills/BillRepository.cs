@@ -210,7 +210,7 @@ namespace SaltVault.Core.Bills
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\", \"HouseId\") " +
-                                                $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due:yyyy-MM-dd}', {(int)bill.RecurringType}, 1) " +
+                                                $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due:yyyy-MM-dd}', {(int)bill.RecurringType}, {bill.HouseId}) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 billId = -1;
                 var reader = command.ExecuteReader();

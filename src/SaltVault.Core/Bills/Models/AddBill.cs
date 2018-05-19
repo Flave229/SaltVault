@@ -10,6 +10,7 @@ namespace SaltVault.Core.Bills.Models
         public DateTime Due { get; set; }
         public List<int> PeopleIds { get; set; }
         public RecurringType RecurringType { get; set; }
+        public int HouseId { get; set; }
 
         public AddBill()
         {
