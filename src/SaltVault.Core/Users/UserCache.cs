@@ -7,11 +7,10 @@ namespace SaltVault.Core.Users
 {
     public class UserCache
     {
-        private static Dictionary<Guid, ActiveUser> _activeUserSessions;
+        private static readonly Dictionary<Guid, ActiveUser> _activeUserSessions = new Dictionary<Guid, ActiveUser>();
 
         public UserCache()
         {
-            _activeUserSessions = new Dictionary<Guid, ActiveUser>();
         }
 
         public static Guid StaticGenerateUserSession(ActiveUser user)
