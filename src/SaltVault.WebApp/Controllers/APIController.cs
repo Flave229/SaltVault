@@ -382,8 +382,14 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add Shopping Items");
+                    return response;
+                }
                 ShoppingValidator.CheckIfValidItem(shoppingRequest);
-                _shoppingRepository.AddItem(shoppingRequest);
+                _shoppingRepository.AddItem(shoppingRequest, user.HouseId);
 
                 response.Notifications = new List<string>
                 {
