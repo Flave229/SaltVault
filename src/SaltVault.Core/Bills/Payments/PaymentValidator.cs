@@ -26,16 +26,16 @@ namespace SaltVault.Core.Bills.Payments
                 throw new System.Exception("The date entered for the payment was out of range. Value must lie between " + minAmount.ToString("d") + " and " + maxAmount.ToString("d") + ".");
         }
 
-        public static void CheckIfValidPayment(AddPaymentRequest payment)
+        public static void CheckIfValidPayment(Payment payment, int billId)
         {
             try
             {
                 if (payment == null) throw new System.Exception("The payment object given was null.");
                 if (payment.PersonId <= 0) throw new System.Exception("The person id given was invalid.");
-                if (payment.BillId <= 0) throw new System.Exception("The bill id given was invalid.");
+                if (billId <= 0) throw new System.Exception("The bill id given was invalid.");
 
                 CheckAmountValid(payment.Amount);
-                CheckDateValid(payment.Created);
+                CheckDateValid(payment.DatePaid);
             }
             catch (System.Exception ex)
             {

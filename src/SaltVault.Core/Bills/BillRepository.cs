@@ -16,7 +16,7 @@ namespace SaltVault.Core.Bills
         bool UpdateBill(UpdateBill billRequest);
         bool DeleteBill(int billId);
         Payment GetPayment(int paymentId);
-        void AddPayment(AddPaymentRequest paymentRequest);
+        void AddPayment(Payment payment, int billId);
         bool UpdatePayment(UpdatePaymentRequest paymentRequest);
         bool DeletePayment(int paymentRequestPaymentId);
     }
@@ -400,14 +400,14 @@ namespace SaltVault.Core.Bills
             }
         }
 
-        public void AddPayment(AddPaymentRequest paymentRequest)
+        public void AddPayment(Payment payment, int billId)
         {
             _connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"Payment\" (\"BillId\", \"PersonId\", \"Amount\", \"Created\") " +
-                                                $"VALUES ({paymentRequest.BillId}, {paymentRequest.PersonId}, {paymentRequest.Amount}, '{paymentRequest.Created:yyyy-MM-dd}')", _connection);
+                                                $"VALUES ({billId}, {payment.PersonId}, {payment.Amount}, '{payment.DatePaid:yyyy-MM-dd}')", _connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
@@ -415,7 +415,7 @@ namespace SaltVault.Core.Bills
             }
             catch (System.Exception exception)
             {
-                throw new System.Exception($"An Error occured while adding the payment to the bill (ID: {paymentRequest.BillId})", exception);
+                throw new System.Exception($"An Error occured while adding the payment to the bill (ID: {billId})", exception);
             }
             finally
             {

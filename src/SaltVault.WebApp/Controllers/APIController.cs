@@ -18,7 +18,6 @@ using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
 using SaltVault.WebApp.Models.ToDo;
 using SaltVault.WebApp.Models.Users;
-using AddPaymentRequest = SaltVault.Core.Bills.Models.AddPaymentRequest;
 using UpdateShoppingItemRequest = SaltVault.Core.Shopping.Models.UpdateShoppingItemRequest;
 
 namespace SaltVault.WebApp.Controllers
@@ -247,8 +246,14 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                PaymentValidator.CheckIfValidPayment(paymentRequest);
-                _billRepository.AddPayment(paymentRequest);
+                var payment = new Payment
+                {
+                    Amount = paymentRequest.Amount,
+                    DatePaid = paymentRequest.Created,
+                    PersonId = paymentRequest.PersonId
+                };
+                PaymentValidator.CheckIfValidPayment(payment, paymentRequest.BillId);
+                _billRepository.AddPayment(payment, paymentRequest.BillId);
 
                 response.Notifications = new List<string>
                 {
