@@ -9,7 +9,7 @@ namespace SaltVault.Core.People
 {
     public interface IPeopleRepository
     {
-        List<Person> GetAllPeople();
+        List<Person> GetAllPeople(int userHouseId);
         List<Person> GetPeople(List<int> peopleIds);
         Person GetPersonFromDiscordId(string discordId);
         ActiveUser GetPersonFromGoogleClientId(string googleClientId);
@@ -26,7 +26,7 @@ namespace SaltVault.Core.People
             _connection = new NpgsqlConnection(connectionString);
         }
 
-        public List<Person> GetAllPeople()
+        public List<Person> GetAllPeople(int userHouseId)
         {
             _connection.Open();
 
@@ -35,7 +35,8 @@ namespace SaltVault.Core.People
                 var command = new NpgsqlCommand(
                     "SELECT Person.\"Id\", Person.\"FirstName\", Person.\"LastName\", Person.\"Image\" " +
                     "FROM public.\"Person\" AS Person " +
-                    "WHERE Person.\"Active\" = true", _connection);
+                    "LEFT OUTER JOIN \"PeopleForHouse\" AS PeopleForHouse ON PeopleForHouse.\"PersonId\" = Person.\"Id\" " +
+                    $"WHERE Person.\"Active\" = true AND PeopleForHouse.\"HouseId\" = {userHouseId}", _connection);
                 var reader = command.ExecuteReader();
 
                 List<Person> people = new List<Person>();

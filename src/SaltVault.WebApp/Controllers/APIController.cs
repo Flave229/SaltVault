@@ -494,7 +494,13 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.People = _peopleRepository.GetAllPeople();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to get users for a household");
+                    return response;
+                }
+                response.People = _peopleRepository.GetAllPeople(user.HouseId);
             }
             catch (ErrorCodeException exception)
             {
