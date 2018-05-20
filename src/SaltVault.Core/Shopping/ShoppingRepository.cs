@@ -11,7 +11,7 @@ namespace SaltVault.Core.Shopping
     public interface IShoppingRepository
     {
         List<Item> GetAllItems(Pagination pagination, int userHouseId, bool onlyUnpurchasedItems = false);
-        void AddItem(AddShoppingItemRequest shoppingRequest, int userHouseId);
+        void AddItem(ShoppingItem shoppingRequest, int userHouseId);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
     }
@@ -98,7 +98,7 @@ namespace SaltVault.Core.Shopping
             }
         }
 
-        public void AddItem(AddShoppingItemRequest shoppingRequest, int userHouseId)
+        public void AddItem(ShoppingItem shoppingRequest, int userHouseId)
         {
             _connection.Open();
 
@@ -226,19 +226,6 @@ namespace SaltVault.Core.Shopping
             {
                 _connection.Close();
             }
-        }
-    }
-
-    public class AddShoppingItemRequest
-    {
-        public string Name { get; set; }
-        public DateTime Added { get; set; }
-        public int AddedBy { get; set; }
-        public List<int> ItemFor { get; set; }
-
-        public AddShoppingItemRequest()
-        {
-            ItemFor = new List<int>();
         }
     }
 }

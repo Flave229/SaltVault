@@ -388,8 +388,16 @@ namespace SaltVault.WebApp.Controllers
                     response.Notifications.Add("You must belong to a household to add Shopping Items");
                     return response;
                 }
-                ShoppingValidator.CheckIfValidItem(shoppingRequest);
-                _shoppingRepository.AddItem(shoppingRequest, user.HouseId);
+                ShoppingItem item = new ShoppingItem
+                {
+                    ItemFor = shoppingRequest.ItemFor,
+                    Added = DateTime.Now,
+                    AddedBy = user.PersonId,
+                    Name = shoppingRequest.Name,
+                    Purchased = false
+                };
+                ShoppingValidator.CheckIfValidItem(item);
+                _shoppingRepository.AddItem(item, user.HouseId);
 
                 response.Notifications = new List<string>
                 {
