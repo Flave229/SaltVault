@@ -19,7 +19,6 @@ using SaltVault.WebApp.Models.Shopping;
 using SaltVault.WebApp.Models.ToDo;
 using SaltVault.WebApp.Models.Users;
 using AddPaymentRequest = SaltVault.Core.Bills.Models.AddPaymentRequest;
-using UpdateBillRequest = SaltVault.Core.Bills.Models.UpdateBillRequest;
 using UpdateShoppingItemRequest = SaltVault.Core.Shopping.Models.UpdateShoppingItemRequest;
 
 namespace SaltVault.WebApp.Controllers
@@ -157,8 +156,16 @@ namespace SaltVault.WebApp.Controllers
                     response.Notifications.Add("You must belong to a household to add bills");
                     return response;
                 }
-
-                var rowUpdated = _billRepository.UpdateBill(billRequest);
+                UpdateBill bill = new UpdateBill
+                {
+                    Name = billRequest.Name,
+                    Id = billRequest.Id,
+                    Due = billRequest.Due,
+                    PeopleIds = billRequest.PeopleIds,
+                    TotalAmount = billRequest.TotalAmount,
+                    RecurringType = billRequest.RecurringType
+                };
+                var rowUpdated = _billRepository.UpdateBill(bill);
 
                 if (rowUpdated == false)
                 {

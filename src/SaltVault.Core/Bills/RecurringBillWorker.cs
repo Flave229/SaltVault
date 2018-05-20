@@ -30,7 +30,7 @@ namespace SaltVault.Core.Bills
                 if (recurringBill.FullDateDue > DateTime.Today)
                     continue;
 
-                var billUpdateRequest = new UpdateBillRequest
+                var billUpdateRequest = new UpdateBill
                 {
                     Id = recurringBill.Id,
                     RecurringType = RecurringType.None

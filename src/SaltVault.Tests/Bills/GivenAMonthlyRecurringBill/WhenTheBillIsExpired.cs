@@ -44,7 +44,7 @@ namespace SaltVault.Tests.Bills.GivenAMonthlyRecurringBill
         [TestMethod]
         public void ThenThePreviousBillIsUpdatedWithNoRecurringType()
         {
-            _billRepository.Verify(x => x.UpdateBill(It.Is<UpdateBillRequest>(y => y.RecurringType == RecurringType.None)), Times.Once);
+            _billRepository.Verify(x => x.UpdateBill(It.Is<UpdateBill>(y => y.RecurringType == RecurringType.None)), Times.Once);
         }
     }
 }
