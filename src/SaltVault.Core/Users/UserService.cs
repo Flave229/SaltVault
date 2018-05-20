@@ -9,7 +9,6 @@ namespace SaltVault.Core.Users
     {
         UserSession LogInUser(GoogleTokenInformation tokenInformation);
         bool AuthenticateSession(string authHeader);
-        bool AuthenticateClientId(string clientId);
         ActiveUser GetUserInformationFromAuthHeader(string authHeader);
     }
 
@@ -17,13 +16,11 @@ namespace SaltVault.Core.Users
     {
         private readonly UserCache _userCache;
         private readonly IPeopleRepository _peopleRepository;
-        private string _appClientId;
 
         public UserService(UserCache userCache, IPeopleRepository peopleRepository)
         {
             _userCache = userCache;
             _peopleRepository = peopleRepository;
-            _appClientId = File.ReadAllText("./Data/Config/ClientIds.config");
         }
 
         public UserSession LogInUser(GoogleTokenInformation tokenInformation)
@@ -48,8 +45,8 @@ namespace SaltVault.Core.Users
         {
             try
             {
-                string[] sanitisedTokens = authHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
-                return _appClientId.Contains(sanitisedTokens[0]) && _userCache.CheckSessionExists(new Guid(sanitisedTokens[1]));
+                string sanitisedToken = authHeader.Replace("Token ", "");
+                return _userCache.CheckSessionExists(new Guid(sanitisedToken));
             }
             catch (System.Exception exception)
             {
@@ -57,22 +54,10 @@ namespace SaltVault.Core.Users
             }
         }
 
-        public bool AuthenticateClientId(string clientId)
-        {
-            try
-            {
-                string sanitisedToken = clientId.Replace("ClientID ", "");
-                return _appClientId.Contains(sanitisedToken);
-            }
-            catch (System.Exception exception)
-            {
-                return false;
-            }
-        }
 
         public ActiveUser GetUserInformationFromAuthHeader(string authHeader)
         {
-            string[] sanitisedTokens = authHeader.Replace("ClientID ", "").Replace("Token ", "").Split(',');
+            string[] sanitisedTokens = authHeader.Replace("Token ", "").Split(',');
             return _userCache.GetUserDataForSession(new Guid(sanitisedTokens[1]));
         }
     }

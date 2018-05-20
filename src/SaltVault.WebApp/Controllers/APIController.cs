@@ -531,11 +531,6 @@ namespace SaltVault.WebApp.Controllers
         public LoginResponse AuthenticateAndLogIn([FromBody]LogInRequest request)
         {
             var response = new LoginResponse();
-            if (_userService.AuthenticateClientId(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", request);
-                return response;
-            }
 
             try
             {
