@@ -57,7 +57,7 @@ namespace SaltVault.Core.Users
 
         public ActiveUser GetUserInformationFromAuthHeader(string authHeader)
         {
-            string sanitisedToken = authHeader.Replace("Token ", ""));
+            string sanitisedToken = authHeader.Replace("Token ", "");
             return _userCache.GetUserDataForSession(new Guid(sanitisedToken));
         }
     }
