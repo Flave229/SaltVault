@@ -11,7 +11,7 @@ namespace SaltVault.Core.ToDo
     public interface IToDoRepository
     {
         List<ToDoTask> GetToDoList(int userHouseId);
-        int AddToDoTask(AddToDoTaskRequest toDoTask);
+        int AddToDoTask(AddToDoTaskRequest toDoTask, int userHouseId);
         void UpdateToDoTask(UpdateToDoRequest toDoRequest);
         bool DeleteToDoTask(int toDoId);
     }
@@ -89,15 +89,15 @@ namespace SaltVault.Core.ToDo
             }
         }
 
-        public int AddToDoTask(AddToDoTaskRequest toDoTask)
+        public int AddToDoTask(AddToDoTaskRequest toDoTask, int userHouseId)
         {
             _connection.Open();
 
             try
             {
                 var dueValue = toDoTask.Due == null ? "NULL" : $"'{toDoTask.Due:yyyy-MM-dd}'";
-                var command = new NpgsqlCommand($"INSERT INTO public.\"ToDo\" (\"Title\", \"Due\", \"Complete\") " +
-                                                $"VALUES ('{toDoTask.Title}', {dueValue}, false) " +
+                var command = new NpgsqlCommand($"INSERT INTO public.\"ToDo\" (\"Title\", \"Due\", \"Complete\", \"HouseId\") " +
+                                                $"VALUES ('{toDoTask.Title}', {dueValue}, false, {userHouseId}) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 toDoTaskId = -1;
                 var reader = command.ExecuteReader();

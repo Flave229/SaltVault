@@ -11,7 +11,7 @@ namespace SaltVault.Core.Shopping
     public interface IShoppingRepository
     {
         List<Item> GetAllItems(Pagination pagination, int userHouseId, bool onlyUnpurchasedItems = false);
-        void AddItem(AddShoppingItemRequest shoppingRequest);
+        void AddItem(AddShoppingItemRequest shoppingRequest, int userHouseId);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
     }
@@ -98,14 +98,14 @@ namespace SaltVault.Core.Shopping
             }
         }
 
-        public void AddItem(AddShoppingItemRequest shoppingRequest)
+        public void AddItem(AddShoppingItemRequest shoppingRequest, int userHouseId)
         {
             _connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"ShoppingItem\" (\"Name\", \"AddedOn\", \"AddedBy\", \"Purchased\", \"HouseId\") " +
-                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added:yyyy-MM-dd}', {shoppingRequest.AddedBy}, FALSE, 1) " +
+                                                $"VALUES ('{shoppingRequest.Name}', '{shoppingRequest.Added:yyyy-MM-dd}', {shoppingRequest.AddedBy}, FALSE, {userHouseId}) " +
                                                 "RETURNING \"Id\"", _connection);
                 Int64 itemId = -1;
                 var reader = command.ExecuteReader();

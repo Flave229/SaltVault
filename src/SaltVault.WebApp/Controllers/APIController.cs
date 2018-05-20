@@ -546,7 +546,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add shopping items");
+                    response.Notifications.Add("You must belong to a household to get To Do Tasks");
                     return response;
                 }
                 response.ToDoTasks = _toDoRepository.GetToDoList(user.HouseId);
@@ -576,7 +576,13 @@ namespace SaltVault.WebApp.Controllers
 
             try
             {
-                response.Id = _toDoRepository.AddToDoTask(toDoTaskRequest);
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                if (user.HouseId == 0)
+                {
+                    response.Notifications.Add("You must belong to a household to add To Do Tasks");
+                    return response;
+                }
+                response.Id = _toDoRepository.AddToDoTask(toDoTaskRequest, user.HouseId);
 
                 response.Notifications = new List<string>
                 {
