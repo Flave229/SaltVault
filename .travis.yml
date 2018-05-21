@@ -10,7 +10,8 @@ before_install:
 - tar xvf ./src/SaltVault.WebApp/Data/Config.tar
 - mkdir ./src/SaltVault.Tests/bin
 - mkdir ./src/SaltVault.Tests/bin/Release
-- mkdir ./src/SaltVault.Tests/bin/Release/Data
+- mkdir ./src/SaltVault.Tests/bin/Release/netcoreapp2.0
+- mkdir ./src/SaltVault.Tests/bin/Release/netcoreapp2.0/Data
 - cp -R ./src/SaltVault.WebApp/Data/Config.tar ./src/SaltVault.Tests/bin/Release/Data/
 env:
   global:
