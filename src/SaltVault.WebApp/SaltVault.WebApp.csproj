@@ -47,4 +47,16 @@
     <ProjectReference Include="..\SaltVault.Core\SaltVault.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Data\Config\ClientIds.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Data\Config\DiscordBotToken.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Data\Config\LIVEConnectionString.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
