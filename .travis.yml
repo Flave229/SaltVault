@@ -6,6 +6,7 @@ dotnet: 2.0.0
 script:
 - "./src/SaltVault.WebApp/build.sh"
 before_install:
+- ls
 - openssl aes-256-cbc -K $encrypted_be46889660c0_key -iv $encrypted_be46889660c0_iv
-  -in Config.tar.enc -out ./src/SaltVault.WebApp/Data/Config.tar -d
-- tar xvf ./src/SaltVault.WebApp/Data/Config.tar
+  -in Config.tar.enc -out src/SaltVault.WebApp/Data/Config.tar -d
+- tar xvf src/SaltVault.WebApp/Data/Config.tar
