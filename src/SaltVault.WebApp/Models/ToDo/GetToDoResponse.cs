@@ -6,5 +6,10 @@ namespace SaltVault.WebApp.Models.ToDo
     public class GetToDoResponse : CommunicationResponse
     {
         public List<ToDoTask> ToDoTasks { get; set; }
+
+        public GetToDoResponse()
+        {
+            ToDoTasks = new List<ToDoTask>();
+        }
     }
 }
