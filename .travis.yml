@@ -8,3 +8,4 @@ script:
 before_install:
 - openssl aes-256-cbc -K $encrypted_03320890e2fa_key -iv $encrypted_03320890e2fa_iv
   -in Config.tar.enc -out Config.tar -d
+  - tar xvf Config.tar
