@@ -27,7 +27,7 @@ namespace SaltVault.Core.Services.Discord
 
         private void Connect()
         {
-            var filePath = "Data/Discord/bot_token.txt";
+            var filePath = "Data/Config/bot_token.config";
             if (!System.IO.File.Exists(filePath))
                 Console.WriteLine("Failed to fetch the bot token to log in to Discord");
 
