@@ -12,7 +12,7 @@ before_install:
 - mkdir ./src/SaltVault.Tests/bin/Release
 - mkdir ./src/SaltVault.Tests/bin/Release/netcoreapp2.0
 - mkdir ./src/SaltVault.Tests/bin/Release/netcoreapp2.0/Data
-- cp -R ./src/SaltVault.WebApp/Data/Config.tar ./src/SaltVault.Tests/bin/Release/netcoreapp2.0/Data/
+- cp -R ./src/SaltVault.WebApp/Data/Config/ ./src/SaltVault.Tests/bin/Release/netcoreapp2.0/Data/
 env:
   global:
     secure: r/ELJaMBxrV7CIPnayWPkDgYFEoxbJB+fVWUByV/eQAmrYr/X9osmXlMzZc3DjU59uASgs7/7Gcl9mgO0ceeVDIbK79dWWaswbvEgEWO0HwRE8D1y9G9SwSjcBFAPh66do796UFqoAAeK7GmBb6vOLgCReCHAJfuRYFTJzFfSYuwbOS2wt4cvTstf31Qzw542mGXp81hIjfrjXR2pGCXF6aaGrRtAUy3teqr4QrfxSZ8rByoZQDOcKT1dm3na8l/irxdEMC1ZG5UzQvhSNPllyWvvIlM9dYKVMMy8BzMHKocfL0LKGEp+fwOIqoGvSsVxq5+quejjZA4qP/lqGVbIHJzGPRmEPdft+mRyVKZ67FldRp5D8UWobjpPc5QhWYqw2rNuWqKr8IShn/KXjndzqqPi9wSRZOPJFLC7CFHLVBJOGROIccsFDWvjiBgdIluZ7MyhP5RjtzS8FZr8ZonewDpp1koYqqNk/63JsxmHtj1KwR415DsKW6C5SrfHWbXycpR+hpC8+IfLZA1MC9wslX8HpqWLUYEFZfFcAT9KQEESqq9py08X4tGZhWlG7L2ui3sBB+RDZY2dnpdyjuv9p6owJzaPFLRQtIc29UQCO7q7xgflUw/5M5Ibg+roeDc7vEyCvxDAMLfhi0PDJEYt0wsoUmwv3FQxWLJ1vQmYCo=
