@@ -8,7 +8,7 @@ script:
 before_install:
 - openssl aes-256-cbc -k $password -in ./src/SaltVault.WebApp/Data/Config.tar.enc -out ./src/SaltVault.WebApp/Data/Config.tar -d
 - mkdir ./src/SaltVault.WebApp/Data/Config
-- tar xvf ./src/SaltVault.WebApp/Data/Config.tar -C ./src/SaltVault.WebApp/Data/Config
+- tar xvf ./src/SaltVault.WebApp/Data/Config.tar -C ./src/SaltVault.WebApp/Data
 - mkdir ./src/SaltVault.Tests/bin
 - mkdir ./src/SaltVault.Tests/bin/Release
 - mkdir ./src/SaltVault.Tests/bin/Release/netcoreapp2.0
