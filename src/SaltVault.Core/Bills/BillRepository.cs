@@ -27,24 +27,8 @@ namespace SaltVault.Core.Bills
 
         public BillRepository()
         {
-            try
-            {
-                var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
-                _connection = new NpgsqlConnection(connectionString);
-            }
-            catch (System.Exception exception)
-            {
-                var currentDirectiory = Directory.GetCurrentDirectory();
-                var doesDirectoryExist = Directory.Exists(currentDirectiory + "/Data");
-                if (doesDirectoryExist == false)
-                    throw new System.Exception("Data Directory Missing: " + currentDirectiory + "/Data", exception);
-
-                doesDirectoryExist = Directory.Exists(currentDirectiory + "/Data/Config");
-                if (doesDirectoryExist == false)
-                    throw new System.Exception("Config Directory Missing: " + currentDirectiory + "/Data/Config", exception);
-
-                throw new System.Exception("Seems Fine? " + currentDirectiory, exception);
-            }
+            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+            _connection = new NpgsqlConnection(connectionString);
         }
 
         public List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId)
