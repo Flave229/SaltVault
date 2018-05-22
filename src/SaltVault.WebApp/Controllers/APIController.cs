@@ -49,14 +49,14 @@ namespace SaltVault.WebApp.Controllers
         public GetBillListResponse GetBillList(int? id, int? page, int? resultsPerPage)
         {
             var response = new GetBillListResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", Request.Headers["Authorization"].ToString(), ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
-
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", Request.Headers["Authorization"].ToString(), ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -91,14 +91,15 @@ namespace SaltVault.WebApp.Controllers
         public AddBillResponse AddBill([FromBody]AddBillRequest billRequest)
         {
             var response = new AddBillResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -141,14 +142,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateBill([FromBody]UpdateBillRequest billRequest)
         {
             var response = new AddBillResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -194,14 +196,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteBill([FromBody]DeleteBillRequest deleteBillRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -238,14 +241,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse AddPayment([FromBody]AddPaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 var payment = new Payment
                 {
                     Amount = paymentRequest.Amount,
@@ -277,14 +281,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdatePayment([FromBody]Core.Bills.Models.UpdatePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 PaymentValidator.CheckIfValidPayment(paymentRequest);
                 _billRepository.UpdatePayment(paymentRequest);
 
@@ -310,14 +315,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeletePayment([FromBody]DeletePaymentRequest paymentRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 var rowUpdated = _billRepository.DeletePayment(paymentRequest.PaymentId);
 
                 if (rowUpdated == false)
@@ -348,14 +354,15 @@ namespace SaltVault.WebApp.Controllers
         public GetShoppingResponse GetShoppingItemsV2(int? page, int? resultsPerPage)
         {
             var response = new GetShoppingResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -386,14 +393,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse AddShoppingItemV2([FromBody]AddShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -433,14 +441,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateShoppingItemV2([FromBody]UpdateShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ShoppingValidator.CheckIfValidItem(shoppingRequest);
                 _shoppingRepository.UpdateItem(shoppingRequest);
 
@@ -466,14 +475,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 _shoppingRepository.DeleteItem(deleteShoppingItemRequest.ShoppingItemId);
 
                 response.Notifications = new List<string>
@@ -498,14 +508,15 @@ namespace SaltVault.WebApp.Controllers
         public GetUsersResponse GetUsers()
         {
             var response = new GetUsersResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -562,14 +573,15 @@ namespace SaltVault.WebApp.Controllers
         public GetToDoResponse GetToDoList()
         {
             var response = new GetToDoResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -595,14 +607,15 @@ namespace SaltVault.WebApp.Controllers
         public AddToDoResponse AddToDoItem([FromBody]AddToDoTaskRequest toDoTaskRequest)
         {
             var response = new AddToDoResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
@@ -633,14 +646,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse UpdateToDoItem([FromBody]UpdateToDoRequest toDoRequest)
         {
             var response = new AddBillResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
 
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 _toDoRepository.UpdateToDoTask(toDoRequest);
 
                 response.Notifications = new List<string>
@@ -665,13 +679,15 @@ namespace SaltVault.WebApp.Controllers
         public CommunicationResponse DeleteToDoItem([FromBody]DeleteToDoRequest deleteToDoRequest)
         {
             var response = new CommunicationResponse();
-            if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
-            {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
-                return response;
-            }
+
             try
             {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                    return response;
+                }
+
                 var rowUpdated = _toDoRepository.DeleteToDoTask(deleteToDoRequest.Id);
 
                 if (rowUpdated == false)

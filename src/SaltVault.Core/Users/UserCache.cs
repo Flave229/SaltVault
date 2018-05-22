@@ -9,10 +9,6 @@ namespace SaltVault.Core.Users
     {
         private static readonly Dictionary<Guid, ActiveUser> _activeUserSessions = new Dictionary<Guid, ActiveUser>();
 
-        public UserCache()
-        {
-        }
-
         public static Guid StaticGenerateUserSession(ActiveUser user)
         {
             Guid sessionKey = _activeUserSessions.FirstOrDefault(userSession => userSession.Value.PersonId == user.PersonId).Key;
@@ -32,7 +28,7 @@ namespace SaltVault.Core.Users
         {
             ActiveUser user = _activeUserSessions[sessionId];
 
-            if (user.GetCreationTime().AddDays(7) < DateTime.Now)
+            if (user.Created.AddDays(7) < DateTime.Now)
                 throw new ErrorCodeException("User Session has expired", ErrorCode.USER_SESSION_EXPIRED);
 
             return user;
@@ -44,8 +40,8 @@ namespace SaltVault.Core.Users
             if (existingSession == false)
                 return false;
 
-            if (_activeUserSessions[sessionId].GetCreationTime().AddDays(7) < DateTime.Now)
-                return false;
+            if (_activeUserSessions[sessionId].Created.AddDays(7) < DateTime.Now)
+                throw new ErrorCodeException("User Session has expired", ErrorCode.USER_SESSION_EXPIRED);
 
             return true;
         }

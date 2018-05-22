@@ -43,15 +43,8 @@ namespace SaltVault.Core.Users
 
         public bool AuthenticateSession(string authHeader)
         {
-            try
-            {
-                string sanitisedToken = authHeader.Replace("Token ", "");
-                return _userCache.CheckSessionExists(new Guid(sanitisedToken));
-            }
-            catch (System.Exception exception)
-            {
-                return false;
-            }
+            string sanitisedToken = authHeader.Replace("Token ", "");
+            return _userCache.CheckSessionExists(new Guid(sanitisedToken));
         }
 
 

@@ -4,18 +4,13 @@ namespace SaltVault.Core.Users
 {
     public class ActiveUser
     {
-        private readonly DateTime _created;
+        public DateTime Created { get; set; }
         public int PersonId { get; set; }
         public int HouseId { get; set; }
 
         public ActiveUser()
         {
-            _created = DateTime.Now;
-        }
-
-        public DateTime GetCreationTime()
-        {
-            return _created;
+            Created = DateTime.Now;
         }
     }
 }
