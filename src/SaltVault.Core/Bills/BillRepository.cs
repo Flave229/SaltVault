@@ -27,8 +27,17 @@ namespace SaltVault.Core.Bills
 
         public BillRepository()
         {
-            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
-            _connection = new NpgsqlConnection(connectionString);
+            try
+            {
+                var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
+                _connection = new NpgsqlConnection(connectionString);
+            }
+            catch (System.Exception exception)
+            {
+                var currentDirectiory = Directory.GetCurrentDirectory();
+                Console.WriteLine(currentDirectiory);
+                throw exception;
+            }
         }
 
         public List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId)
