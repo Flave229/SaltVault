@@ -4,7 +4,7 @@ using SaltVault.Core.Bills;
 
 namespace SaltVault.WebApp.Models.Bills
 {
-    public class AddBillRequest : AuthenticatedCommunicationRequest
+    public class AddBillRequest
     {
         public string Name { get; set; }
         public decimal TotalAmount { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SaltVault.Tests.TestingHelpers;
@@ -12,7 +11,6 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetBills
     {
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
         private Guid _validSessionId;
-        private HttpClient _client;
         private GetBillListResponse _getBillListResponse;
 
         [TestInitialize]
@@ -20,24 +18,30 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetBills
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
-            _client = EndpointHelper.CreateFakeServer();
+            EndpointHelper.CreateFakeServer();
             EndpointHelper.SetAuthenticationToken(_validSessionId.ToString());
 
-            var response = _client.GetAsync("/Api/v2/Bills").Result;
-            string responseContent = response.Content.ReadAsStringAsync().Result;
+            string responseContent = EndpointHelper.GetBills();
             _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
         }
 
         [TestMethod]
         public void ThenTheBillListIsEmpty()
         {
-            Assert.AreEqual(_getBillListResponse.Bills.Count, 0);
+            Assert.AreEqual(0, _getBillListResponse.Bills.Count);
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
             Assert.IsFalse(_getBillListResponse.HasError);
+        }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            EndpointHelper.CleanUp();
+            _fakeTestingAccountHelper.CleanUp(_validSessionId);
         }
     }
 }

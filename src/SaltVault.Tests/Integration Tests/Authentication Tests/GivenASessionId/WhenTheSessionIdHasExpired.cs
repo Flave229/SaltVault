@@ -6,13 +6,12 @@ using SaltVault.Core.Exception;
 using SaltVault.Tests.TestingHelpers;
 using SaltVault.WebApp.Models.Bills;
 
-namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
+namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
 {
     [TestClass]
     public class WhenTheSessionIdHasExpired
     {
         private Guid _expiredSessionId;
-        private HttpClient _client;
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
 
         [TestInitialize]
@@ -20,15 +19,14 @@ namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _expiredSessionId = _fakeTestingAccountHelper.GenerateValidExpiredFakeCredentials();
-            _client = EndpointHelper.CreateFakeServer();
+            EndpointHelper.CreateFakeServer();
             EndpointHelper.SetAuthenticationToken(_expiredSessionId.ToString());
         }
 
         [TestMethod]
         public void ThenTheResponseContainsAnErrorWithExpiredCode()
         {
-            var response = _client.GetAsync("/Api/v2/Bills").Result;
-            string responseContent = response.Content.ReadAsStringAsync().Result;
+            string responseContent = EndpointHelper.GetBills();
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
 
             Assert.IsTrue(billListResponse.HasError);
