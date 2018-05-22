@@ -30,7 +30,7 @@ namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
             
             Assert.IsTrue(billListResponse.HasError);
-            Assert.IsTrue(billListResponse.Error.ErrorCode == ErrorCode.USER_INVALID_CREDENTIALS);
+            Assert.IsTrue(billListResponse.Error.ErrorCode == ErrorCode.SESSION_INVALID);
         }
     }
 }

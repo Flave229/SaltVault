@@ -3,6 +3,6 @@
     public enum ErrorCode
     {
         USER_SESSION_EXPIRED = 100001,
-        USER_INVALID_CREDENTIALS = 100002
+        SESSION_INVALID = 100002
     }
 }
