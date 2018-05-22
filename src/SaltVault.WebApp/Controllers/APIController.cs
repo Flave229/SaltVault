@@ -119,7 +119,9 @@ namespace SaltVault.WebApp.Controllers
                 BillValidator.CheckIfValidBill(bill);
                 response.Id = _billRepository.AddBill(bill);
 
-                _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);
+                if (user.HouseId == 1)
+                    _discordService.AddBillNotification(billRequest.Name, billRequest.Due, billRequest.TotalAmount);
+
                 response.Notifications = new List<string>
                 {
                     $"The bill '{billRequest.Name}' has been added"
