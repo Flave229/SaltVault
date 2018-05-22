@@ -29,9 +29,7 @@ namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
             var response = _client.GetAsync("/Api/v2/Bills").Result;
             string responseContent = response.Content.ReadAsStringAsync().Result;
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
-
-            Console.WriteLine(_validSessionId);
-            Console.WriteLine(responseContent);
+            
             Assert.IsFalse(billListResponse.HasError);
         }
 

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using SaltVault.Core.Exception;
 using SaltVault.Tests.TestingHelpers;
 using SaltVault.WebApp.Models.Bills;
 
@@ -22,15 +23,14 @@ namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
         }
 
         [TestMethod]
-        public void ThenTheResponseContainsErrors()
+        public void ThenTheResponseContainsAnErrorWithInvalidCredentialsCode()
         {
             var response = _client.GetAsync("/Api/v2/Bills").Result;
             string responseContent = response.Content.ReadAsStringAsync().Result;
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
-
-            Console.WriteLine(_invalidSessionId);
-            Console.WriteLine(responseContent);
+            
             Assert.IsTrue(billListResponse.HasError);
+            Assert.IsTrue(billListResponse.Error.ErrorCode == ErrorCode.USER_INVALID_CREDENTIALS);
         }
     }
 }
