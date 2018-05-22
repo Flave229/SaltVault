@@ -51,7 +51,7 @@ namespace SaltVault.WebApp.Controllers
             var response = new GetBillListResponse();
             if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
             {
-                response.AddError("The authorization credentails were invalid", ErrorCode.USER_INVALID_CREDENTIALS);
+                response.AddError("The authorization credentails were invalid", Request.Headers["Authorization"].ToString(), ErrorCode.USER_INVALID_CREDENTIALS);
                 return response;
             }
 

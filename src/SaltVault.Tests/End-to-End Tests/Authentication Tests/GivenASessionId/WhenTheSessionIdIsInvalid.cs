@@ -8,37 +8,29 @@ using SaltVault.WebApp.Models.Bills;
 namespace SaltVault.Tests.Authentication_Tests.GivenASessionId
 {
     [TestClass]
-    public class WhenTheSessionIdIsValid
+    public class WhenTheSessionIdIsInvalid
     {
-        private Guid _validSessionId;
+        private Guid _invalidSessionId;
         private HttpClient _client;
-        private FakeTestingAccountHelper _fakeTestingAccountHelper;
 
         [TestInitialize]
         public void Initialize()
         {
-            _fakeTestingAccountHelper = new FakeTestingAccountHelper();
-            _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
+            _invalidSessionId = Guid.NewGuid();
             _client = EndpointHelper.CreateFakeServer();
-            EndpointHelper.SetAuthenticationToken(_validSessionId.ToString());
+            EndpointHelper.SetAuthenticationToken(_invalidSessionId.ToString());
         }
 
         [TestMethod]
-        public void ThenTheResponseContainsNoErrors()
+        public void ThenTheResponseContainsErrors()
         {
             var response = _client.GetAsync("/Api/v2/Bills").Result;
             string responseContent = response.Content.ReadAsStringAsync().Result;
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
 
-            Console.WriteLine(_validSessionId);
+            Console.WriteLine(_invalidSessionId);
             Console.WriteLine(responseContent);
-            Assert.IsFalse(billListResponse.HasError);
-        }
-
-        [TestCleanup]
-        public void CleanUp()
-        {
-            _fakeTestingAccountHelper.CleanUp(_validSessionId);
+            Assert.IsTrue(billListResponse.HasError);
         }
     }
 }

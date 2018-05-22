@@ -49,5 +49,11 @@ namespace SaltVault.Core.Users
 
             return true;
         }
+
+        public static void TerminateSession(Guid sessionId)
+        {
+            if (_activeUserSessions.ContainsKey(sessionId))
+                _activeUserSessions.Remove(sessionId);
+        }
     }
 }

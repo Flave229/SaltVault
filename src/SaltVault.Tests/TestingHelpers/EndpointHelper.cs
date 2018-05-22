@@ -8,13 +8,22 @@ namespace SaltVault.Tests.TestingHelpers
 {
     public class EndpointHelper
     {
-        public static HttpClient CreateFakeServer(string sessionId)
+        private static HttpClient _fakeSever;
+
+        public static HttpClient CreateFakeServer()
         {
+            if (_fakeSever != null)
+                return _fakeSever;
+
             TestServer server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
             HttpClient httpClient = server.CreateClient();
-            //httpClient.BaseAddress = new Uri("http://localhost:5124/Api/v2/Bills");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", sessionId);
-            return httpClient;
+            _fakeSever = httpClient;
+            return _fakeSever;
+        }
+
+        public static void SetAuthenticationToken(string sessionId)
+        {
+            _fakeSever.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", sessionId);
         }
     }
 }

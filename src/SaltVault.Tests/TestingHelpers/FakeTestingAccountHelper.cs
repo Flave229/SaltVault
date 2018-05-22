@@ -14,8 +14,10 @@ namespace SaltVault.Tests.TestingHelpers
             });
         }
 
-        public void Teardown()
+        public void CleanUp(Guid? sessionId)
         {
+            if (sessionId != null)
+                UserCache.TerminateSession((Guid)sessionId);
             // Code to delete all the bills, payments, shopping items and to do tasks associated with the test user
         }
     }
