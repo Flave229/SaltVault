@@ -35,8 +35,7 @@ namespace SaltVault.Core.Bills
             catch (System.Exception exception)
             {
                 var currentDirectiory = Directory.GetCurrentDirectory();
-                Console.WriteLine(currentDirectiory);
-                throw exception;
+                throw new System.Exception(currentDirectiory, exception);
             }
         }
 
