@@ -35,7 +35,15 @@ namespace SaltVault.Core.Bills
             catch (System.Exception exception)
             {
                 var currentDirectiory = Directory.GetCurrentDirectory();
-                throw new System.Exception(currentDirectiory, exception);
+                var doesDirectoryExist = Directory.Exists(currentDirectiory + "/Data");
+                if (doesDirectoryExist == false)
+                    throw new System.Exception("Data Directory Missing: " + currentDirectiory + "/Data", exception);
+
+                doesDirectoryExist = Directory.Exists(currentDirectiory + "/Data/Config");
+                if (doesDirectoryExist == false)
+                    throw new System.Exception("Config Directory Missing: " + currentDirectiory + "/Data/Config", exception);
+
+                throw new System.Exception("Seems Fine? " + currentDirectiory, exception);
             }
         }
 
