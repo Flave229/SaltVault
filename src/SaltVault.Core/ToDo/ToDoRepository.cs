@@ -38,7 +38,7 @@ namespace SaltVault.Core.ToDo
                                                 "LEFT OUTER JOIN \"PeopleForToDo\" AS PeopleForToDo ON PeopleForToDo.\"ToDoId\" = ToDo.\"Id\" " +
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForToDo.\"PersonId\" " +
                                                 $"WHERE ToDo.\"HouseId\" = {userHouseId} " +
-                                                "ORDER BY ToDo.\"Due\" DESC, Person.\"Id\" ASC", _connection);
+                                                "ORDER BY ToDo.\"Complete\", ToDo.\"Due\" DESC, Person.\"Id\" ASC", _connection);
                 var reader = command.ExecuteReader();
 
                 while (reader.Read())
