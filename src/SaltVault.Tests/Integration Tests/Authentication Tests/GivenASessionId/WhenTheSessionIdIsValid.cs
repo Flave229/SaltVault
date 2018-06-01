@@ -12,20 +12,22 @@ namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
     {
         private Guid _validSessionId;
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
-            EndpointHelper.CreateFakeServer();
-            EndpointHelper.SetAuthenticationToken(_validSessionId.ToString());
+            _endpointHelper = new EndpointHelper();
+            _endpointHelper.Setup()
+                .SetAuthenticationToken(_validSessionId.ToString());
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
-            string responseContent = EndpointHelper.GetBills();
+            string responseContent = _endpointHelper.GetBills();
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
             
             Assert.IsFalse(billListResponse.HasError);

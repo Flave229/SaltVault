@@ -13,20 +13,21 @@ namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
     {
         private Guid _expiredSessionId;
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _expiredSessionId = _fakeTestingAccountHelper.GenerateValidExpiredFakeCredentials();
-            EndpointHelper.CreateFakeServer();
-            EndpointHelper.SetAuthenticationToken(_expiredSessionId.ToString());
+            _endpointHelper = new EndpointHelper();
+            _endpointHelper.Setup().SetAuthenticationToken(_expiredSessionId.ToString());
         }
 
         [TestMethod]
         public void ThenTheResponseContainsAnErrorWithExpiredCode()
         {
-            string responseContent = EndpointHelper.GetBills();
+            string responseContent = _endpointHelper.GetBills();
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
 
             Assert.IsTrue(billListResponse.HasError);

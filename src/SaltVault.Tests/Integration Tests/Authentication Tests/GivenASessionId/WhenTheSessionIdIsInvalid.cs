@@ -11,19 +11,20 @@ namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
     public class WhenTheSessionIdIsInvalid
     {
         private Guid _invalidSessionId;
+        private EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
         {
             _invalidSessionId = Guid.NewGuid();
-            EndpointHelper.CreateFakeServer();
-            EndpointHelper.SetAuthenticationToken(_invalidSessionId.ToString());
+            _endpointHelper = new EndpointHelper();
+            _endpointHelper.Setup().SetAuthenticationToken(_invalidSessionId.ToString());
         }
 
         [TestMethod]
         public void ThenTheResponseContainsAnErrorWithInvalidCredentialsCode()
         {
-            string responseContent = EndpointHelper.GetBills();
+            string responseContent = _endpointHelper.GetBills();
             GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
             
             Assert.IsTrue(billListResponse.HasError);

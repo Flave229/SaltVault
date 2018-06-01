@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using Npgsql;
@@ -23,17 +24,18 @@ namespace SaltVault.Core.Bills
 
     public class BillRepository : IBillRepository
     {
-        private readonly NpgsqlConnection _connection;
+        private string _connectionString;
+        //private readonly NpgsqlConnection _connection;
 
         public BillRepository()
         {
-            var connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
-            _connection = new NpgsqlConnection(connectionString);
+            _connectionString = File.ReadAllText("./Data/Config/LIVEConnectionString.config");
         }
 
         public List<Bill> GetAllBasicBillDetails(Pagination pagination, int userHouseId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             var bills = new List<Bill>();
             try
@@ -44,7 +46,7 @@ namespace SaltVault.Core.Bills
                                                 "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
                                                 "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" AND Payment.\"PersonId\" = Person.\"Id\" " +
                                                 $"WHERE Bill.\"HouseId\" = {userHouseId} " +
-                                                $"ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC OFFSET {pagination.Page * pagination.ResultsPerPage} FETCH NEXT {pagination.ResultsPerPage} ROWS ONLY", _connection);
+                                                $"ORDER BY Bill.\"Due\" DESC, Person.\"Id\" ASC OFFSET {pagination.Page * pagination.ResultsPerPage} FETCH NEXT {pagination.ResultsPerPage} ROWS ONLY", connection);
                 var reader = command.ExecuteReader();
                 
                 while (reader.Read())
@@ -114,13 +116,14 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public Bill GetBasicBillDetails(int billId, int userHouseId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
@@ -129,7 +132,7 @@ namespace SaltVault.Core.Bills
                     "FROM public.\"Bill\" AS Bill " +
                     "LEFT OUTER JOIN \"Payment\" AS Payment ON Payment.\"BillId\" = Bill.\"Id\" " +
                     "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
-                    $"WHERE Bill.\"Id\" = {billId} AND Bill.\"HouseId\" = {userHouseId}", _connection);
+                    $"WHERE Bill.\"Id\" = {billId} AND Bill.\"HouseId\" = {userHouseId}", connection);
                 var reader = command.ExecuteReader();
 
                 Bill bill = null;
@@ -177,7 +180,7 @@ namespace SaltVault.Core.Bills
                 command = new NpgsqlCommand("SELECT Person.\"Id\", Person.\"Image\" " +
                                             "FROM public.\"PeopleForBill\" AS PeopleForBill " +
                                             "LEFT OUTER JOIN \"Person\" AS Person ON Person.\"Id\" = PeopleForBill.\"PersonId\" " +
-                                            $"WHERE PeopleForBill.\"BillId\" = {billId}", _connection);
+                                            $"WHERE PeopleForBill.\"BillId\" = {billId}", connection);
                 reader = command.ExecuteReader();
 
                 while (reader.Read())
@@ -199,19 +202,20 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public int AddBill(AddBill bill)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"Bill\" (\"Name\", \"Amount\", \"Due\", \"RecurringType\", \"HouseId\") " +
                                                 $"VALUES ('{bill.Name}', {bill.TotalAmount}, '{bill.Due:yyyy-MM-dd}', {(int)bill.RecurringType}, {bill.HouseId}) " +
-                                                "RETURNING \"Id\"", _connection);
+                                                "RETURNING \"Id\"", connection);
                 Int64 billId = -1;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -223,7 +227,7 @@ namespace SaltVault.Core.Bills
                 foreach (var peopleId in bill.PeopleIds)
                 {
                     command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
-                                                $"VALUES ({billId}, {peopleId})", _connection);
+                                                $"VALUES ({billId}, {peopleId})", connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     { }
@@ -238,13 +242,14 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public bool UpdateBill(UpdateBill billRequest)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
@@ -269,7 +274,7 @@ namespace SaltVault.Core.Bills
                     command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
                                                 $"WHERE \"Id\" = {billRequest.Id} " +
-                                                "RETURNING \"Id\"", _connection);
+                                                "RETURNING \"Id\"", connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     {
@@ -283,7 +288,7 @@ namespace SaltVault.Core.Bills
                     return rowUpdated;
 
                 command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
-                                            $"WHERE \"BillId\" = {billRequest.Id}", _connection);
+                                            $"WHERE \"BillId\" = {billRequest.Id}", connection);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
@@ -292,7 +297,7 @@ namespace SaltVault.Core.Bills
                 foreach (var peopleId in billRequest.PeopleIds)
                 {
                     command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
-                                                $"VALUES ({billId}, {peopleId})", _connection);
+                                                $"VALUES ({billId}, {peopleId})", connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     { }
@@ -307,25 +312,26 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public bool DeleteBill(int billId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" " +
-                                                $"WHERE \"BillId\" = {billId}", _connection);
+                                                $"WHERE \"BillId\" = {billId}", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
                 reader.Close();
 
                 command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" " +
-                                           $"WHERE \"BillId\" = {billId}", _connection);
+                                           $"WHERE \"BillId\" = {billId}", connection);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
@@ -333,7 +339,7 @@ namespace SaltVault.Core.Bills
 
                 command = new NpgsqlCommand("DELETE FROM public.\"Bill\" " +
                                                 $"WHERE \"Id\" = {billId} " +
-                                                "RETURNING \"Id\"", _connection);
+                                                "RETURNING \"Id\"", connection);
 
                 var billDeleted = false;
                 reader = command.ExecuteReader();
@@ -351,20 +357,21 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public Payment GetPayment(int paymentId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("SELECT Payment.\"Amount\", Payment.\"Created\", Person.\"Id\", Person.\"FirstName\", Person.\"LastName\", Person.\"Image\" " +
                                                 "FROM public.\"Payment\" AS Payment " +
                                                 "LEFT OUTER JOIN public.\"Person\" AS Person ON Person.\"Id\" = Payment.\"PersonId\" " +
-                                                $"WHERE Payment.\"Id\" = {paymentId}", _connection);
+                                                $"WHERE Payment.\"Id\" = {paymentId}", connection);
                 Payment payment = null;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -396,18 +403,19 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public void AddPayment(Payment payment, int billId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO public.\"Payment\" (\"BillId\", \"PersonId\", \"Amount\", \"Created\") " +
-                                                $"VALUES ({billId}, {payment.PersonId}, {payment.Amount}, '{payment.DatePaid:yyyy-MM-dd}')", _connection);
+                                                $"VALUES ({billId}, {payment.PersonId}, {payment.Amount}, '{payment.DatePaid:yyyy-MM-dd}')", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 { }
@@ -419,13 +427,14 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public bool UpdatePayment(UpdatePaymentRequest paymentRequest)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
@@ -438,7 +447,7 @@ namespace SaltVault.Core.Bills
 
                 var command = new NpgsqlCommand("UPDATE public.\"Payment\" " +
                                                 $"SET {string.Join(", ", setValues)} " +
-                                                $"WHERE \"Id\" = {paymentRequest.Id}", _connection);
+                                                $"WHERE \"Id\" = {paymentRequest.Id}", connection);
                 
                 var rowUpdated = false;
                 var reader = command.ExecuteReader();
@@ -456,19 +465,20 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
 
         public bool DeletePayment(int paymentRequestPaymentId)
         {
-            _connection.Open();
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
             try
             {
                 var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" " +
                                             $"WHERE \"Id\" = {paymentRequestPaymentId} " +
-                                            "RETURNING \"Id\"", _connection);
+                                            "RETURNING \"Id\"", connection);
                 var paymentDeleted = false;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -485,7 +495,7 @@ namespace SaltVault.Core.Bills
             }
             finally
             {
-                _connection.Close();
+                connection.Close();
             }
         }
     }

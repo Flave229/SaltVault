@@ -9,46 +9,52 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetASing
     [TestClass]
     public class WhenTheUserSuppliesAValidId
     {
-        private FakeTestingAccountHelper _fakeTestingAccountHelper;
-        private Guid _validSessionId;
-        private GetBillListResponse _getBillListResponse;
-        private int _billId;
+        private static FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private static Guid _validSessionId;
+        private static GetBillListResponse _getBillListResponse;
+        private static int _billId;
+        private static EndpointHelper _endpointHelper;
 
-        [TestInitialize]
-        public void Initialize()
+        [ClassInitialize]
+        public static void Initialize(TestContext context)
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
-            EndpointHelper.CreateFakeServer();
-            EndpointHelper.SetAuthenticationToken(_validSessionId.ToString());
-
-            _billId = EndpointHelper.AddTestBill(this.GetType().Name);
-            string responseContent = EndpointHelper.GetBills(_billId);
+            _endpointHelper = new EndpointHelper();
+            _billId = _endpointHelper.Setup()
+                .SetAuthenticationToken(_validSessionId.ToString())
+                .AddTestBill(typeof(WhenTheUserSuppliesAValidId).Name)
+                .ReturnAddedBillIds()[0];
+            string responseContent = _endpointHelper.GetBills(_billId);
             _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
         }
 
         [TestMethod]
         public void ThenTheBillIdMatchesTheRequestedId()
         {
+            Console.WriteLine(_billId);
+            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.AreEqual(_billId, _getBillListResponse.Bills[0].Id);
         }
 
         [TestMethod]
         public void ThenTheBillNameMatchesTheAddedBillName()
         {
+            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.AreEqual(this.GetType().Name, _getBillListResponse.Bills[0].Name);
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
+            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.IsFalse(_getBillListResponse.HasError);
         }
 
-        [TestCleanup]
-        public void CleanUp()
+        [ClassCleanup]
+        public static void CleanUp()
         {
-            EndpointHelper.CleanUp();
+            _endpointHelper.CleanUp();
             _fakeTestingAccountHelper.CleanUp(_validSessionId);
         }
     }
