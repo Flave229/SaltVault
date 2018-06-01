@@ -48,11 +48,17 @@ namespace SaltVault.Tests.TestingHelpers
             return response.Content.ReadAsStringAsync().Result;
         }
 
-        public static void AddTestBill()
+        public static string GetBills(int id)
+        {
+            var response = _fakeSever.GetAsync($"/Api/v2/Bills?id={id}").Result;
+            return response.Content.ReadAsStringAsync().Result;
+        }
+
+        public static int AddTestBill(string name = null)
         {
             AddBillRequest request = new AddBillRequest
             {
-                Name = "DEVELOPMENT TESTING BILL",
+                Name = name ?? "DEVELOPMENT TESTING BILL",
                 Due = DateTime.Now,
                 PeopleIds = new List<int> { 5 },
                 TotalAmount = 299,
@@ -64,6 +70,7 @@ namespace SaltVault.Tests.TestingHelpers
             var responseBody = result.Content.ReadAsStringAsync().Result;
             AddBillResponse billResponse = JsonConvert.DeserializeObject<AddBillResponse>(responseBody);
             _testBillsAdded.Add(billResponse.Id);
+            return billResponse.Id;
         }
 
         private static void DeleteTestBill(int billId)
