@@ -111,6 +111,7 @@ namespace SaltVault.Tests.TestingHelpers
 
             private void DeleteTestBill(int billId)
             {
+                Console.WriteLine(billId);
                 DeleteBillRequest request = new DeleteBillRequest { BillId = billId };
                 HttpRequestMessage deleteMessage = new HttpRequestMessage
                 {

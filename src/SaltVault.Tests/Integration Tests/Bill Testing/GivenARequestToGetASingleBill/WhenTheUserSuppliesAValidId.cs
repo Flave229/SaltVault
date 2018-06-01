@@ -15,8 +15,8 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetASing
         private static int _billId;
         private static EndpointHelper _endpointHelper;
 
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
+        [TestInitialize]
+        public void Initialize()
         {
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
@@ -32,7 +32,6 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetASing
         [TestMethod]
         public void ThenTheBillIdMatchesTheRequestedId()
         {
-            Console.WriteLine(_billId);
             Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.AreEqual(_billId, _getBillListResponse.Bills[0].Id);
         }
@@ -51,8 +50,8 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetASing
             Assert.IsFalse(_getBillListResponse.HasError);
         }
 
-        [ClassCleanup]
-        public static void CleanUp()
+        [TestCleanup]
+        public void CleanUp()
         {
             _endpointHelper.CleanUp();
             _fakeTestingAccountHelper.CleanUp(_validSessionId);
