@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using Npgsql;
@@ -16,6 +15,7 @@ namespace SaltVault.Core.Bills
         int AddBill(AddBill bill);
         bool UpdateBill(UpdateBill billRequest);
         bool DeleteBill(int billId);
+        void DeleteHouseholdBills(int userHouseId);
         Payment GetPayment(int paymentId);
         void AddPayment(Payment payment, int billId);
         bool UpdatePayment(UpdatePaymentRequest paymentRequest);
@@ -24,8 +24,7 @@ namespace SaltVault.Core.Bills
 
     public class BillRepository : IBillRepository
     {
-        private string _connectionString;
-        //private readonly NpgsqlConnection _connection;
+        private readonly string _connectionString;
 
         public BillRepository()
         {
@@ -354,6 +353,54 @@ namespace SaltVault.Core.Bills
             catch (System.Exception exception)
             {
                 throw new System.Exception($"An Error occured while deleting the bill (ID: {billId})", exception);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void DeleteHouseholdBills(int userHouseId)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"Payment\" AS Payment " +
+                                                "WHERE Payment.\"BillId\" IN " +
+                                                "( " +
+                                                "SELECT Bill.\"Id\" FROM public.\"Bill\" AS Bill " +
+                                                $"WHERE Bill.\"HouseId\" = {userHouseId} " +
+                                                ")", connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"PeopleForBill\" AS PersonForBill " +
+                                            "WHERE PersonForBill.\"BillId\" IN " +
+                                            "( " +
+                                            "SELECT Bill.\"Id\" FROM public.\"Bill\" AS Bill " +
+                                            $"WHERE Bill.\"HouseId\" = {userHouseId} " +
+                                            ")", connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"Bill\" AS Bill " +
+                                            $"WHERE Bill.\"HouseId\" = {userHouseId} ", connection);
+
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                reader.Close();
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while deleting the bills for the household (ID: {userHouseId})", exception);
             }
             finally
             {

@@ -14,6 +14,7 @@ namespace SaltVault.Core.Shopping
         void AddItem(ShoppingItem shoppingRequest, int userHouseId);
         void UpdateItem(UpdateShoppingItemRequest shoppingRequest);
         void DeleteItem(int shoppingItemId);
+        void DeleteHouseholdShoppingItems(int userHouseId);
     }
 
     public class ShoppingRepository : IShoppingRepository
@@ -221,6 +222,47 @@ namespace SaltVault.Core.Shopping
             catch (System.Exception exception)
             {
                 throw new System.Exception($"An Error occured while deleting the shopping item (ID: {shoppingItemId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public void DeleteHouseholdShoppingItems(int userHouseId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItemFor\" AS ShoppingItemFor " +
+                                                "WHERE ShoppingItemFor.\"ShoppingItemId\" IN " +
+                                                "( " +
+                                                "SELECT ShoppingItem.\"Id\" FROM public.\"ShoppingItem\" AS ShoppingItem " +
+                                                $"WHERE ShoppingItem.\"HouseId\" = {userHouseId} " +
+                                                ")", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"ShoppingItem\" AS ShoppingItem " +
+                                            $"WHERE ShoppingItem.\"HouseId\" = {userHouseId} ", _connection);
+                
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while deleting the shopping items for the household (ID: {userHouseId})", exception);
             }
             finally
             {

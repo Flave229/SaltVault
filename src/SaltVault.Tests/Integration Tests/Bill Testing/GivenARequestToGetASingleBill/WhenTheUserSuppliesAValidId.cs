@@ -32,21 +32,18 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetASing
         [TestMethod]
         public void ThenTheBillIdMatchesTheRequestedId()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.AreEqual(_billId, _getBillListResponse.Bills[0].Id);
         }
 
         [TestMethod]
         public void ThenTheBillNameMatchesTheAddedBillName()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.AreEqual(this.GetType().Name, _getBillListResponse.Bills[0].Name);
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(_getBillListResponse));
             Assert.IsFalse(_getBillListResponse.HasError);
         }
 

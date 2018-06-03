@@ -8,14 +8,18 @@ using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using SaltVault.Core.Bills;
 using SaltVault.WebApp;
+using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
+using SaltVault.WebApp.Models.Shopping;
+using SaltVault.WebApp.Models.Users;
 
 namespace SaltVault.Tests.TestingHelpers
 {
     public interface IEndpointHelperSetup
     {
-        IEndpointHelperSetup AddTestBill(string name = null);
         IEndpointHelperSetup SetAuthenticationToken(string sessionId);
+        IEndpointHelperSetup AddTestBill(string name = null);
+        IEndpointHelperSetup AddShoppingItem(string name = null);
         List<int> ReturnAddedBillIds();
         void CleanUp();
     }
@@ -60,6 +64,12 @@ namespace SaltVault.Tests.TestingHelpers
             return response.Content.ReadAsStringAsync().Result;
         }
 
+        public string GetShoppingItems()
+        {
+            var response = _fakeSever.GetAsync("/Api/v2/Shopping").Result;
+            return response.Content.ReadAsStringAsync().Result;
+        }
+
         private class EndpointHelperSetup : IEndpointHelperSetup
         {
             private readonly HttpClient _fakeSever;
@@ -68,6 +78,12 @@ namespace SaltVault.Tests.TestingHelpers
             public EndpointHelperSetup(HttpClient fakeSever)
             {
                 _fakeSever = fakeSever;
+            }
+
+            public IEndpointHelperSetup SetAuthenticationToken(string sessionId)
+            {
+                _fakeSever.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", sessionId);
+                return this;
             }
 
             public IEndpointHelperSetup AddTestBill(string name = null)
@@ -89,9 +105,17 @@ namespace SaltVault.Tests.TestingHelpers
                 return this;
             }
 
-            public IEndpointHelperSetup SetAuthenticationToken(string sessionId)
+            public IEndpointHelperSetup AddShoppingItem(string name = null)
             {
-                _fakeSever.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", sessionId);
+                AddShoppingItemRequest request = new AddShoppingItemRequest
+                {
+                    Name = name ?? "DEVELOPMENT TESTING SHOPPING ITEM",
+                    ItemFor = new List<int> { 5 }
+                };
+                var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+                var result = _fakeSever.PostAsync("/Api/v2/Shopping", requestBody).Result;
+
+                var responseBody = result.Content.ReadAsStringAsync().Result;
                 return this;
             }
 
@@ -102,24 +126,17 @@ namespace SaltVault.Tests.TestingHelpers
 
             public void CleanUp()
             {
-                // TODO: Use the future endpoints that can clear all the data associated with a user & household
-                foreach (var billId in _testBillsAdded)
+                DeleteHouseholdRequest request = new DeleteHouseholdRequest
                 {
-                    DeleteTestBill(billId);
-                }
-            }
-
-            private void DeleteTestBill(int billId)
-            {
-                Console.WriteLine(billId);
-                DeleteBillRequest request = new DeleteBillRequest { BillId = billId };
-                HttpRequestMessage deleteMessage = new HttpRequestMessage
+                    KeepHousehold = true
+                };
+                HttpRequestMessage requestMessage = new HttpRequestMessage
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"),
                     Method = HttpMethod.Delete,
-                    RequestUri = new Uri(_fakeSever.BaseAddress, "Api/v2/Bills")
+                    RequestUri = new Uri(_fakeSever.BaseAddress, "Api/v2/Household")
                 };
-                var result = _fakeSever.SendAsync(deleteMessage).Result;
+                var result = _fakeSever.SendAsync(requestMessage).Result;
                 var responseBody = result.Content.ReadAsStringAsync().Result;
             }
         }
