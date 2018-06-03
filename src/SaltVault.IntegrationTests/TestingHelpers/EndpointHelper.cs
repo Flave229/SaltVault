@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using SaltVault.Core.Bills;
+using SaltVault.Core.ToDo.Models;
 using SaltVault.WebApp;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
@@ -19,6 +20,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
         IEndpointHelperSetup SetAuthenticationToken(string sessionId);
         IEndpointHelperSetup AddTestBill(string name = null);
         IEndpointHelperSetup AddShoppingItem(string name = null);
+        IEndpointHelperSetup AddToDoTask(string name = null);
         List<int> ReturnAddedBillIds();
         void CleanUp();
     }
@@ -69,6 +71,12 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             return response.Content.ReadAsStringAsync().Result;
         }
 
+        public string GetToDoItems()
+        {
+            var response = _fakeSever.GetAsync("/Api/v2/ToDo").Result;
+            return response.Content.ReadAsStringAsync().Result;
+        }
+
         private class EndpointHelperSetup : IEndpointHelperSetup
         {
             private readonly HttpClient _fakeSever;
@@ -113,6 +121,20 @@ namespace SaltVault.IntegrationTests.TestingHelpers
                 };
                 var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
                 var result = _fakeSever.PostAsync("/Api/v2/Shopping", requestBody).Result;
+
+                var responseBody = result.Content.ReadAsStringAsync().Result;
+                return this;
+            }
+
+            public IEndpointHelperSetup AddToDoTask(string name = null)
+            {
+                AddToDoTaskRequest request = new AddToDoTaskRequest
+                {
+                    Title = name ?? "DEVELOPMENT TESTING TO DO TASK",
+                    PeopleIds = new List<int> { 5 }
+                };
+                var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+                var result = _fakeSever.PostAsync("/Api/v2/ToDo", requestBody).Result;
 
                 var responseBody = result.Content.ReadAsStringAsync().Result;
                 return this;

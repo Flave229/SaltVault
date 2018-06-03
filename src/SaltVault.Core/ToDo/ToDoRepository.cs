@@ -14,6 +14,7 @@ namespace SaltVault.Core.ToDo
         int AddToDoTask(AddToDoTaskRequest toDoTask, int userHouseId);
         void UpdateToDoTask(UpdateToDoRequest toDoRequest);
         bool DeleteToDoTask(int toDoId);
+        void DeleteHouseholdToDoTask(int userHouseId);
     }
 
     public class ToDoRepository : IToDoRepository
@@ -217,6 +218,41 @@ namespace SaltVault.Core.ToDo
             catch (System.Exception exception)
             {
                 throw new System.Exception($"An Error occured while deleting the To Do Task (ID: {toDoId})", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public void DeleteHouseholdToDoTask(int userHouseId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"PeopleForToDo\" AS PeopleForToDo " +
+                                                "WHERE PeopleForToDo.\"ToDoId\" IN " +
+                                                "( " +
+                                                "SELECT ToDo.\"Id\" FROM public.\"ToDo\" AS ToDo " +
+                                                $"WHERE ToDo.\"HouseId\" = {userHouseId} " +
+                                                ")", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("DELETE FROM public.\"ToDo\" AS ToDo " +
+                                            $"WHERE ToDo.\"HouseId\" = {userHouseId} ", _connection);
+
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while deleting the To Do Tasks for the household (ID: {userHouseId})", exception);
             }
             finally
             {

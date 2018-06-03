@@ -562,6 +562,7 @@ namespace SaltVault.WebApp.Controllers
 
                 _billRepository.DeleteHouseholdBills(user.HouseId);
                 _shoppingRepository.DeleteHouseholdShoppingItems(user.HouseId);
+                _toDoRepository.DeleteHouseholdToDoTask(user.HouseId);
 
                 response.Notifications = new List<string>
                 {
