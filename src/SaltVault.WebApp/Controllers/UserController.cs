@@ -8,13 +8,13 @@ using SaltVault.WebApp.Models.Users;
 
 namespace SaltVault.WebApp.Controllers
 {
-    public class ApiController : Controller
+    public class UserController : Controller
     {
         private readonly IUserService _userService;
         private readonly IGoogleTokenAuthentication _googleTokenAuthentication;
         private readonly IPeopleRepository _peopleRepository;
 
-        public ApiController(IPeopleRepository peopleRepository, IUserService userService, IGoogleTokenAuthentication googleTokenAuthentication)
+        public UserController(IPeopleRepository peopleRepository, IUserService userService, IGoogleTokenAuthentication googleTokenAuthentication)
         {
             _userService = userService;
             _googleTokenAuthentication = googleTokenAuthentication;
@@ -85,12 +85,5 @@ namespace SaltVault.WebApp.Controllers
             }
             return response;
         }
-    }
-
-    public class UpdatePaymentRequest
-    {
-        public Guid PaymentId { get; set; }
-        public decimal Amount { get; set; }
-        public DateTime Created { get; set; }
     }
 }
