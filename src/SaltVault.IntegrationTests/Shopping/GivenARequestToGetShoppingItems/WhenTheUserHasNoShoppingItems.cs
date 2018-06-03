@@ -28,7 +28,7 @@ namespace SaltVault.IntegrationTests.Shopping.GivenARequestToGetShoppingItems
         }
 
         [TestMethod]
-        public void ThenTheBillListIsEmpty()
+        public void ThenTheShoppingListIsEmpty()
         {
             Assert.AreEqual(0, _getShoppingItemResponse.ShoppingList.Count);
         }
