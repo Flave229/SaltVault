@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using SaltVault.Core.Bills;
 using SaltVault.WebApp;
-using SaltVault.WebApp.Models;
 using SaltVault.WebApp.Models.Bills;
 using SaltVault.WebApp.Models.Shopping;
 using SaltVault.WebApp.Models.Users;
 
-namespace SaltVault.Tests.TestingHelpers
+namespace SaltVault.IntegrationTests.TestingHelpers
 {
     public interface IEndpointHelperSetup
     {

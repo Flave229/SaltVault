@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using SaltVault.Tests.TestingHelpers;
-using SaltVault.WebApp.Models.Bills;
+using SaltVault.IntegrationTests.TestingHelpers;
+using SaltVault.WebApp.Models.Shopping;
 
-namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
+namespace SaltVault.IntegrationTests.Shopping.GivenARequestToGetShoppingItems
 {
     [TestClass]
-    public class WhenTheSessionIdIsValid
+    public class WhenTheUserHasNoShoppingItems
     {
-        private Guid _validSessionId;
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private Guid _validSessionId;
+        private GetShoppingResponse _getShoppingItemResponse;
         private EndpointHelper _endpointHelper;
 
         [TestInitialize]
@@ -22,20 +22,27 @@ namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString());
+
+            string responseContent = _endpointHelper.GetShoppingItems();
+            _getShoppingItemResponse = JsonConvert.DeserializeObject<GetShoppingResponse>(responseContent);
+        }
+
+        [TestMethod]
+        public void ThenTheBillListIsEmpty()
+        {
+            Assert.AreEqual(0, _getShoppingItemResponse.ShoppingList.Count);
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
-            string responseContent = _endpointHelper.GetBills();
-            GetBillListResponse billListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
-            
-            Assert.IsFalse(billListResponse.HasError);
+            Assert.IsFalse(_getShoppingItemResponse.HasError);
         }
 
         [TestCleanup]
         public void CleanUp()
         {
+            _endpointHelper.CleanUp();
             _fakeTestingAccountHelper.CleanUp(_validSessionId);
         }
     }

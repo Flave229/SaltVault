@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using SaltVault.Tests.TestingHelpers;
+using SaltVault.IntegrationTests.TestingHelpers;
 using SaltVault.WebApp.Models.Bills;
 
-namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetBills
+namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
 {
     [TestClass]
-    public class WhenTheUserHasBills
+    public class WhenTheUserSuppliesAValidId
     {
-        private FakeTestingAccountHelper _fakeTestingAccountHelper;
-        private Guid _validSessionId;
-        private GetBillListResponse _getBillListResponse;
-        private EndpointHelper _endpointHelper;
+        private static FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private static Guid _validSessionId;
+        private static GetBillListResponse _getBillListResponse;
+        private static int _billId;
+        private static EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
@@ -23,18 +21,24 @@ namespace SaltVault.Tests.Integration_Tests.Bill_Testing.GivenARequestToGetBills
             _fakeTestingAccountHelper = new FakeTestingAccountHelper();
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
             _endpointHelper = new EndpointHelper();
-            _endpointHelper.Setup()
+            _billId = _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString())
-                .AddTestBill();
-            
-            string responseContent = _endpointHelper.GetBills();
+                .AddTestBill(typeof(WhenTheUserSuppliesAValidId).Name)
+                .ReturnAddedBillIds()[0];
+            string responseContent = _endpointHelper.GetBills(_billId);
             _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
         }
 
         [TestMethod]
-        public void ThenTheBillListContainsBills()
+        public void ThenTheBillIdMatchesTheRequestedId()
         {
-            Assert.AreEqual(1, _getBillListResponse.Bills.Count);
+            Assert.AreEqual(_billId, _getBillListResponse.Bills[0].Id);
+        }
+
+        [TestMethod]
+        public void ThenTheBillNameMatchesTheAddedBillName()
+        {
+            Assert.AreEqual(this.GetType().Name, _getBillListResponse.Bills[0].Name);
         }
 
         [TestMethod]

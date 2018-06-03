@@ -2,10 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SaltVault.Core.Exception;
-using SaltVault.Tests.TestingHelpers;
+using SaltVault.IntegrationTests.TestingHelpers;
 using SaltVault.WebApp.Models.Bills;
 
-namespace SaltVault.Tests.Integration_Tests.Authentication_Tests.GivenASessionId
+namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
 {
     [TestClass]
     public class WhenTheSessionIdIsInvalid

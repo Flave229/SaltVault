@@ -1,17 +1,17 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using SaltVault.Tests.TestingHelpers;
-using SaltVault.WebApp.Models.Shopping;
+using SaltVault.IntegrationTests.TestingHelpers;
+using SaltVault.WebApp.Models.Bills;
 
-namespace SaltVault.Tests.Integration_Tests.Shopping_Testing.GivenARequestToGetShoppingItems
+namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetBills
 {
     [TestClass]
-    public class WhenTheUserHasShoppingItems
+    public class WhenTheUserHasNoBills
     {
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
         private Guid _validSessionId;
-        private GetShoppingResponse _getShoppingItemResponse;
+        private GetBillListResponse _getBillListResponse;
         private EndpointHelper _endpointHelper;
 
         [TestInitialize]
@@ -21,23 +21,22 @@ namespace SaltVault.Tests.Integration_Tests.Shopping_Testing.GivenARequestToGetS
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString())
-                .AddShoppingItem(typeof(WhenTheUserHasShoppingItems).Name);
-            
-            string responseContent = _endpointHelper.GetShoppingItems();
-            _getShoppingItemResponse = JsonConvert.DeserializeObject<GetShoppingResponse>(responseContent);
+                .SetAuthenticationToken(_validSessionId.ToString());
+
+            string responseContent = _endpointHelper.GetBills();
+            _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
         }
 
         [TestMethod]
-        public void ThenTheShoppingListContainsItems()
+        public void ThenTheBillListIsEmpty()
         {
-            Assert.AreEqual(1, _getShoppingItemResponse.ShoppingList.Count);
+            Assert.AreEqual(0, _getBillListResponse.Bills.Count);
         }
 
         [TestMethod]
         public void ThenTheResponseContainsNoErrors()
         {
-            Assert.IsFalse(_getShoppingItemResponse.HasError);
+            Assert.IsFalse(_getBillListResponse.HasError);
         }
 
         [TestCleanup]

@@ -1,7 +1,7 @@
 ﻿using System;
 using SaltVault.Core.Users;
 
-namespace SaltVault.Tests.TestingHelpers
+namespace SaltVault.IntegrationTests.TestingHelpers
 {
     public class FakeTestingAccountHelper
     {

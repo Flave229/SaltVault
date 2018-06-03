@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using SaltVault.Tests.TestingHelpers;
+using SaltVault.IntegrationTests.TestingHelpers;
 using SaltVault.WebApp.Models.Shopping;
 
-namespace SaltVault.Tests.Integration_Tests.Shopping_Testing.GivenARequestToGetShoppingItems
+namespace SaltVault.IntegrationTests.Shopping.GivenARequestToGetShoppingItems
 {
     [TestClass]
-    public class WhenTheUserHasNoShoppingItems
+    public class WhenTheUserHasShoppingItems
     {
         private FakeTestingAccountHelper _fakeTestingAccountHelper;
         private Guid _validSessionId;
@@ -21,16 +21,17 @@ namespace SaltVault.Tests.Integration_Tests.Shopping_Testing.GivenARequestToGetS
             _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString());
-
+                .SetAuthenticationToken(_validSessionId.ToString())
+                .AddShoppingItem(typeof(WhenTheUserHasShoppingItems).Name);
+            
             string responseContent = _endpointHelper.GetShoppingItems();
             _getShoppingItemResponse = JsonConvert.DeserializeObject<GetShoppingResponse>(responseContent);
         }
 
         [TestMethod]
-        public void ThenTheBillListIsEmpty()
+        public void ThenTheShoppingListContainsItems()
         {
-            Assert.AreEqual(0, _getShoppingItemResponse.ShoppingList.Count);
+            Assert.AreEqual(1, _getShoppingItemResponse.ShoppingList.Count);
         }
 
         [TestMethod]
