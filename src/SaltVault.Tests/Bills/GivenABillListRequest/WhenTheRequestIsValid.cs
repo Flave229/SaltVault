@@ -29,7 +29,7 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
             {
                 HouseId = 1
             });
-            var subject = new ApiController(billRepository.Object, shoppingRepository.Object, null, null, null, userClient.Object, null)
+            var subject = new BillController(billRepository.Object, null, userClient.Object)
             {
                 ControllerContext = new ControllerContext
                 {
