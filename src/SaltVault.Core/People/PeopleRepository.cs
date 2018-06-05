@@ -14,6 +14,8 @@ namespace SaltVault.Core.People
         Person GetPersonFromDiscordId(string discordId);
         ActiveUser GetPersonFromGoogleClientId(string googleClientId);
         ActiveUser AddPersonUsingGoogleInformation(GoogleTokenInformation tokenInformation);
+        ActiveUser AddPerson(string firstName, string lastName, string picture);
+        void DeletePerson(int userId);
     }
 
     public class PeopleRepository : IPeopleRepository
@@ -198,6 +200,60 @@ namespace SaltVault.Core.People
             catch (System.Exception exception)
             {
                 throw new System.Exception($"An Error occured while adding the user after first sign in", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public ActiveUser AddPerson(string firstName, string lastName, string picture)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("INSERT INTO public.\"Person\" (\"FirstName\", \"LastName\", \"Image\", \"Active\") " +
+                                                $"VALUES ('{firstName}', '{lastName}', '{picture}', true) " +
+                                                "RETURNING \"Id\"", _connection);
+                Int64 userId = -1;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                    userId = Convert.ToInt64(reader[0]);
+
+                reader.Close();
+
+                return new ActiveUser
+                {
+                    PersonId = Convert.ToInt32(userId)
+                };
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while adding the user after first sign in", exception);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public void DeletePerson(int userId)
+        {
+            _connection.Open();
+
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"Person\" " +
+                                                $"WHERE \"Id\" = {userId}", _connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while deleting the user (ID: {userId})", exception);
             }
             finally
             {

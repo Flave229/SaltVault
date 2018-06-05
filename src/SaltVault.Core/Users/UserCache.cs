@@ -51,5 +51,11 @@ namespace SaltVault.Core.Users
             if (_activeUserSessions.ContainsKey(sessionId))
                 _activeUserSessions.Remove(sessionId);
         }
+
+        public void UpdateHouseIdForUser(Guid sessionId, int houseId)
+        {
+            if (_activeUserSessions.ContainsKey(sessionId))
+                _activeUserSessions[sessionId].HouseId = houseId;
+        }
     }
 }

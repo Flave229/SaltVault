@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SaltVault.Core.Bills;
 using SaltVault.Core.Exception;
 using SaltVault.Core.Household;
+using SaltVault.Core.Household.Model;
 using SaltVault.Core.People;
 using SaltVault.Core.Shopping;
 using SaltVault.Core.ToDo;
@@ -69,6 +70,38 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("Api/v2/Household")]
+        public AddHouseholdResponse AddHousehold([FromBody]AddHouseholdRequest request)
+        {
+            var response = new AddHouseholdResponse();
+
+            try
+            {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.SESSION_INVALID);
+                    return response;
+                }
+
+                string sessionId = Request.Headers["Authorization"].ToString();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
+                
+                response.Id = _houseRepository.AddHousehold(request.Name, user.PersonId);
+                _userService.UpdateHouseholdForUser(sessionId, response.Id);
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpDelete]
         [Route("Api/v2/Household")]
         public CommunicationResponse DeleteHousehold([FromBody]DeleteHouseholdRequest deleteHouseholdRequest)
@@ -83,7 +116,8 @@ namespace SaltVault.WebApp.Controllers
                     return response;
                 }
 
-                ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
+                string sessionId = Request.Headers["Authorization"].ToString();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
                 if (user.HouseId == 0)
                 {
                     response.Notifications.Add("You must belong to a household");
@@ -94,6 +128,11 @@ namespace SaltVault.WebApp.Controllers
                 _shoppingRepository.DeleteHouseholdShoppingItems(user.HouseId);
                 _toDoRepository.DeleteHouseholdToDoTask(user.HouseId);
 
+                if (deleteHouseholdRequest.KeepHousehold == false)
+                {
+                    _houseRepository.DeleteHousehold(user.HouseId);
+                    _userService.UpdateHouseholdForUser(sessionId, -1);
+                }
                 response.Notifications = new List<string>
                 {
                     $"The data for the household (ID: {user.HouseId}) have been deleted"

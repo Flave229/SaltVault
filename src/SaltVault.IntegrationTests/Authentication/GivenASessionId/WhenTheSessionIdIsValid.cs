@@ -10,14 +10,14 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
     public class WhenTheSessionIdIsValid
     {
         private Guid _validSessionId;
-        private FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private FakeAccountHelper _fakeAccountHelper;
         private EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
         {
-            _fakeTestingAccountHelper = new FakeTestingAccountHelper();
-            _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
+            _fakeAccountHelper = new FakeAccountHelper();
+            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString());
@@ -35,7 +35,7 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
         [TestCleanup]
         public void CleanUp()
         {
-            _fakeTestingAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp(_validSessionId);
         }
     }
 }

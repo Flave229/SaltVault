@@ -3,9 +3,9 @@ using SaltVault.Core.Users;
 
 namespace SaltVault.IntegrationTests.TestingHelpers
 {
-    public class FakeTestingAccountHelper
+    public class FakeAccountHelper : IAccountHelper
     {
-        public Guid GenerateValidFakeCredentials()
+        public Guid GenerateValidCredentials()
         {
             return UserCache.StaticGenerateUserSession(new ActiveUser
             {
@@ -14,7 +14,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             });
         }
 
-        public Guid GenerateValidExpiredFakeCredentials()
+        public Guid GenerateValidExpiredCredentials()
         {
             return UserCache.StaticGenerateUserSession(new ActiveUser
             {

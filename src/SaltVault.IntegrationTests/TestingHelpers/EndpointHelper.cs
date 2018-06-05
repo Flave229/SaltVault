@@ -10,6 +10,7 @@ using SaltVault.Core.Bills;
 using SaltVault.Core.ToDo.Models;
 using SaltVault.WebApp;
 using SaltVault.WebApp.Models.Bills;
+using SaltVault.WebApp.Models.Household;
 using SaltVault.WebApp.Models.Shopping;
 using SaltVault.WebApp.Models.Users;
 
@@ -21,8 +22,9 @@ namespace SaltVault.IntegrationTests.TestingHelpers
         IEndpointHelperSetup AddTestBill(string name = null);
         IEndpointHelperSetup AddShoppingItem(string name = null);
         IEndpointHelperSetup AddToDoTask(string name = null);
+        IEndpointHelperSetup AddHousehold(string name = null);
         List<int> ReturnAddedBillIds();
-        void CleanUp();
+        void CleanUp(bool keepHousehold);
     }
 
     public class EndpointHelper
@@ -48,9 +50,9 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             return _endpointHelperSetup;
         }
 
-        public void CleanUp()
+        public void CleanUp(bool keepHousehold = true)
         {
-            _endpointHelperSetup.CleanUp();
+            _endpointHelperSetup.CleanUp(keepHousehold);
         }
 
         public string GetBills()
@@ -146,16 +148,29 @@ namespace SaltVault.IntegrationTests.TestingHelpers
                 return this;
             }
 
+            public IEndpointHelperSetup AddHousehold(string name = null)
+            {
+                AddHouseholdRequest request = new AddHouseholdRequest
+                {
+                    Name = name ?? "DEVELOPMENT TESTING HOUSEHOLD"
+                };
+                var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+                var result = _fakeSever.PostAsync("/Api/v2/Household", requestBody).Result;
+
+                var responseBody = result.Content.ReadAsStringAsync().Result;
+                return this;
+            }
+
             public List<int> ReturnAddedBillIds()
             {
                 return _testBillsAdded;
             }
 
-            public void CleanUp()
+            public void CleanUp(bool keepHousehold)
             {
                 DeleteHouseholdRequest request = new DeleteHouseholdRequest
                 {
-                    KeepHousehold = true
+                    KeepHousehold = keepHousehold
                 };
                 HttpRequestMessage requestMessage = new HttpRequestMessage
                 {

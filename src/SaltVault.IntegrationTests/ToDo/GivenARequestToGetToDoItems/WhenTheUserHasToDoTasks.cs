@@ -9,7 +9,7 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
     [TestClass]
     public class WhenTheUserHasToDoTasks
     {
-        private FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private FakeAccountHelper _fakeAccountHelper;
         private Guid _validSessionId;
         private GetToDoResponse _getToDoTaskResponse;
         private EndpointHelper _endpointHelper;
@@ -17,8 +17,8 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
         [TestInitialize]
         public void Initialize()
         {
-            _fakeTestingAccountHelper = new FakeTestingAccountHelper();
-            _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
+            _fakeAccountHelper = new FakeAccountHelper();
+            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString())
@@ -44,7 +44,7 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
         public void CleanUp()
         {
             _endpointHelper.CleanUp();
-            _fakeTestingAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp(_validSessionId);
         }
     }
 }

@@ -4,12 +4,12 @@ using Newtonsoft.Json;
 using SaltVault.IntegrationTests.TestingHelpers;
 using SaltVault.WebApp.Models.Household;
 
-namespace SaltVault.IntegrationTests.Household.GivenARequestToGetAHousehold
+namespace SaltVault.IntegrationTests.Household.GivenARequestToAddAHousehold
 {
     [TestClass]
-    public class WhenTheUserIsValidAndBelongsToAHousehold
+    public class WhenTheUserIsValidAndDoesNotBelongToAHousehold
     {
-        private FakeAccountHelper _fakeAccountHelper;
+        private IAccountHelper _accountHelper;
         private Guid _validSessionId;
         private GetHouseholdResponse _getHouseholdResponse;
         private EndpointHelper _endpointHelper;
@@ -17,27 +17,28 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToGetAHousehold
         [TestInitialize]
         public void Initialize()
         {
-            _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            _accountHelper = new RealAccountHelper();
+            _validSessionId = _accountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString());
+                .SetAuthenticationToken(_validSessionId.ToString())
+                .AddHousehold(typeof(WhenTheUserIsValidAndDoesNotBelongToAHousehold).Name);
 
             string responseContent = _endpointHelper.GetHousehold();
             _getHouseholdResponse = JsonConvert.DeserializeObject<GetHouseholdResponse>(responseContent);
         }
 
         [TestMethod]
-        public void ThenTheHouseholdIdIsTheUsersHouse()
+        public void ThenTheUsersHouseholdIdIsTheAddedHouse()
         {
-            Assert.AreEqual(3, _getHouseholdResponse.House.Id);
+            Assert.AreEqual(this.GetType().Name, _getHouseholdResponse.House.Name);
         }
 
         [TestCleanup]
         public void CleanUp()
         {
-            _endpointHelper.CleanUp();
-            _fakeAccountHelper.CleanUp(_validSessionId);
+            _endpointHelper.CleanUp(false);
+            _accountHelper.CleanUp(_validSessionId);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
     [TestClass]
     public class WhenTheUserSuppliesAValidId
     {
-        private static FakeTestingAccountHelper _fakeTestingAccountHelper;
+        private static FakeAccountHelper _fakeAccountHelper;
         private static Guid _validSessionId;
         private static GetBillListResponse _getBillListResponse;
         private static int _billId;
@@ -18,8 +18,8 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
         [TestInitialize]
         public void Initialize()
         {
-            _fakeTestingAccountHelper = new FakeTestingAccountHelper();
-            _validSessionId = _fakeTestingAccountHelper.GenerateValidFakeCredentials();
+            _fakeAccountHelper = new FakeAccountHelper();
+            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _billId = _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString())
@@ -51,7 +51,7 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
         public void CleanUp()
         {
             _endpointHelper.CleanUp();
-            _fakeTestingAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp(_validSessionId);
         }
     }
 }

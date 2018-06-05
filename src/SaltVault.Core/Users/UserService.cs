@@ -10,6 +10,7 @@ namespace SaltVault.Core.Users
         UserSession LogInUser(GoogleTokenInformation tokenInformation);
         bool AuthenticateSession(string authHeader);
         ActiveUser GetUserInformationFromAuthHeader(string authHeader);
+        void UpdateHouseholdForUser(string sessionId, int houseId);
     }
 
     public class UserService : IUserService
@@ -47,11 +48,16 @@ namespace SaltVault.Core.Users
             return _userCache.CheckSessionExists(new Guid(sanitisedToken));
         }
 
-
         public ActiveUser GetUserInformationFromAuthHeader(string authHeader)
         {
             string sanitisedToken = authHeader.Replace("Token ", "");
             return _userCache.GetUserDataForSession(new Guid(sanitisedToken));
+        }
+
+        public void UpdateHouseholdForUser(string sessionId, int houseId)
+        {
+            string sanitisedToken = sessionId.Replace("Token ", "");
+            _userCache.UpdateHouseIdForUser(new Guid(sanitisedToken), houseId);
         }
     }
 
