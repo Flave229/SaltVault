@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SaltVault.Core.Bills;
+using SaltVault.Core.Household;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Discord;
 using SaltVault.Core.Services.Google;
@@ -25,6 +26,7 @@ namespace SaltVault.WebApp
         private readonly ToDoRepository _toDoRepository;
         private readonly IUserService _userService;
         private readonly IGoogleTokenAuthentication _googleTokenAuthentication;
+        private readonly IHouseholdRepository _householdRepository;
 
         public Startup(IHostingEnvironment env)
         {
@@ -32,6 +34,7 @@ namespace SaltVault.WebApp
             _shoppingRepository = new ShoppingRepository();
             _peopleRepository = new PeopleRepository();
             _toDoRepository = new ToDoRepository();
+            _householdRepository = new HouseholdRepository();
             _discordService = new DiscordService(new HttpClient());
             _userService = new UserService(new UserCache(), _peopleRepository);
             _googleTokenAuthentication = new GoogleTokenAuthentication(new HttpClient());
@@ -70,6 +73,7 @@ namespace SaltVault.WebApp
             services.AddSingleton<IShoppingRepository, IShoppingRepository>(x => _shoppingRepository);
             services.AddSingleton<IPeopleRepository, IPeopleRepository>(x => _peopleRepository);
             services.AddSingleton<IToDoRepository, IToDoRepository>(x => _toDoRepository);
+            services.AddSingleton<IHouseholdRepository, IHouseholdRepository>(x => _householdRepository);
             services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
             services.AddSingleton<IUserService, IUserService>(x => _userService);
             services.AddSingleton<IGoogleTokenAuthentication, IGoogleTokenAuthentication>(x => _googleTokenAuthentication);

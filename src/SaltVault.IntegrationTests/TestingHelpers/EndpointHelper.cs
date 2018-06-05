@@ -27,20 +27,20 @@ namespace SaltVault.IntegrationTests.TestingHelpers
 
     public class EndpointHelper
     {
-        private HttpClient _fakeSever;
+        private HttpClient _fakeServer;
         private readonly IEndpointHelperSetup _endpointHelperSetup;
 
         public EndpointHelper()
         {
             CreateFakeServer();
-            _endpointHelperSetup = new EndpointHelperSetup(_fakeSever);
+            _endpointHelperSetup = new EndpointHelperSetup(_fakeServer);
         }
 
         private void CreateFakeServer()
         {
             TestServer server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
             HttpClient httpClient = server.CreateClient();
-            _fakeSever = httpClient;
+            _fakeServer = httpClient;
         }
 
         public IEndpointHelperSetup Setup()
@@ -55,25 +55,31 @@ namespace SaltVault.IntegrationTests.TestingHelpers
 
         public string GetBills()
         {
-            var response = _fakeSever.GetAsync("/Api/v2/Bills").Result;
+            var response = _fakeServer.GetAsync("/Api/v2/Bills").Result;
             return response.Content.ReadAsStringAsync().Result;
         }
 
         public string GetBills(int id)
         {
-            var response = _fakeSever.GetAsync($"/Api/v2/Bills?id={id}").Result;
+            var response = _fakeServer.GetAsync($"/Api/v2/Bills?id={id}").Result;
             return response.Content.ReadAsStringAsync().Result;
         }
 
         public string GetShoppingItems()
         {
-            var response = _fakeSever.GetAsync("/Api/v2/Shopping").Result;
+            var response = _fakeServer.GetAsync("/Api/v2/Shopping").Result;
             return response.Content.ReadAsStringAsync().Result;
         }
 
         public string GetToDoItems()
         {
-            var response = _fakeSever.GetAsync("/Api/v2/ToDo").Result;
+            var response = _fakeServer.GetAsync("/Api/v2/ToDo").Result;
+            return response.Content.ReadAsStringAsync().Result;
+        }
+
+        public string GetHousehold()
+        {
+            var response = _fakeServer.GetAsync("/Api/v2/Household").Result;
             return response.Content.ReadAsStringAsync().Result;
         }
 
