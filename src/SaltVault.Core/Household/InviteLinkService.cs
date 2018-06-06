@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SaltVault.Core.Exception;
 using SaltVault.Core.Household.Model;
 using SaltVault.Core.Users;
 
@@ -20,6 +21,9 @@ namespace SaltVault.Core.Household
 
         public string GenerateInviteLinkForHousehold(ActiveUser user)
         {
+            if (user.HouseId < 0)
+                throw new ErrorCodeException("Cannot create an invite link for a user who does not belong to a Household", ErrorCode.USER_NOT_IN_HOUSEHOLD);
+
             string existingKey = _cachedInviteLinks.FirstOrDefault(inviteLink => inviteLink.Value.Id == user.HouseId).Key;
             if (existingKey != null)
             {
