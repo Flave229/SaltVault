@@ -39,7 +39,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to get To Do Tasks");
+                    response.AddError("You must belong to a household to get To Do Tasks", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 response.ToDoTasks = _toDoRepository.GetToDoList(user.HouseId);
@@ -73,7 +73,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add To Do Tasks");
+                    response.AddError("You must belong to a household to add To Do Tasks", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 response.Id = _toDoRepository.AddToDoTask(toDoTaskRequest, user.HouseId);

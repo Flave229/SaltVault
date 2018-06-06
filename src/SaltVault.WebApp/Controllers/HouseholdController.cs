@@ -52,7 +52,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household");
+                    response.AddError("You must belong to a household", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
 
@@ -120,7 +120,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household");
+                    response.AddError("You must belong to a household", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
 

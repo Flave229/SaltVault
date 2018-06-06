@@ -42,9 +42,11 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to retrieve bills");
+                    response.AddError("You must belong to a household to get bills", ErrorCode.USER_NOT_IN_HOUSEHOLD);
+                    return response;
                 }
-                else if (id == null)
+
+                if (id == null)
                 {
                     Pagination pagination = new Pagination
                     {
@@ -85,7 +87,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add bills");
+                    response.AddError("You must belong to a household to add bills", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
 
@@ -138,7 +140,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add bills");
+                    response.AddError("You must belong to a household to update bills", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 UpdateBill bill = new UpdateBill
@@ -192,7 +194,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add bills");
+                    response.AddError("You must belong to a household to delete bills", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 var rowUpdated = _billRepository.DeleteBill(deleteBillRequest.BillId);

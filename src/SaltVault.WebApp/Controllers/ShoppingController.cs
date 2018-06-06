@@ -24,7 +24,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpGet]
         [Route("Api/v2/Shopping")]
-        public GetShoppingResponse GetShoppingItemsV2(int? page, int? resultsPerPage)
+        public GetShoppingResponse GetShoppingItems(int? page, int? resultsPerPage)
         {
             var response = new GetShoppingResponse();
 
@@ -39,7 +39,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add shopping items");
+                    response.AddError("You must belong to a household to get shopping items", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 Pagination pagination = new Pagination
@@ -63,7 +63,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPost]
         [Route("Api/v2/Shopping")]
-        public CommunicationResponse AddShoppingItemV2([FromBody]AddShoppingItemRequest shoppingRequest)
+        public CommunicationResponse AddShoppingItem([FromBody]AddShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
 
@@ -78,7 +78,7 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(Request.Headers["Authorization"].ToString());
                 if (user.HouseId == 0)
                 {
-                    response.Notifications.Add("You must belong to a household to add Shopping Items");
+                    response.AddError("You must belong to a household to add shopping items", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
                 ShoppingItem item = new ShoppingItem
@@ -111,7 +111,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpPatch]
         [Route("Api/v2/Shopping")]
-        public CommunicationResponse UpdateShoppingItemV2([FromBody]UpdateShoppingItemRequest shoppingRequest)
+        public CommunicationResponse UpdateShoppingItem([FromBody]UpdateShoppingItemRequest shoppingRequest)
         {
             var response = new CommunicationResponse();
 
@@ -145,7 +145,7 @@ namespace SaltVault.WebApp.Controllers
 
         [HttpDelete]
         [Route("Api/v2/Shopping")]
-        public CommunicationResponse DeleteShoppingItemV2([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
+        public CommunicationResponse DeleteShoppingItem([FromBody]DeleteShoppingItemRequest deleteShoppingItemRequest)
         {
             var response = new CommunicationResponse();
 
