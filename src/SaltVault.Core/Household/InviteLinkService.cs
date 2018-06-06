@@ -58,5 +58,13 @@ namespace SaltVault.Core.Household
             _cachedInviteLinks.Remove(key);
             return false;
         }
+
+        public int GetHouseholdForInviteLink(string inviteCode)
+        {
+            if (_cachedInviteLinks.ContainsKey(inviteCode) == false || CheckExpiry(inviteCode) == false)
+                throw new ErrorCodeException("Invite Code is invalid", ErrorCode.INVITE_CODE_INVALID);
+            
+            return _cachedInviteLinks[inviteCode].Id;
+        }
     }
 }
