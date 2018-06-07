@@ -8,10 +8,10 @@ using SaltVault.Core.Users;
 namespace SaltVault.Tests.Household.GivenARequestToCreateAnInviteLink
 {
     [TestClass]
-    public class WhenRequestedSeveralTimesByDifferentUsers
+    public class WhenRequestedSeveralTimesByDifferentUsersForDifferentHouseholds
     {
         [TestMethod]
-        public void ThenTheReturnedCodeContainsSixCharacters()
+        public void ThenEachInviteCodeIsUnique()
         {
             InviteLinkService inviteLinkService = new InviteLinkService();
             ActiveUser user1 = new ActiveUser
