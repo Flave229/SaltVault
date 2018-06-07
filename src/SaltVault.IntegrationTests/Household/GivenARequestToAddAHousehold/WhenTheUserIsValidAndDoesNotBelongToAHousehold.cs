@@ -37,7 +37,7 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToAddAHousehold
         public void CleanUp()
         {
             _endpointHelper.CleanUp(false);
-            _accountHelper.CleanUp(_validSessionId);
+            _accountHelper.CleanUp();
         }
     }
 }

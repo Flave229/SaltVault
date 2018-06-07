@@ -35,7 +35,7 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
         [TestCleanup]
         public void CleanUp()
         {
-            _fakeAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp();
         }
     }
 }

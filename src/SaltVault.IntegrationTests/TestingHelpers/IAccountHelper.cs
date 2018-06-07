@@ -6,6 +6,6 @@ namespace SaltVault.IntegrationTests.TestingHelpers
     {
         Guid GenerateValidCredentials(int personId = 5);
         Guid GenerateValidExpiredCredentials();
-        void CleanUp(Guid? sessionId);
+        void CleanUp();
     }
 }

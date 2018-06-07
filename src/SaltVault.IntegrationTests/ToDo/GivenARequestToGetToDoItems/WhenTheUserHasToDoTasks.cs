@@ -44,7 +44,7 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
         public void CleanUp()
         {
             _endpointHelper.CleanUp();
-            _fakeAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp();
         }
     }
 }

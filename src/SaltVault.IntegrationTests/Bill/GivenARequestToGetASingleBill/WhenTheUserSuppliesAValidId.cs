@@ -51,7 +51,7 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
         public void CleanUp()
         {
             _endpointHelper.CleanUp();
-            _fakeAccountHelper.CleanUp(_validSessionId);
+            _fakeAccountHelper.CleanUp();
         }
     }
 }

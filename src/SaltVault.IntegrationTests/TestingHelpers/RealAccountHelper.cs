@@ -28,7 +28,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             throw new NotImplementedException();
         }
 
-        public void CleanUp(Guid? sessionId)
+        public void CleanUp()
         {
             foreach (int userId in _persistedUserIds)
             {
