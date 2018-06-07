@@ -10,7 +10,6 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
     public class WhenTheUserHasNoToDoTasks
     {
         private FakeAccountHelper _fakeAccountHelper;
-        private Guid _validSessionId;
         private GetToDoResponse _getToDoTaskResponse;
         private EndpointHelper _endpointHelper;
 
@@ -18,10 +17,10 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString());
+                .SetAuthenticationToken(validSessionId.ToString());
 
             string responseContent = _endpointHelper.GetToDoItems();
             _getToDoTaskResponse = JsonConvert.DeserializeObject<GetToDoResponse>(responseContent);

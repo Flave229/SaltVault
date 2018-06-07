@@ -11,8 +11,6 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToJoinAHouseholdViaA
     public class WhenTheRequestIsValid
     {
         private IAccountHelper _accountHelper;
-        private Guid _firstSessionId;
-        private Guid _secondUserSession;
         private EndpointHelper _endpointHelper;
         private JoinHouseholdResponse _joinHouseholdResponse;
 
@@ -20,16 +18,16 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToJoinAHouseholdViaA
         public void Initialize()
         {
             _accountHelper = new RealAccountHelper();
-            _firstSessionId = _accountHelper.GenerateValidCredentials();
+            Guid firstUserSession = _accountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             CreateHouseholdInviteLinkResponse inviteLinkResponse = _endpointHelper.Setup()
-                .SetAuthenticationToken(_firstSessionId.ToString())
+                .SetAuthenticationToken(firstUserSession.ToString())
                 .AddHousehold(typeof(WhenTheRequestIsValid).Name)
                 .CreateHouseholdInviteLink()
                 .ReturnHouseholdLink();
 
-            _secondUserSession = _accountHelper.GenerateValidCredentials();
-            _endpointHelper.Setup().SetAuthenticationToken(_secondUserSession.ToString());
+            Guid secondUserSession = _accountHelper.GenerateValidCredentials();
+            _endpointHelper.Setup().SetAuthenticationToken(secondUserSession.ToString());
 
             _joinHouseholdResponse = _endpointHelper.JoinHousehold(inviteLinkResponse.InviteLink);
         }

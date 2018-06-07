@@ -9,7 +9,6 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
     [TestClass]
     public class WhenTheSessionIdIsValid
     {
-        private Guid _validSessionId;
         private FakeAccountHelper _fakeAccountHelper;
         private EndpointHelper _endpointHelper;
 
@@ -17,10 +16,10 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString());
+                .SetAuthenticationToken(validSessionId.ToString());
         }
 
         [TestMethod]

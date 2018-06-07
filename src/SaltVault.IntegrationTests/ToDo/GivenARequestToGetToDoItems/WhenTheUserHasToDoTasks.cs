@@ -18,10 +18,10 @@ namespace SaltVault.IntegrationTests.ToDo.GivenARequestToGetToDoItems
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString())
+                .SetAuthenticationToken(validSessionId.ToString())
                 .AddToDoTask(typeof(WhenTheUserHasToDoTasks).Name);
             
             string responseContent = _endpointHelper.GetToDoItems();

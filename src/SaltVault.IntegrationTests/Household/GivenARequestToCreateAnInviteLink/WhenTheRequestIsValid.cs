@@ -9,7 +9,6 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToCreateAnInviteLink
     public class WhenTheRequestIsValid
     {
         private FakeAccountHelper _fakeAccountHelper;
-        private Guid _validSessionId;
         private EndpointHelper _endpointHelper;
         private CreateHouseholdInviteLinkResponse _inviteLink;
 
@@ -17,10 +16,10 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToCreateAnInviteLink
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _inviteLink = _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString())
+                .SetAuthenticationToken(validSessionId.ToString())
                 .CreateHouseholdInviteLink()
                 .ReturnHouseholdLink();
         }

@@ -10,7 +10,6 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetBills
     public class WhenTheUserHasBills
     {
         private FakeAccountHelper _fakeAccountHelper;
-        private Guid _validSessionId;
         private GetBillListResponse _getBillListResponse;
         private EndpointHelper _endpointHelper;
 
@@ -18,10 +17,10 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetBills
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString())
+                .SetAuthenticationToken(validSessionId.ToString())
                 .AddTestBill();
             
             string responseContent = _endpointHelper.GetBills();

@@ -18,10 +18,10 @@ namespace SaltVault.IntegrationTests.Shopping.GivenARequestToGetShoppingItems
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString())
+                .SetAuthenticationToken(validSessionId.ToString())
                 .AddShoppingItem(typeof(WhenTheUserHasShoppingItems).Name);
             
             string responseContent = _endpointHelper.GetShoppingItems();

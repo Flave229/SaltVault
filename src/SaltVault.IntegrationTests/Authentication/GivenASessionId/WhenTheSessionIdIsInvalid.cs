@@ -10,15 +10,14 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
     [TestClass]
     public class WhenTheSessionIdIsInvalid
     {
-        private Guid _invalidSessionId;
         private EndpointHelper _endpointHelper;
 
         [TestInitialize]
         public void Initialize()
         {
-            _invalidSessionId = Guid.NewGuid();
+            Guid invalidSessionId = Guid.NewGuid();
             _endpointHelper = new EndpointHelper();
-            _endpointHelper.Setup().SetAuthenticationToken(_invalidSessionId.ToString());
+            _endpointHelper.Setup().SetAuthenticationToken(invalidSessionId.ToString());
         }
 
         [TestMethod]

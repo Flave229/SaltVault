@@ -10,7 +10,6 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
     [TestClass]
     public class WhenTheSessionIdHasExpired
     {
-        private Guid _expiredSessionId;
         private FakeAccountHelper _fakeAccountHelper;
         private EndpointHelper _endpointHelper;
 
@@ -18,9 +17,9 @@ namespace SaltVault.IntegrationTests.Authentication.GivenASessionId
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _expiredSessionId = _fakeAccountHelper.GenerateValidExpiredCredentials();
+            Guid expiredSessionId = _fakeAccountHelper.GenerateValidExpiredCredentials();
             _endpointHelper = new EndpointHelper();
-            _endpointHelper.Setup().SetAuthenticationToken(_expiredSessionId.ToString());
+            _endpointHelper.Setup().SetAuthenticationToken(expiredSessionId.ToString());
         }
 
         [TestMethod]

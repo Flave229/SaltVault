@@ -9,7 +9,6 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToGetAHousehold
     public class WhenTheUserIsValidAndBelongsToAHousehold
     {
         private FakeAccountHelper _fakeAccountHelper;
-        private Guid _validSessionId;
         private GetHouseholdResponse _getHouseholdResponse;
         private EndpointHelper _endpointHelper;
 
@@ -17,10 +16,10 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToGetAHousehold
         public void Initialize()
         {
             _fakeAccountHelper = new FakeAccountHelper();
-            _validSessionId = _fakeAccountHelper.GenerateValidCredentials();
+            Guid validSessionId = _fakeAccountHelper.GenerateValidCredentials();
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
-                .SetAuthenticationToken(_validSessionId.ToString());
+                .SetAuthenticationToken(validSessionId.ToString());
 
             _getHouseholdResponse = _endpointHelper.GetHousehold();
         }
