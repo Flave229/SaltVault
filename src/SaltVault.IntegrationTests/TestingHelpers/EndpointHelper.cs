@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Castle.Core.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
@@ -82,10 +81,30 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             return response.Content.ReadAsStringAsync().Result;
         }
 
-        public string GetHousehold()
+        public GetHouseholdResponse GetHousehold()
         {
             var response = _fakeServer.GetAsync("/Api/v2/Household").Result;
-            return response.Content.ReadAsStringAsync().Result;
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<GetHouseholdResponse>(responseContent);
+        }
+
+        public GetUsersResponse GetUsersForHousehold()
+        {
+            var response = _fakeServer.GetAsync("/Api/v2/Users").Result;
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<GetUsersResponse>(responseContent);
+        }
+
+        public JoinHouseholdResponse JoinHousehold(string inviteLink)
+        {
+            JoinHouseholdRequest request = new JoinHouseholdRequest
+            {
+                InviteLink = inviteLink
+            };
+            var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            var response = _fakeServer.PostAsync("/Api/v2/Household/InviteLink", requestBody).Result;
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<JoinHouseholdResponse>(responseContent);
         }
 
         private class EndpointHelperSetup : IEndpointHelperSetup
@@ -167,9 +186,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
 
             public IEndpointHelperSetup CreateHouseholdInviteLink()
             {
-                var requestBody = new StringContent("", Encoding.UTF8, "application/json");
-                var result = _fakeSever.PostAsync("/Api/v2/Household/InviteLink", requestBody).Result;
-
+                var result = _fakeSever.GetAsync("/Api/v2/Household/InviteLink").Result;
                 var responseBody = result.Content.ReadAsStringAsync().Result;
                 _inviteLinkResponse = JsonConvert.DeserializeObject<CreateHouseholdInviteLinkResponse>(responseBody);
                 return this;

@@ -9,6 +9,7 @@ namespace SaltVault.Core.Household
     {
         House GetHouseholdForUser(int personId);
         int AddHousehold(string name, int personId);
+        void AddPersonToHousehold(int houseId, int personId);
         void DeleteHousehold(int houseId);
     }
 
@@ -85,6 +86,38 @@ namespace SaltVault.Core.Household
                 reader.Close();
 
                 return Convert.ToInt32(houseId);
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception("An Error occured while adding the new household", exception);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void AddPersonToHousehold(int houseId, int personId)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            var house = new House();
+            try
+            {
+                var command = new NpgsqlCommand("DELETE FROM public.\"PeopleForHouse\" AS PeopleForHouse " +
+                                                $"WHERE PeopleForHouse.\"PersonId\" = {personId}", connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
+
+                command = new NpgsqlCommand("INSERT INTO public.\"PeopleForHouse\" (\"HouseId\", \"PersonId\", \"LeadTenant\") " +
+                                            $"VALUES ({houseId}, {personId}, false)", connection);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                { }
+                reader.Close();
             }
             catch (System.Exception exception)
             {

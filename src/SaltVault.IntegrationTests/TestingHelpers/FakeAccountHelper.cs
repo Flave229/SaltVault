@@ -5,11 +5,11 @@ namespace SaltVault.IntegrationTests.TestingHelpers
 {
     public class FakeAccountHelper : IAccountHelper
     {
-        public Guid GenerateValidCredentials()
+        public Guid GenerateValidCredentials(int personId = 5)
         {
             return UserCache.StaticGenerateUserSession(new ActiveUser
             {
-                PersonId = 5,
+                PersonId = personId,
                 HouseId = 3
             });
         }

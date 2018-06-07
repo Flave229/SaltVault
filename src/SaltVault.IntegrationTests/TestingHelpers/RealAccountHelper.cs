@@ -16,7 +16,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             _persistedUserIds = new List<int>();
         }
 
-        public Guid GenerateValidCredentials()
+        public Guid GenerateValidCredentials(int personId = 0)
         {
             ActiveUser user = _personRepository.AddPerson("Test", "Credentials", "NoUrl");
             _persistedUserIds.Add(user.PersonId);

@@ -24,8 +24,7 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToAddAHousehold
                 .SetAuthenticationToken(_validSessionId.ToString())
                 .AddHousehold(typeof(WhenTheUserIsValidAndDoesNotBelongToAHousehold).Name);
 
-            string responseContent = _endpointHelper.GetHousehold();
-            _getHouseholdResponse = JsonConvert.DeserializeObject<GetHouseholdResponse>(responseContent);
+            _getHouseholdResponse = _endpointHelper.GetHousehold();
         }
 
         [TestMethod]

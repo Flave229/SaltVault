@@ -104,7 +104,7 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("Api/v2/Household/InviteLink")]
         public CreateHouseholdInviteLinkResponse CreateInviteLink()
         {
@@ -122,6 +122,39 @@ namespace SaltVault.WebApp.Controllers
                 ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
 
                 response.InviteLink = _inviteLinkService.GenerateInviteLinkForHousehold(user);
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("Api/v2/Household/InviteLink")]
+        public JoinHouseholdResponse JoinHouseholdWithInviteLink([FromBody]JoinHouseholdRequest request)
+        {
+            var response = new JoinHouseholdResponse();
+
+            try
+            {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.SESSION_INVALID);
+                    return response;
+                }
+
+                string sessionId = Request.Headers["Authorization"].ToString();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
+
+                response.Id = _inviteLinkService.GetHouseholdForInviteLink(request.InviteLink);
+                _houseRepository.AddPersonToHousehold(response.Id, user.PersonId);
+                _userService.UpdateHouseholdForUser(sessionId, response.Id);
             }
             catch (ErrorCodeException exception)
             {

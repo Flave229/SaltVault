@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 using SaltVault.IntegrationTests.TestingHelpers;
 using SaltVault.WebApp.Models.Household;
 
@@ -23,8 +22,7 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToGetAHousehold
             _endpointHelper.Setup()
                 .SetAuthenticationToken(_validSessionId.ToString());
 
-            string responseContent = _endpointHelper.GetHousehold();
-            _getHouseholdResponse = JsonConvert.DeserializeObject<GetHouseholdResponse>(responseContent);
+            _getHouseholdResponse = _endpointHelper.GetHousehold();
         }
 
         [TestMethod]
