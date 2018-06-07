@@ -18,6 +18,7 @@ namespace SaltVault.WebApp.Controllers
     public class HouseholdController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IInviteLinkService _inviteLinkService;
         private readonly IBillRepository _billRepository;
         private readonly IShoppingRepository _shoppingRepository;
         private readonly IPeopleRepository _peopleRepository;
@@ -25,9 +26,10 @@ namespace SaltVault.WebApp.Controllers
         private readonly IHouseholdRepository _houseRepository;
 
         public HouseholdController(IBillRepository billRepository, IShoppingRepository shoppingRepository, IPeopleRepository peopleRepository, IToDoRepository toDoRepository,
-            IHouseholdRepository householdRepository, IUserService userService)
+            IHouseholdRepository householdRepository, IUserService userService, IInviteLinkService inviteLinkService)
         {
             _userService = userService;
+            _inviteLinkService = inviteLinkService;
             _billRepository = billRepository;
             _shoppingRepository = shoppingRepository;
             _peopleRepository = peopleRepository;
@@ -89,6 +91,37 @@ namespace SaltVault.WebApp.Controllers
                 
                 response.Id = _houseRepository.AddHousehold(request.Name, user.PersonId);
                 _userService.UpdateHouseholdForUser(sessionId, response.Id);
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("Api/v2/Household/InviteLink")]
+        public CreateHouseholdInviteLinkResponse CreateInviteLink()
+        {
+            var response = new CreateHouseholdInviteLinkResponse();
+
+            try
+            {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.SESSION_INVALID);
+                    return response;
+                }
+
+                string sessionId = Request.Headers["Authorization"].ToString();
+                ActiveUser user = _userService.GetUserInformationFromAuthHeader(sessionId);
+
+                response.InviteLink = _inviteLinkService.GenerateInviteLinkForHousehold(user);
             }
             catch (ErrorCodeException exception)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Castle.Core.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
@@ -23,6 +24,8 @@ namespace SaltVault.IntegrationTests.TestingHelpers
         IEndpointHelperSetup AddShoppingItem(string name = null);
         IEndpointHelperSetup AddToDoTask(string name = null);
         IEndpointHelperSetup AddHousehold(string name = null);
+        IEndpointHelperSetup CreateHouseholdInviteLink();
+        CreateHouseholdInviteLinkResponse ReturnHouseholdLink();
         List<int> ReturnAddedBillIds();
         void CleanUp(bool keepHousehold);
     }
@@ -89,6 +92,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
         {
             private readonly HttpClient _fakeSever;
             private readonly List<int> _testBillsAdded = new List<int>();
+            private CreateHouseholdInviteLinkResponse _inviteLinkResponse;
 
             public EndpointHelperSetup(HttpClient fakeSever)
             {
@@ -161,9 +165,27 @@ namespace SaltVault.IntegrationTests.TestingHelpers
                 return this;
             }
 
+            public IEndpointHelperSetup CreateHouseholdInviteLink()
+            {
+                var requestBody = new StringContent("", Encoding.UTF8, "application/json");
+                var result = _fakeSever.PostAsync("/Api/v2/Household/InviteLink", requestBody).Result;
+
+                var responseBody = result.Content.ReadAsStringAsync().Result;
+                _inviteLinkResponse = JsonConvert.DeserializeObject<CreateHouseholdInviteLinkResponse>(responseBody);
+                return this;
+            }
+
             public List<int> ReturnAddedBillIds()
             {
                 return _testBillsAdded;
+            }
+
+            public CreateHouseholdInviteLinkResponse ReturnHouseholdLink()
+            {
+                if (_inviteLinkResponse == null || _inviteLinkResponse.HasError)
+                    throw new Exception("You need to create an invite link before one can be returned. If you have set this correctly in the setup, there is an issue with the endpoint.");
+
+                return _inviteLinkResponse;
             }
 
             public void CleanUp(bool keepHousehold)

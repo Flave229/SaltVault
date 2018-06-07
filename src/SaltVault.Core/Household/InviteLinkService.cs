@@ -8,7 +8,13 @@ using SaltVault.Core.Users;
 
 namespace SaltVault.Core.Household
 {
-    public class InviteLinkService
+    public interface IInviteLinkService
+    {
+        string GenerateInviteLinkForHousehold(ActiveUser user);
+        int GetHouseholdForInviteLink(string inviteCode);
+    }
+
+    public class InviteLinkService : IInviteLinkService
     {
         private readonly Dictionary<string, HouseInvite> _cachedInviteLinks;
         private readonly int _hoursToLive;

@@ -27,6 +27,7 @@ namespace SaltVault.WebApp
         private readonly IUserService _userService;
         private readonly IGoogleTokenAuthentication _googleTokenAuthentication;
         private readonly IHouseholdRepository _householdRepository;
+        private readonly IInviteLinkService _inviteLinkService;
 
         public Startup(IHostingEnvironment env)
         {
@@ -37,6 +38,7 @@ namespace SaltVault.WebApp
             _householdRepository = new HouseholdRepository();
             _discordService = new DiscordService(new HttpClient());
             _userService = new UserService(new UserCache(), _peopleRepository);
+            _inviteLinkService = new InviteLinkService();
             _googleTokenAuthentication = new GoogleTokenAuthentication(new HttpClient());
 
             var builder = new ConfigurationBuilder()
@@ -76,6 +78,7 @@ namespace SaltVault.WebApp
             services.AddSingleton<IHouseholdRepository, IHouseholdRepository>(x => _householdRepository);
             services.AddSingleton<IDiscordService, IDiscordService>(x => _discordService);
             services.AddSingleton<IUserService, IUserService>(x => _userService);
+            services.AddSingleton<IInviteLinkService, IInviteLinkService>(x => _inviteLinkService);
             services.AddSingleton<IGoogleTokenAuthentication, IGoogleTokenAuthentication>(x => _googleTokenAuthentication);
 
             services.AddMvc();
