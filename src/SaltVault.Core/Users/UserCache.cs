@@ -46,10 +46,15 @@ namespace SaltVault.Core.Users
             return true;
         }
 
-        public static void TerminateSession(Guid sessionId)
+        public static void StaticDeleteSession(Guid sessionId)
         {
             if (_activeUserSessions.ContainsKey(sessionId))
                 _activeUserSessions.Remove(sessionId);
+        }
+
+        public void DeleteSession(Guid sessionId)
+        {
+            StaticDeleteSession(sessionId);
         }
 
         public void UpdateHouseIdForUser(Guid sessionId, int houseId)

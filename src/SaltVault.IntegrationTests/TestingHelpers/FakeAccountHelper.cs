@@ -40,7 +40,7 @@ namespace SaltVault.IntegrationTests.TestingHelpers
         {
             foreach (var cachedSessionId in _cachedSessionIds)
             {
-                UserCache.TerminateSession(cachedSessionId);
+                UserCache.StaticDeleteSession(cachedSessionId);
             }
         }
     }

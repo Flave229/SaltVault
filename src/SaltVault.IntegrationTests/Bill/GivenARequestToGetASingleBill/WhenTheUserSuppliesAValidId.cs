@@ -22,7 +22,7 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetASingleBill
             _endpointHelper = new EndpointHelper();
             _billId = _endpointHelper.Setup()
                 .SetAuthenticationToken(validSessionId.ToString())
-                .AddTestBill(typeof(WhenTheUserSuppliesAValidId).Name)
+                .AddBill(typeof(WhenTheUserSuppliesAValidId).Name)
                 .ReturnAddedBillIds()[0];
             string responseContent = _endpointHelper.GetBills(_billId);
             _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);

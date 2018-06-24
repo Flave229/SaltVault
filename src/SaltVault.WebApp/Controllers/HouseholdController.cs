@@ -197,6 +197,7 @@ namespace SaltVault.WebApp.Controllers
                 if (deleteHouseholdRequest.KeepHousehold == false)
                 {
                     _houseRepository.DeleteHousehold(user.HouseId);
+                    _userService.DeleteSession(sessionId);
                     _userService.UpdateHouseholdForUser(sessionId, -1);
                 }
                 response.Notifications = new List<string>

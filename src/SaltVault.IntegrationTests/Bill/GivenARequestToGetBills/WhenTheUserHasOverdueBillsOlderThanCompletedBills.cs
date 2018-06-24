@@ -7,7 +7,7 @@ using SaltVault.WebApp.Models.Bills;
 namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetBills
 {
     [TestClass]
-    public class WhenTheUserHasBills
+    public class WhenTheUserHasOverdueBillsOlderThanCompletedBills
     {
         private FakeAccountHelper _fakeAccountHelper;
         private GetBillListResponse _getBillListResponse;
@@ -21,8 +21,9 @@ namespace SaltVault.IntegrationTests.Bill.GivenARequestToGetBills
             _endpointHelper = new EndpointHelper();
             _endpointHelper.Setup()
                 .SetAuthenticationToken(validSessionId.ToString())
-                .AddBill();
-            
+                .AddOverdueBill()
+                .AddCompletedBill();
+
             string responseContent = _endpointHelper.GetBills();
             _getBillListResponse = JsonConvert.DeserializeObject<GetBillListResponse>(responseContent);
         }

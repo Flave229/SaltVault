@@ -19,7 +19,10 @@ namespace SaltVault.IntegrationTests.TestingHelpers
     public interface IEndpointHelperSetup
     {
         IEndpointHelperSetup SetAuthenticationToken(string sessionId);
-        IEndpointHelperSetup AddTestBill(string name = null);
+        IEndpointHelperSetup AddBill(AddBillRequest request);
+        IEndpointHelperSetup AddBill(string name = null);
+        IEndpointHelperSetup AddOverdueBill(string name = null, int daysInPast = 7);
+        IEndpointHelperSetup AddCompletedBill(string name = null);
         IEndpointHelperSetup AddShoppingItem(string name = null);
         IEndpointHelperSetup AddToDoTask(string name = null);
         IEndpointHelperSetup AddHousehold(string name = null);
@@ -124,7 +127,18 @@ namespace SaltVault.IntegrationTests.TestingHelpers
                 return this;
             }
 
-            public IEndpointHelperSetup AddTestBill(string name = null)
+            public IEndpointHelperSetup AddBill(AddBillRequest request)
+            {
+                var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+                var result = _fakeSever.PostAsync("/Api/v2/Bills", requestBody).Result;
+
+                var responseBody = result.Content.ReadAsStringAsync().Result;
+                AddBillResponse billResponse = JsonConvert.DeserializeObject<AddBillResponse>(responseBody);
+                _testBillsAdded.Add(billResponse.Id);
+                return this;
+            }
+
+            public IEndpointHelperSetup AddBill(string name = null)
             {
                 AddBillRequest request = new AddBillRequest
                 {
@@ -134,13 +148,33 @@ namespace SaltVault.IntegrationTests.TestingHelpers
                     TotalAmount = 299,
                     RecurringType = RecurringType.None
                 };
-                var requestBody = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-                var result = _fakeSever.PostAsync("/Api/v2/Bills", requestBody).Result;
+                return AddBill(request);
+            }
 
-                var responseBody = result.Content.ReadAsStringAsync().Result;
-                AddBillResponse billResponse = JsonConvert.DeserializeObject<AddBillResponse>(responseBody);
-                _testBillsAdded.Add(billResponse.Id);
-                return this;
+            public IEndpointHelperSetup AddOverdueBill(string name = null, int daysInPast = 7)
+            {
+                AddBillRequest request = new AddBillRequest
+                {
+                    Name = name ?? "DEVELOPMENT TESTING BILL",
+                    Due = DateTime.Now.AddDays(-daysInPast),
+                    PeopleIds = new List<int> { 5 },
+                    TotalAmount = 299,
+                    RecurringType = RecurringType.None
+                };
+                return AddBill(request);
+            }
+
+            public IEndpointHelperSetup AddCompletedBill(string name = null)
+            {
+                AddBillRequest request = new AddBillRequest
+                {
+                    Name = name ?? "DEVELOPMENT TESTING BILL",
+                    Due = DateTime.Now,
+                    PeopleIds = new List<int> { 5 },
+                    TotalAmount = 0,
+                    RecurringType = RecurringType.None
+                };
+                return AddBill(request);
             }
 
             public IEndpointHelperSetup AddShoppingItem(string name = null)

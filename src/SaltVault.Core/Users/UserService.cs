@@ -11,6 +11,7 @@ namespace SaltVault.Core.Users
         bool AuthenticateSession(string authHeader);
         ActiveUser GetUserInformationFromAuthHeader(string authHeader);
         void UpdateHouseholdForUser(string sessionId, int houseId);
+        void DeleteSession(string sessionId);
     }
 
     public class UserService : IUserService
@@ -58,6 +59,12 @@ namespace SaltVault.Core.Users
         {
             string sanitisedToken = sessionId.Replace("Token ", "");
             _userCache.UpdateHouseIdForUser(new Guid(sanitisedToken), houseId);
+        }
+
+        public void DeleteSession(string sessionId)
+        {
+            string sanitisedToken = sessionId.Replace("Token ", "");
+            _userCache.DeleteSession(new Guid(sanitisedToken));
         }
     }
 
