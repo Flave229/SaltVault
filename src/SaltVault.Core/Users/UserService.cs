@@ -72,7 +72,7 @@ namespace SaltVault.Core.Users
         public Person GetPersonFromSession(string sessionId)
         {
             ActiveUser user = _userCache.GetUserDataForSession(new Guid(sessionId));
-            return _peopleRepository.GetPeople(new List<int>(user.PersonId))[0];
+            return _peopleRepository.GetPeople(new List<int> {user.PersonId})[0];
         }
     }
 
