@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using SaltVault.Core.People;
 using SaltVault.Core.Services.Google;
@@ -12,6 +13,7 @@ namespace SaltVault.Core.Users
         ActiveUser GetUserInformationFromAuthHeader(string authHeader);
         void UpdateHouseholdForUser(string sessionId, int houseId);
         void DeleteSession(string sessionId);
+        Person GetPersonFromSession(string sessionId);
     }
 
     public class UserService : IUserService
@@ -65,6 +67,12 @@ namespace SaltVault.Core.Users
         {
             string sanitisedToken = sessionId.Replace("Token ", "");
             _userCache.DeleteSession(new Guid(sanitisedToken));
+        }
+
+        public Person GetPersonFromSession(string sessionId)
+        {
+            ActiveUser user = _userCache.GetUserDataForSession(new Guid(sessionId));
+            return _peopleRepository.GetPeople(new List<int>(user.PersonId))[0];
         }
     }
 

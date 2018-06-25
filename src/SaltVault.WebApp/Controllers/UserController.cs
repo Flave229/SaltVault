@@ -74,6 +74,7 @@ namespace SaltVault.WebApp.Controllers
                 UserSession sessionInformation = _userService.LogInUser(tokenInformation);
                 response.NewUser = sessionInformation.NewUser;
                 response.SessionId = sessionInformation.SessionId;
+                response.User = _userService.GetPersonFromSession(sessionInformation.SessionId.ToString());
             }
             catch (ErrorCodeException exception)
             {
