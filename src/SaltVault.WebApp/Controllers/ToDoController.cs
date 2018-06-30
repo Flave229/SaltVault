@@ -34,6 +34,7 @@ namespace SaltVault.WebApp.Controllers
                 switch (requestType)
                 {
                     case "DELETE":
+                        headers.Remove("X-HTTP-Method-Override");
                         filterContext.Result = new RedirectToActionResult("DeleteToDoItem", "ToDo", null);
                         return;
                     default:
