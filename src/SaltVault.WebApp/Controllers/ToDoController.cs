@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using SaltVault.Core.Exception;
 using SaltVault.Core.ToDo;
 using SaltVault.Core.ToDo.Models;
@@ -20,6 +22,17 @@ namespace SaltVault.WebApp.Controllers
         {
             _userService = userService;
             _toDoRepository = toDoRepository;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            IHeaderDictionary headers = context.HttpContext.Request.Headers;
+
+            if (headers.ContainsKey("X-HTTP-Method-Override"))
+            {
+                string requestType = headers["X-HTTP-Method-Override"];
+                context.HttpContext.Request.Method = requestType;
+            }
         }
 
         [HttpGet]
