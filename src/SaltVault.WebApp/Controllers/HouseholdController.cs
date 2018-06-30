@@ -104,6 +104,45 @@ namespace SaltVault.WebApp.Controllers
             return response;
         }
 
+        [HttpPatch]
+        [Route("Api/v2/Household")]
+        public CommunicationResponse UpdateHousehold([FromBody]UpdateHouseholdRequest request)
+        {
+            var response = new AddHouseholdResponse();
+
+            try
+            {
+                if (_userService.AuthenticateSession(Request.Headers["Authorization"].ToString()) == false)
+                {
+                    response.AddError("The authorization credentails were invalid", ErrorCode.SESSION_INVALID);
+                    return response;
+                }
+                
+                UpdateHousehold updateHousehold = new UpdateHousehold
+                {
+                    Id = request.Id,
+                    Name = request.Name
+                };
+                bool rowUpdated = _houseRepository.UpdateHousehold(updateHousehold);
+
+                if (rowUpdated == false)
+                {
+                    response.AddError("The given House Id does not correspond to an existing Household");
+                    return response;
+                }
+            }
+            catch (ErrorCodeException exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}", exception.Code);
+            }
+            catch (Exception exception)
+            {
+                response.AddError($"An unexpected exception occured: {exception}");
+            }
+
+            return response;
+        }
+
         [HttpGet]
         [Route("Api/v2/Household/InviteLink")]
         public CreateHouseholdInviteLinkResponse CreateInviteLink()

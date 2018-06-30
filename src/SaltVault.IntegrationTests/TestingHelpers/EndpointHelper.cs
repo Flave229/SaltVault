@@ -110,6 +110,19 @@ namespace SaltVault.IntegrationTests.TestingHelpers
             return JsonConvert.DeserializeObject<JoinHouseholdResponse>(responseContent);
         }
 
+        public JoinHouseholdResponse EditHousehold(UpdateHouseholdRequest updateHouseholdRequest)
+        {
+            HttpRequestMessage requestMessage = new HttpRequestMessage
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(updateHouseholdRequest), Encoding.UTF8, "application/json"),
+                Method = new HttpMethod("PATCH"),
+                RequestUri = new Uri(_fakeServer.BaseAddress, "Api/v2/Household")
+            };
+            var result = _fakeServer.SendAsync(requestMessage).Result;
+            var responseBody = result.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<JoinHouseholdResponse>(responseBody);
+        }
+
         private class EndpointHelperSetup : IEndpointHelperSetup
         {
             private readonly HttpClient _fakeSever;

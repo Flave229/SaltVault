@@ -11,6 +11,7 @@ namespace SaltVault.Core.Household
         int AddHousehold(string name, int personId);
         void AddPersonToHousehold(int houseId, int personId);
         void DeleteHousehold(int houseId);
+        bool UpdateHousehold(UpdateHousehold updateHousehold);
     }
 
     public class HouseholdRepository : IHouseholdRepository
@@ -160,6 +161,38 @@ namespace SaltVault.Core.Household
             catch (System.Exception exception)
             {
                 throw new System.Exception($"An Error occured while deleting the household (ID: {houseId})", exception);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool UpdateHousehold(UpdateHousehold request)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            try
+            {
+                var rowUpdated = false;
+
+                NpgsqlCommand command = new NpgsqlCommand("UPDATE public.\"Bill\" " +
+                                            $"SET \"Name\"='{request.Name}' " +
+                                            $"WHERE \"Id\" = {request.Id} " +
+                                            "RETURNING \"Id\"", connection);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    rowUpdated = true;
+                }
+                reader.Close();
+
+                return rowUpdated;
+            }
+            catch (System.Exception exception)
+            {
+                throw new System.Exception($"An Error occured while updating the household '{request.Name}'", exception);
             }
             finally
             {
