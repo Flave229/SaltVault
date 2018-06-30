@@ -34,7 +34,7 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToEditTheHouseName
                 Name = "Changed Name: " + typeof(WhenTheUserBelongsToAHouseAndTheRequestIsValid).Name
             });
             string newHouseholdName = _endpointHelper.GetHousehold().House.Name;
-            Assert.IsFalse(newHouseholdName == "Changed Name: " + typeof(WhenTheUserBelongsToAHouseAndTheRequestIsValid).Name);
+            Assert.IsTrue(newHouseholdName == "Changed Name: " + typeof(WhenTheUserBelongsToAHouseAndTheRequestIsValid).Name);
         }
 
         [TestCleanup]
