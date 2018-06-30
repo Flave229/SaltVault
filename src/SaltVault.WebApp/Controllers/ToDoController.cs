@@ -24,14 +24,21 @@ namespace SaltVault.WebApp.Controllers
             _toDoRepository = toDoRepository;
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            IHeaderDictionary headers = context.HttpContext.Request.Headers;
+            IHeaderDictionary headers = filterContext.HttpContext.Request.Headers;
 
             if (headers.ContainsKey("X-HTTP-Method-Override"))
             {
                 string requestType = headers["X-HTTP-Method-Override"];
-                context.HttpContext.Request.Method = requestType;
+                switch (requestType)
+                {
+                    case "DELETE":
+                        filterContext.Result = new RedirectToActionResult("DeleteToDoItem", "ToDo", null);
+                        return;
+                    default:
+                        return;
+                }
             }
         }
 
