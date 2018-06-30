@@ -177,7 +177,7 @@ namespace SaltVault.Core.Household
             {
                 var rowUpdated = false;
 
-                NpgsqlCommand command = new NpgsqlCommand("UPDATE public.\"Household\" " +
+                NpgsqlCommand command = new NpgsqlCommand("UPDATE public.\"House\" " +
                                             $"SET \"Name\"='{request.Name}' " +
                                             $"WHERE \"Id\" = {request.Id} " +
                                             "RETURNING \"Id\"", connection);
