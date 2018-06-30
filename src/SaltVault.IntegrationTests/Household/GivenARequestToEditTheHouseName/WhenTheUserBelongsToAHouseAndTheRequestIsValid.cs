@@ -6,7 +6,7 @@ using SaltVault.WebApp.Models.Household;
 namespace SaltVault.IntegrationTests.Household.GivenARequestToEditTheHouseName
 {
     [TestClass]
-    class WhenTheUserBelongsToAHouseAndTheRequestIsValid
+    public class WhenTheUserBelongsToAHouseAndTheRequestIsValid
     {
         private EndpointHelper _endpointHelper;
         private RealAccountHelper _accountHelper;
@@ -40,7 +40,7 @@ namespace SaltVault.IntegrationTests.Household.GivenARequestToEditTheHouseName
         [TestCleanup]
         public void CleanUp()
         {
-            _endpointHelper.CleanUp();
+            _endpointHelper.CleanUp(false);
             _accountHelper.CleanUp();
         }
     }
