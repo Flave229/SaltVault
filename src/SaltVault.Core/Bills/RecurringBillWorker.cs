@@ -48,7 +48,8 @@ namespace SaltVault.Core.Bills
                     RecurringType = RecurringType.Monthly,
                     Name = recurringBill.Name,
                     PeopleIds = recurringBill.People.Select(person => person.Id).ToList(),
-                    TotalAmount = recurringBill.TotalAmount
+                    TotalAmount = recurringBill.TotalAmount,
+                    HouseId = houseId
                 };
                 _billRepository.AddBill(addBillRequest);
             }
