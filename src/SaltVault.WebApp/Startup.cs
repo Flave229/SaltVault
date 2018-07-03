@@ -28,6 +28,7 @@ namespace SaltVault.WebApp
         private readonly IGoogleTokenAuthentication _googleTokenAuthentication;
         private readonly IHouseholdRepository _householdRepository;
         private readonly IInviteLinkService _inviteLinkService;
+        private readonly IRecurringBillWorker _recurringBillWorker;
 
         public Startup(IHostingEnvironment env)
         {
@@ -40,6 +41,7 @@ namespace SaltVault.WebApp
             _userService = new UserService(new UserCache(), _peopleRepository);
             _inviteLinkService = new InviteLinkService();
             _googleTokenAuthentication = new GoogleTokenAuthentication(new HttpClient());
+            _recurringBillWorker = new RecurringBillWorker(_billRepository);
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -51,10 +53,6 @@ namespace SaltVault.WebApp
             {
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
-
-            var billWorker = new RecurringBillWorker(_billRepository);
-            var backgroundBillWorker = new Task(() => billWorker.StartWorker());
-            backgroundBillWorker.Start();
 
             var discordWorker = new DiscordMessageListener(_billRepository, _shoppingRepository, _peopleRepository, _discordService);
             var backgroundDiscordWorker = new Task(() => discordWorker.StartWorker());
@@ -80,6 +78,7 @@ namespace SaltVault.WebApp
             services.AddSingleton<IUserService, IUserService>(x => _userService);
             services.AddSingleton<IInviteLinkService, IInviteLinkService>(x => _inviteLinkService);
             services.AddSingleton<IGoogleTokenAuthentication, IGoogleTokenAuthentication>(x => _googleTokenAuthentication);
+            services.AddSingleton<IRecurringBillWorker, IRecurringBillWorker>(x => _recurringBillWorker);
 
             services.AddMvc();
         }

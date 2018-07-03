@@ -18,12 +18,14 @@ namespace SaltVault.WebApp.Controllers
         private readonly IDiscordService _discordService;
         private readonly IUserService _userService;
         private readonly IBillRepository _billRepository;
+        private readonly IRecurringBillWorker _recurringBillWorker;
 
-        public BillController(IBillRepository billRepository, IDiscordService discordService, IUserService userService)
+        public BillController(IBillRepository billRepository, IDiscordService discordService, IUserService userService, IRecurringBillWorker recurringBillWorker)
         {
             _userService = userService;
             _billRepository = billRepository;
             _discordService = discordService;
+            _recurringBillWorker = recurringBillWorker;
         }
 
         [HttpGet]
@@ -45,6 +47,8 @@ namespace SaltVault.WebApp.Controllers
                     response.AddError("You must belong to a household to get bills", ErrorCode.USER_NOT_IN_HOUSEHOLD);
                     return response;
                 }
+
+                _recurringBillWorker.GenerateNextMonthsBills(user.HouseId);
 
                 if (id == null)
                 {

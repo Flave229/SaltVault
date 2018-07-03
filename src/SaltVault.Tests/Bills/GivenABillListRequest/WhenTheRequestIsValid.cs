@@ -24,12 +24,13 @@ namespace SaltVault.Tests.Bills.GivenABillListRequest
             });
             var shoppingRepository = new Mock<IShoppingRepository>();
             var userClient = new Mock<IUserService>();
+            var recurringBillWorker = new Mock<IRecurringBillWorker>();
             userClient.Setup(x => x.AuthenticateSession(It.IsAny<string>())).Returns(true);
             userClient.Setup(x => x.GetUserInformationFromAuthHeader(It.IsAny<string>())).Returns(new ActiveUser
             {
                 HouseId = 1
             });
-            var subject = new BillController(billRepository.Object, null, userClient.Object)
+            var subject = new BillController(billRepository.Object, null, userClient.Object, recurringBillWorker.Object)
             {
                 ControllerContext = new ControllerContext
                 {

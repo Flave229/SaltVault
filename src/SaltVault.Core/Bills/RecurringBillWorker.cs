@@ -5,7 +5,12 @@ using SaltVault.Core.Bills.Models;
 
 namespace SaltVault.Core.Bills
 {
-    public class RecurringBillWorker
+    public interface IRecurringBillWorker
+    {
+        void GenerateNextMonthsBills(int houseId);
+    }
+
+    public class RecurringBillWorker : IRecurringBillWorker
     {
         private readonly IBillRepository _billRepository;
 
@@ -14,14 +19,14 @@ namespace SaltVault.Core.Bills
             _billRepository = billRepository;
         }
 
-        public void GenerateNextMonthsBills()
+        public void GenerateNextMonthsBills(int houseId)
         {
             // Only works for first household
             var bills = _billRepository.GetAllBasicBillDetails(new Pagination
             {
                 Page = 0,
                 ResultsPerPage = int.MaxValue
-            }, 1);
+            }, houseId);
 
             var recurringBills = bills.Where(bill => bill.RecurringType == RecurringType.Monthly);
 
@@ -46,22 +51,6 @@ namespace SaltVault.Core.Bills
                     TotalAmount = recurringBill.TotalAmount
                 };
                 _billRepository.AddBill(addBillRequest);
-            }
-        }
-
-        public void StartWorker()
-        {
-            try
-            {
-                while (true)
-                {
-                    GenerateNextMonthsBills();
-                    Thread.Sleep(3600000);
-                }
-            }
-            catch (System.Exception exception)
-            {
-                throw exception;
             }
         }
     }
