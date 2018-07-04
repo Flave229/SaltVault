@@ -296,7 +296,7 @@ namespace SaltVault.Core.Bills
                 foreach (var peopleId in billRequest.PeopleIds)
                 {
                     command = new NpgsqlCommand("INSERT INTO public.\"PeopleForBill\" (\"BillId\", \"PersonId\") " +
-                                                $"VALUES ({billId}, {peopleId})", connection);
+                                                $"VALUES ({billRequest.Id}, {peopleId})", connection);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     { }
